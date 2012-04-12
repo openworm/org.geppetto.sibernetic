@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Vendor: OpenWorm
+Bundle-SymbolicName: org.openworm.simulationengine.model.sph
+Bundle-Name: SPH model
+Bundle-Version: 1.0.0
+Export-Package: org.openworm.simulationengine.model.sph
+Import-Package: org.openworm.simulationengine.core,
+ org.openworm.simulationengine.core.model
+

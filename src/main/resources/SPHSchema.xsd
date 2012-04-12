@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/SPHSchema" xmlns:tns="http://www.example.org/SPHSchema" elementFormDefault="qualified">
+
+    <complexType name="SPHParticle">
+    	<sequence>
+    		<element name="positionVector" type="tns:Vector3D">
+    			<annotation>
+    				<documentation>Position of the particle</documentation>
+    			</annotation></element>
+    		<element name="velocityVector" type="tns:Vector3D">
+    			<annotation>
+    				<documentation>Velocity of the particle</documentation>
+    			</annotation></element>
+    		<element name="velocityEvaluationVector" type="tns:Vector3D">
+    			<annotation>
+    				<documentation>Estimation of velocity value during each step of the integration process</documentation>
+    			</annotation></element>
+    		<element name="viscosityForceVector" type="tns:Vector3D">
+    			<annotation>
+    				<documentation>Viscosity force for the particle</documentation>
+    			</annotation></element>
+    		<element name="gravityForceVector" type="tns:Vector3D">
+    			<annotation>
+    				<documentation>Gravity force for the particle</documentation>
+    			</annotation></element>
+    		<element name="pressureForceVector" type="tns:Vector3D">
+    			<annotation>
+    				<documentation>Pressure force for the particle</documentation>
+    			</annotation></element>
+    		<element name="normalVector" type="tns:Vector3D">
+    			<annotation>
+    				<documentation>Normal vector of the particle</documentation>
+    			</annotation></element>
+    		<element name="neighbourIndexes" type="int" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    	<attribute name="mass" type="float">
+    		<annotation>
+    			<documentation>The mass of the particle</documentation>
+    		</annotation></attribute>
+    	<attribute name="viscosity" type="float">
+    		<annotation>
+    			<documentation>The viscosity of the particle</documentation>
+    		</annotation></attribute>
+    	<attribute name="density" type="float">
+    		<annotation>
+    			<documentation>Density of the particle estimated with smoothing kernel </documentation>
+    		</annotation></attribute>
+    	<attribute name="pressure" type="float">
+    		<annotation>
+    			<documentation>The pressure of the particle</documentation>
+    		</annotation></attribute>
+    </complexType>
+
+    <complexType name="Vector3D">
+    	<attribute name="x" type="float"></attribute>
+    	<attribute name="y" type="float"></attribute>
+    	<attribute name="z" type="float"></attribute>
+    	<attribute name="p" type="float"></attribute>
+    </complexType>
+
+    <complexType name="SPHModel">
+    	<sequence>
+    		<element name="particles" type="tns:SPHParticle"
+    			maxOccurs="unbounded" minOccurs="1">
+    		</element>
+    		<element name="cells" type="tns:SPHCell"
+    			maxOccurs="unbounded" minOccurs="1">
+    		</element>
+    	</sequence>
+    	<attribute name="cellX" type="int"></attribute>
+    	<attribute name="cellY" type="int"></attribute>
+    	<attribute name="cellZ" type="int"></attribute>
+    </complexType>
+
+    <element name="sphModelRoot" type="tns:SPHModel"></element>
+
+    <complexType name="SPHCell">
+        <annotation>
+        	<documentation>Contains indexes of particles which consists in this cell.</documentation>
+        </annotation>
+        <sequence>
+    		<element name="particalIndexes" type="int" maxOccurs="unbounded" minOccurs="0">
+    			<annotation>
+    				<documentation>Conteins indexes of partical which consists in this c</documentation>
+    			</annotation></element>
+    	</sequence>
+    </complexType>
+</schema>

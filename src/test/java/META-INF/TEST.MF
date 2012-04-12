@@ -1,0 +1,1 @@
+Import-Bundle: com.springsource.org.junit
