@@ -2,12 +2,12 @@ package org.openworm.simulationengine.model.sph.x;
 
 import java.util.ArrayList;
 
+import org.openworm.simulationengine.core.model.IModel;
 import org.openworm.simulationengine.model.sph.SPHCell;
 import org.openworm.simulationengine.model.sph.SPHModel;
 import org.openworm.simulationengine.model.sph.SPHParticle;
 
-public class SPHModelX extends SPHModel {
-
+public class SPHModelX extends SPHModel implements IModel {
 	
 	public SPHModelX(int cellX, int cellY, int cellZ){
 		this.cellX = cellX;
@@ -25,19 +25,7 @@ public class SPHModelX extends SPHModel {
 		super();
 	}
 
-	public float getParticleRadius(){
-		return 1.f;//particle_radius;
-	}
-	
-	public void findNeibghor(){
-		
-	}
-	
-	public void advanceInTime(){
-		
-	}
-	
-	private void init3DGrid(){
-		
+	public String getId() {
+		return "test-id";
 	}
 }
