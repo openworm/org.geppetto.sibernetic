@@ -1,4 +1,4 @@
-package org.openworm.simulationengine.model.sph;
+package org.openworm.simulationengine.model.sph.common;
 
 public class SPHConstants {
 
