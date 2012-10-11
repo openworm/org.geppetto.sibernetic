@@ -12,7 +12,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.openworm.simulationengine.core.model.IModel;
-import org.openworm.simulationengine.core.model.IModelProvider;
+import org.openworm.simulationengine.core.model.IModelInterpreter;
 import org.openworm.simulationengine.model.sph.SPHModel;
 import org.openworm.simulationengine.model.sph.x.SPHModelX;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-public class SPHModelProvider implements IModelProvider {
+public class SPHModelInterpreter implements IModelInterpreter {
 
 	/* (non-Javadoc)
 	 * @see org.openworm.simulationengine.core.model.IModelProvider#readModel(java.lang.String)
