@@ -8,6 +8,10 @@
 							http://www.springframework.org/schema/osgi/spring-osgi-1.1.xsd">
 
 	<!-- Exports the service implementation to other bundles by its service interface -->
-	<osgi:service id="sphModelInterpreter" ref="sphModelInterpreterService" interface="org.openworm.simulationengine.core.model.IModelInterpreter" />
+	<osgi:service id="sphModelInterpreter" ref="sphModelInterpreterService" interface="org.openworm.simulationengine.core.model.IModelInterpreter" >
+		<osgi:service-properties>
+    		<entry key="discoverable-id" value="sphModelInterpreter"/>
+  		</osgi:service-properties>
+	</osgi:service>
 	
 </beans>
