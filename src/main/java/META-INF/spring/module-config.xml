@@ -9,7 +9,7 @@
 
 	<!--  <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>--> 
 	<!-- Instructs Spring to scan for internal service components to instantiate and configure -->
-	<!-- <context:annotation-config />			
-	<context:component-scan base-package="org.openworm.simulationengine.model.sph.services" /> -->
+	<context:annotation-config />			
+	<context:component-scan base-package="org.openworm.simulationengine.model.sph.services" />
 		
 </beans>

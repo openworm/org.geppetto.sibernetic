@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xmlns:osgi="http://www.springframework.org/schema/osgi"	
-		xsi:schemaLocation="http://www.springframework.org/schema/beans
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
 							http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 							http://www.springframework.org/schema/osgi
 							http://www.springframework.org/schema/osgi/spring-osgi-1.1.xsd">
 
-	<bean id="sphModelInterpreterService" class="org.openworm.simulationengine.model.sph.services.SPHModelInterpreter"/>
-	<!-- Exports the service implementation to other bundles by its service interface -->
-	<osgi:service ref="sphModelInterpreterService" interface="org.openworm.simulationengine.core.model.IModelInterpreter" >
-		<osgi:service-properties>
-    		<entry key="discoverable-id" value="sphModelInterpreter"/>
-  		</osgi:service-properties>
+
+	<!-- <bean id="sphModelInterpreterService" class="org.openworm.simulationengine.model.sph.services.SPHModelInterpreter"/> -->
+	<!-- Exports the service implementation to other bundles by its service 
+		interface -->
+	<osgi:service ref="SPHModelInterpreterService" interface="org.openworm.simulationengine.core.model.IModelInterpreter">
+		<!-- <osgi:service-properties> <entry key="discoverable-id" value="sphModelInterpreter"/> 
+			</osgi:service-properties> -->
 	</osgi:service>
-	
+
 </beans>

@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-public class SPHModelInterpreter implements IModelInterpreter {
+public class SPHModelInterpreterService implements IModelInterpreter {
 
 	/* (non-Javadoc)
 	 * @see org.openworm.simulationengine.core.model.IModelProvider#readModel(java.lang.String)
