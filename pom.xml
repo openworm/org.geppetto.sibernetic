@@ -45,8 +45,8 @@
 			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.openworm.simulationengine.core</groupId>
-			<artifactId>org.openworm.simulationengine.core</artifactId>
+			<groupId>org.openworm</groupId>
+			<artifactId>simulationengine.core</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
