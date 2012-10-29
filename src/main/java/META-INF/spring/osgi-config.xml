@@ -7,6 +7,10 @@
 							http://www.springframework.org/schema/osgi/spring-osgi-1.1.xsd">
 
 
-	<osgi:service id="SPHModelExporter" ref="SPHModelInterpreterService" interface="org.openworm.simulationengine.core.model.IModelInterpreter"/>
+	<osgi:service id="SPHModelExporter" ref="SPHModelInterpreterService" interface="org.openworm.simulationengine.core.model.IModelInterpreter">
+		<osgi:service-properties>
+			<entry key="discoverableID" value="sphModelInterpreter" />
+		</osgi:service-properties>
+	</osgi:service>
 
 </beans>
