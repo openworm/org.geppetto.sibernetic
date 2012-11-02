@@ -20,6 +20,7 @@ import org.openworm.simulationengine.core.visualisation.model.Point;
 import org.openworm.simulationengine.core.visualisation.model.Scene;
 import org.openworm.simulationengine.model.sph.SPHModel;
 import org.openworm.simulationengine.model.sph.SPHParticle;
+import org.openworm.simulationengine.model.sph.x.SPHFactory;
 import org.openworm.simulationengine.model.sph.x.SPHModelX;
 import org.springframework.stereotype.Service;
 
@@ -47,8 +48,8 @@ public class SPHModelInterpreterService implements IModelInterpreter
 		{
 			context = JAXBContext.newInstance(SPHModel.class);
 			Unmarshaller um = context.createUnmarshaller();
-			SPHModelX sphModel = (SPHModelX) um.unmarshal(url);
-			sphModels.add(sphModel);
+			SPHModel sphModel = (SPHModel) um.unmarshal(url);
+			sphModels.add(new SPHModelX(sphModel));
 		}
 		catch (JAXBException e1)
 		{

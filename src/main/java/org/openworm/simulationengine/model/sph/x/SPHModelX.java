@@ -25,6 +25,23 @@ public class SPHModelX extends SPHModel implements IModel {
 		super();
 	}
 
+	public SPHModelX(SPHModel sphModel)
+	{
+		this.cellX = sphModel.getCellX();
+		this.cellY = sphModel.getCellY();
+		this.cellZ = sphModel.getCellZ();
+		this.particles = new ArrayList<SPHParticle>();
+		this.cells = new ArrayList<SPHCell>();
+		for(SPHParticle p:sphModel.getParticles())
+		{
+			getParticles().add(new SPHParticleX(p));
+		}
+		for(SPHCell c:sphModel.getCells())
+		{
+			getCells().add(c);
+		}
+	}
+
 	public String getId() {
 		return "test-id";
 	}

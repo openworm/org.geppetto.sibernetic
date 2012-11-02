@@ -17,10 +17,7 @@ public class SPHParticleX extends SPHParticle {
 		positionVector = position;
 	}
 	
-	public float gtDensety(){
-		return density;
-	}
-	
+
 	public List<Integer> getNeighbourIndexes(){
 		return neighbourIndexes;
 	}
@@ -43,6 +40,13 @@ public class SPHParticleX extends SPHParticle {
 
 	public SPHParticleX() {
 		super();
+	}
+
+	public SPHParticleX(SPHParticle p)
+	{
+		positionVector = new Vector3DX(p.getPositionVector());
+		velocityVector = new Vector3DX(p.getVelocityVector());
+		mass = p.getMass();
 	}
 	
 }

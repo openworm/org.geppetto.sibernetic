@@ -25,6 +25,12 @@ public class Vector3DX extends Vector3D{
 		super();
 	}
 
+	public Vector3DX(Vector3D p)
+	{
+		this(p.getX(), p.getY(), p.getZ());
+		setP(p.getP());
+	}
+
 	/** Summation of two vectors 
 	 * @param v1
 	 * @param v2

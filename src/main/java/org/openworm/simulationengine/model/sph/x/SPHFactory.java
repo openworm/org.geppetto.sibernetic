@@ -3,6 +3,8 @@
  */
 package org.openworm.simulationengine.model.sph.x;
 
+import javax.xml.bind.annotation.XmlRegistry;
+
 import org.openworm.simulationengine.model.sph.ObjectFactory;
 import org.openworm.simulationengine.model.sph.SPHModel;
 import org.openworm.simulationengine.model.sph.SPHParticle;
@@ -12,6 +14,7 @@ import org.openworm.simulationengine.model.sph.Vector3D;
  * @author matteocantarelli
  *
  */
+@XmlRegistry
 public class SPHFactory extends ObjectFactory {
 	
 
