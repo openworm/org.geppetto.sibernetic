@@ -74,7 +74,7 @@ public class SPHModelInterpreterService implements IModelInterpreter
 				e.getGeometries().add(getParticleGeometry(p));
 			}
 		}
-		return null;
+		return scene;
 	}
 
 	/**

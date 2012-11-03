@@ -43,6 +43,6 @@ public class SPHModelX extends SPHModel implements IModel {
 	}
 
 	public String getId() {
-		return "test-id";
+		return "sph";
 	}
 }
