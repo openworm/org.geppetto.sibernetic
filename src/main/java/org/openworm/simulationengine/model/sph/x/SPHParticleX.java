@@ -7,6 +7,19 @@ import org.openworm.simulationengine.model.sph.Vector3D;
 
 public class SPHParticleX extends SPHParticle {
 
+	String _id;
+	
+	
+	public String getId()
+	{
+		return _id;
+	}
+
+	public void setId(String id)
+	{
+		this._id = id;
+	}
+
 	public void setPosition(float x, float y, float z){
 		positionVector.setX(x);
 		positionVector.setY(y);

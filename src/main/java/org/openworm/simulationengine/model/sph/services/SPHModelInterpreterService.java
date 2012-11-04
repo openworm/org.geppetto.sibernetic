@@ -22,6 +22,7 @@ import org.openworm.simulationengine.model.sph.SPHModel;
 import org.openworm.simulationengine.model.sph.SPHParticle;
 import org.openworm.simulationengine.model.sph.x.SPHFactory;
 import org.openworm.simulationengine.model.sph.x.SPHModelX;
+import org.openworm.simulationengine.model.sph.x.SPHParticleX;
 import org.springframework.stereotype.Service;
 
 /**
@@ -49,7 +50,13 @@ public class SPHModelInterpreterService implements IModelInterpreter
 			context = JAXBContext.newInstance(SPHModel.class);
 			Unmarshaller um = context.createUnmarshaller();
 			SPHModel sphModel = (SPHModel) um.unmarshal(url);
-			sphModels.add(new SPHModelX(sphModel));
+			SPHModelX sphModelX=new SPHModelX(sphModel);
+			sphModels.add(sphModelX);
+			int i=0;
+			for(SPHParticle p:sphModelX.getParticles())
+			{
+				((SPHParticleX)p).setId(sphModelX.getId()+i++);
+			}
 		}
 		catch (JAXBException e1)
 		{
@@ -69,6 +76,7 @@ public class SPHModelInterpreterService implements IModelInterpreter
 			Entity e = new Entity();
 			scene.getEntities().add(e);
 			SPHModelX sphModel = (SPHModelX) m;
+			e.setId(sphModel.getId());
 			for (SPHParticle p : sphModel.getParticles())
 			{
 				e.getGeometries().add(getParticleGeometry(p));
@@ -89,6 +97,7 @@ public class SPHModelInterpreterService implements IModelInterpreter
 		point.setY((double) sphp.getPositionVector().getY());
 		point.setZ((double) sphp.getPositionVector().getZ());
 		p.setPosition(point);
+		p.setId(((SPHParticleX)sphp).getId());
 		return p;
 	}
 
