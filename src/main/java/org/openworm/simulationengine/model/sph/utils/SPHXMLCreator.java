@@ -42,8 +42,9 @@ public class SPHXMLCreator {
 		model.setCellZ(gridCellsZ);
 
 		int index = 0;
-
-		for(int i = 0;i<SPHConstants.PARTICLE_COUNT;i++)
+		
+		// TODO: THIS IS BRUTAL - SOMEWHERE BABY JESUS IS WEEPING
+		for(int i = 0;i<5539;i++)
 		{
 			if(i != 0)
 			{

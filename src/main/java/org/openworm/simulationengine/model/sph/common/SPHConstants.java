@@ -1,11 +1,7 @@
 package org.openworm.simulationengine.model.sph.common;
 
 public class SPHConstants {
-
-
-	public static final int PARTICLE_COUNT = 5539;//( 32 * 1024 );
 	public static final int NEIGHBOR_COUNT = 32;
-	public static final int NK = NEIGHBOR_COUNT * PARTICLE_COUNT;
 	
 	public static final int XMIN = 0;
 	public static final int XMAX = 100;
@@ -20,5 +16,4 @@ public class SPHConstants {
 	public static final float YMAX_F = YMAX;
 	public static final float ZMIN_F = ZMIN;
 	public static final float ZMAX_F = ZMAX;
-	
 }
