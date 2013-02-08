@@ -43,7 +43,6 @@ public class SPHXMLCreator {
 
 		int index = 0;
 		
-		// TODO: THIS IS BRUTAL - SOMEWHERE BABY JESUS IS WEEPING
 		for(int i = 0;i<5539;i++)
 		{
 			if(i != 0)
@@ -51,22 +50,26 @@ public class SPHXMLCreator {
 				index = index + 4;
 			}
 
-			float r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );//tr.rand.next();
+			float r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
 
 			Vector3D positionVector = factory.createVector3D();
-			Vector3D velocityVector = factory.createVector3D();
 			positionVector.setX(MathUtils.scale(SPHConstants.XMIN, SPHConstants.XMAX/10 , r)); 
-			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );//tr.rand.next();
+			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
 			positionVector.setY(MathUtils.scale(SPHConstants.YMIN, SPHConstants.YMAX , r)); 
-			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );//tr.rand.next();
+			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
 			positionVector.setZ(MathUtils.scale(SPHConstants.ZMIN, SPHConstants.ZMAX , r));
+			// TODO: set particle type
 			positionVector.setP(0f);
-			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );//tr.rand.next();
+			
+			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
+			
+			Vector3D velocityVector = factory.createVector3D();
 			velocityVector.setX(MathUtils.scale(-1.0f, 1.0f, r));
-			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );//tr.rand.next();
+			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
 			velocityVector.setY(MathUtils.scale(-1.0f, 1.0f, r));
-			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );//tr.rand.next();
+			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
 			velocityVector.setZ(MathUtils.scale(-1.0f, 1.0f, r));
+			// TODO: set particle type
 			velocityVector.setP(0f);
 
 			SPHParticle particle = factory.createSPHParticle();
@@ -76,6 +79,9 @@ public class SPHXMLCreator {
 			model.getParticles().add(particle);
 
 		}
+		
+		// TODO: add elastic connections
+		
 		return model;
 	}
 
