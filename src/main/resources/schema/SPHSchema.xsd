@@ -91,15 +91,13 @@
 
 	<complexType name="SPHCell">
 		<annotation>
-			<documentation>Contains indexes of particles which consists in this
-				cell.</documentation>
+			<documentation>Contains indexes of particles that are in this cell.</documentation>
 		</annotation>
 		<sequence>
 			<element name="particalIndexes" type="int" maxOccurs="unbounded"
 				minOccurs="0">
 				<annotation>
-					<documentation>Conteins indexes of partical which consists in this
-						c</documentation>
+					<documentation>Contains indexes of particles</documentation>
 				</annotation>
 			</element>
 		</sequence>
