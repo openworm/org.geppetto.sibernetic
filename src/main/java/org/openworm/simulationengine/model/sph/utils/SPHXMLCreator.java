@@ -24,7 +24,7 @@ public class SPHXMLCreator {
 
 	private static final String SPH_XML = "./sphModel.xml";
 	
-	private static final int PARTICLE_COUNT = 1024*42;
+	private static final int PARTICLE_COUNT = 1024*42 / 4;
 
 
 	private static SPHModel createModel()
@@ -416,11 +416,11 @@ public class SPHXMLCreator {
 			float r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
 
 			Vector3D positionVector = factory.createVector3D();
-			positionVector.setX(MathUtils.scale(SPHConstants.XMIN, SPHConstants.XMAX/10 , r)); 
+			positionVector.setX(MathUtils.scale(SPHConstants.XMIN + 1, (SPHConstants.XMAX -1)/10 , r)); 
 			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
-			positionVector.setY(MathUtils.scale(SPHConstants.YMIN, SPHConstants.YMAX , r)); 
+			positionVector.setY(MathUtils.scale(SPHConstants.YMIN + 1, SPHConstants.YMAX - 1 , r)); 
 			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
-			positionVector.setZ(MathUtils.scale(SPHConstants.ZMIN, SPHConstants.ZMAX , r));
+			positionVector.setZ(MathUtils.scale(SPHConstants.ZMIN + 1, SPHConstants.ZMAX -1, r));
 			positionVector.setP(1.1f);
 			
 			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
