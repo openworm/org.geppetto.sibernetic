@@ -43,7 +43,6 @@ public class SPHXMLCreator {
 
 		int index = 0;
 		
-		// TODO: THIS IS BRUTAL - SOMEWHERE BABY JESUS IS WEEPING
 		for(int i = 0;i<5539;i++)
 		{
 			if(i != 0)
