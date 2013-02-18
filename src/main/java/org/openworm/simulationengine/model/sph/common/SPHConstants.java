@@ -3,17 +3,10 @@ package org.openworm.simulationengine.model.sph.common;
 public class SPHConstants {
 	public static final int NEIGHBOR_COUNT = 32;
 	
-	public static final int XMIN = 0;
-	public static final int XMAX = 100;
-	public static final int YMIN = 0;
-	public static final int YMAX = 40;
-	public static final int ZMIN = 0;
-	public static final int ZMAX = 40;
-
-	public static final float XMIN_F = XMIN;
-	public static final float XMAX_F = XMAX;
-	public static final float YMIN_F = YMIN;
-	public static final float YMAX_F = YMAX;
-	public static final float ZMIN_F = ZMIN;
-	public static final float ZMAX_F = ZMAX;
+	public static final float XMIN = 0;
+	public static final float XMAX = 75.15f;
+	public static final float YMIN = 0;
+	public static final float YMAX = 41.75f;
+	public static final float ZMIN = 0;
+	public static final float ZMAX = 41.75f;
 }

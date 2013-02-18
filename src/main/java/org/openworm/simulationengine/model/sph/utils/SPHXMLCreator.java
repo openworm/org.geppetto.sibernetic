@@ -24,7 +24,7 @@ public class SPHXMLCreator {
 
 	private static final String SPH_XML = "./sphModel.xml";
 	
-	private static final int PARTICLE_COUNT = 1024*42 / 4;
+	private static final int PARTICLE_COUNT = 7000; // 1024*42 / 4;
 
 
 	private static SPHModel createModel()
@@ -45,7 +45,7 @@ public class SPHXMLCreator {
 
 		generateBoundaries(model);
 		generateBottomLayerOfLiquid(model);
-		//generateRandomLiquidConfiguration(model);
+		// generateRandomLiquidConfiguration(model);
 		
 		return model;
 	}
