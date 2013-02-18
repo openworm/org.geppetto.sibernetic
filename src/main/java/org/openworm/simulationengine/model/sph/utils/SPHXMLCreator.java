@@ -24,7 +24,7 @@ public class SPHXMLCreator {
 
 	private static final String SPH_XML = "./sphModel.xml";
 	
-	private static final int PARTICLE_COUNT = 7000; // 1024*42 / 4;
+	private static final int PARTICLE_COUNT = 1024*42;
 
 
 	private static SPHModel createModel()
@@ -71,7 +71,8 @@ public class SPHXMLCreator {
 		float normCorner = (float) (1/Math.sqrt(3.f));
 		float normBoundary = (float) (1/Math.sqrt(2.f));
 		boolean isBoundary = false;
-		for(;i <= 2 *( k * n +  n + k );i+=2)
+		int count = 2 *( k * n +  n + k );
+		for(;i <= count;i+=2)
 		{
 			Vector3D positionVector1 = factory.createVector3D();
 			positionVector1.setX(x);
@@ -227,7 +228,7 @@ public class SPHXMLCreator {
 
 		x1 = SPHConstants.XMAX;
 		isBoundary = false;
-		int count = 2 *( k * ( m - 2 )  + k + m - 2) + i;
+		count = 2 *( k * ( m - 2 )  + k + m - 2) + i;
 		for(;i <= count;i+=2)
 		{
 			Vector3D positionVector1 = factory.createVector3D();
@@ -480,7 +481,8 @@ public class SPHXMLCreator {
 			SPHModel sphModel = (SPHModel) um.unmarshal(new FileReader(SPH_XML));
 
 			for (int i = 0; i < sphModel.getParticles().toArray().length; i++) {
-				System.out.println("Particle " + (i + 1) + ": mass "
+				System.out.println("Particle " + (i + 1) + ": type "
+						+ sphModel.getParticles().get(i).getPositionVector().getP() + " mass "
 						+ sphModel.getParticles().get(i).getMass() + " position "
 						+ sphModel.getParticles().get(i).getPositionVector() + " velocity "
 						+ sphModel.getParticles().get(i).getVelocityVector());
