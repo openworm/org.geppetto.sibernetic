@@ -24,7 +24,7 @@ public class SPHXMLCreator {
 
 	private static final String SPH_XML = "./sphModel.xml";
 	
-	private static final int PARTICLE_COUNT = 1024*42;
+	private static final int PARTICLE_COUNT = 296 + 100; //1024*42;
 
 
 	private static SPHModel createModel()
@@ -32,7 +32,8 @@ public class SPHXMLCreator {
 		int gridCellsX, gridCellsY, gridCellsZ;
 
 		SPHFactory factory = new SPHFactory();
-
+		
+		// TODO: make sure that dividing by H is correct
 		gridCellsX = (int)( ( SPHConstants.XMAX - SPHConstants.XMIN ) / PhysicsConstants.H ) + 1;
 		gridCellsY = (int)( ( SPHConstants.YMAX - SPHConstants.YMIN ) / PhysicsConstants.H ) + 1;
 		gridCellsZ = (int)( ( SPHConstants.ZMAX - SPHConstants.ZMIN ) / PhysicsConstants.H ) + 1;
@@ -44,8 +45,8 @@ public class SPHXMLCreator {
 		model.setCellZ(gridCellsZ);
 
 		generateBoundaries(model);
-		generateBottomLayerOfLiquid(model);
-		// generateRandomLiquidConfiguration(model);
+		// generateBottomLayerOfLiquid(model);
+		generateRandomLiquidConfiguration(model);
 		
 		return model;
 	}
@@ -319,7 +320,7 @@ public class SPHXMLCreator {
 			positionVector1.setP(3.1f); // 3 = boundary
 
 			Vector3D positionVector2 = factory.createVector3D();
-			positionVector2.setX(x1);
+			positionVector2.setX(x);
 			positionVector2.setY(y);
 			positionVector2.setZ(z1);
 			positionVector2.setP(3.1f); // 3 = boundary
@@ -407,13 +408,8 @@ public class SPHXMLCreator {
 		SPHFactory factory = new SPHFactory();
 		
 		int pCount = model.getParticles().size();
-		for( ; pCount < PARTICLE_COUNT; ++pCount )
+		for( ; pCount < PARTICLE_COUNT; pCount++ )
 		{
-			if(pCount != 0)
-			{
-				pCount = pCount + 4;
-			}
-
 			float r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
 
 			Vector3D positionVector = factory.createVector3D();
