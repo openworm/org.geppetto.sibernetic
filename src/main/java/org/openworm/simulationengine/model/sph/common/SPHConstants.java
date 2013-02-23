@@ -9,4 +9,10 @@ public class SPHConstants {
 	public static final float YMAX = 11.69f; //80.16f;
 	public static final float ZMIN = 0;
 	public static final float ZMAX = 11.69f; //180.36f;
+	
+	public static final float LIQUID_TYPE = 1.1f;
+	public static final float ELASTIC_TYPE = 2.1f;
+	public static final float BOUNDARY_TYPE = 3.1f;
+	
+	public static final int DECIMAL_ROUNDING_FACTOR = 1000000;
 }
