@@ -9,13 +9,17 @@ import java.net.MalformedURLException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import org.openworm.simulationengine.core.constants.PhysicsConstants;
 import org.openworm.simulationengine.model.sph.SPHModel;
+import org.openworm.simulationengine.model.sph.SPHParticle;
 import org.openworm.simulationengine.model.sph.Vector3D;
 import org.openworm.simulationengine.model.sph.common.SPHConstants;
 import org.openworm.simulationengine.model.sph.x.SPHModelX;
@@ -23,102 +27,167 @@ import org.openworm.simulationengine.model.sph.x.SPHParticleX;
 
 public class SPHModelConverter
 {
+	private static final boolean TXT_TO_XML = false;
 
-	private static final String POSITION_FILE = "/Users/matteocantarelli/Documents/Development/MetaCellWorkspace/org.openworm.simulationengine.model.sph/src/main/resources/positionPureLiquid.txt";
-	private static final String VELOCITY_FILE = "/Users/matteocantarelli/Documents/Development/MetaCellWorkspace/org.openworm.simulationengine.model.sph/src/main/resources/velocityPureLiquid.txt";
-	private static final String SPH_XML = "./sphModelConverted.xml";
+	private static final String POSITION_FILE_SOURCE = "./positionPureLiquid_source.txt";
+	private static final String VELOCITY_FILE_SOURCE = "./velocityPureLiquid_source.txt";
+	private static final String SPH_XML_TARGET = "./sphModel_converted.xml";
 
-	
-	private static String readFile(String path) throws IOException {
-		  FileInputStream stream = new FileInputStream(new File(path));
-		  try {
-		    FileChannel fc = stream.getChannel();
-		    MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
-		    /* Instead of using default, pass in a decoder. */
-		    return Charset.defaultCharset().decode(bb).toString();
-		  }
-		  finally {
-		    stream.close();
-		  }
+	private static final String POSITION_FILE_TARGET = "./positionPureLiquid_converted.txt";
+	private static final String VELOCITY_FILE_TARGET = "./velocityPureLiquid_converted.txt";
+	private static final String SPH_XML_SOURCE = "./sphModel_source.xml";
+
+	private static String readFile(String path) throws IOException
+	{
+		FileInputStream stream = new FileInputStream(new File(path));
+		try
+		{
+			FileChannel fc = stream.getChannel();
+			MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
+			/* Instead of using default, pass in a decoder. */
+			return Charset.defaultCharset().decode(bb).toString();
 		}
-	
+		finally
+		{
+			stream.close();
+		}
+	}
+
 	/**
 	 * @param args
 	 */
+	@SuppressWarnings("resource")
 	public static void main(String[] args)
 	{
-		SPHModel model = new SPHModelX();
 
-		try
+		if (TXT_TO_XML)
 		{
-			model.setCellX((int)( ( SPHConstants.XMAX - SPHConstants.XMIN ) / PhysicsConstants.H ) + 1);
-			model.setCellY((int)( ( SPHConstants.YMAX - SPHConstants.YMIN ) / PhysicsConstants.H ) + 1);
-			model.setCellZ((int)( ( SPHConstants.ZMAX - SPHConstants.ZMIN ) / PhysicsConstants.H ) + 1);
-			String positionString = readFile(POSITION_FILE);
-			String velocityString = readFile(VELOCITY_FILE);
+			SPHModel model = new SPHModelX();
 
-			String[] positionLines = positionString.split(System.getProperty("line.separator"));
-			String[] velocityLines = velocityString.split(System.getProperty("line.separator"));
-
-			for (int i = 0; i < positionLines.length; i++)
-			{
-				SPHParticleX p = new SPHParticleX();
-				p.setPositionVector(get3DVector(positionLines[i]));
-				p.setVelocityVector(get3DVector(velocityLines[i]));
-				p.setMass(1f);
-				model.getParticles().add(p);
-				
-			}
-		}
-		catch (MalformedURLException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// create JAXB context and instantiate marshaller
-		JAXBContext context;
-		try
-		{
-			context = JAXBContext.newInstance(SPHModel.class);
-
-			Marshaller m = context.createMarshaller();
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			m.marshal(model, System.out);
-
-			Writer w = null;
 			try
 			{
-				w = new FileWriter(SPH_XML);
-				m.marshal(model, w);
+				model.setCellX((int) ((SPHConstants.XMAX - SPHConstants.XMIN) / PhysicsConstants.H) + 1);
+				model.setCellY((int) ((SPHConstants.YMAX - SPHConstants.YMIN) / PhysicsConstants.H) + 1);
+				model.setCellZ((int) ((SPHConstants.ZMAX - SPHConstants.ZMIN) / PhysicsConstants.H) + 1);
+				String positionString = readFile(POSITION_FILE_SOURCE);
+				String velocityString = readFile(VELOCITY_FILE_SOURCE);
+
+				String[] positionLines = positionString.split(System.getProperty("line.separator"));
+				String[] velocityLines = velocityString.split(System.getProperty("line.separator"));
+
+				for (int i = 0; i < positionLines.length; i++)
+				{
+					SPHParticleX p = new SPHParticleX();
+					p.setPositionVector(get3DVector(positionLines[i]));
+					p.setVelocityVector(get3DVector(velocityLines[i]));
+					p.setMass(1f);
+					model.getParticles().add(p);
+
+				}
+			}
+			catch (MalformedURLException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			catch (IOException e)
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			finally
+
+			// create JAXB context and instantiate marshaller
+			JAXBContext context;
+			try
 			{
+				context = JAXBContext.newInstance(SPHModel.class);
+
+				Marshaller m = context.createMarshaller();
+				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+				m.marshal(model, System.out);
+
+				Writer w = null;
 				try
 				{
-					w.close();
+					w = new FileWriter(SPH_XML_TARGET);
+					m.marshal(model, w);
 				}
-				catch (Exception e)
+				catch (IOException e)
 				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				finally
+				{
+					try
+					{
+						w.close();
+					}
+					catch (Exception e)
+					{
+					}
 				}
 			}
-
-			
-
+			catch (JAXBException e1)
+			{
+				e1.printStackTrace();
+			}
 		}
-		catch (JAXBException e1)
-		{
-			e1.printStackTrace();
+		else{
+			SPHModel model = new SPHModelX();
+
+			try
+			{
+				// parse XML file into SPHModel
+				JAXBContext jc = JAXBContext.newInstance(SPHModel.class);
+				Unmarshaller um = jc.createUnmarshaller();
+				model = (SPHModel) um.unmarshal(new java.io.FileInputStream(SPH_XML_SOURCE));
+			}
+			catch (Exception e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			Writer positionWriter = null;
+			Writer velocityWriter = null;
+			try
+			{
+				// write txt files
+				positionWriter = new FileWriter(POSITION_FILE_TARGET);
+				velocityWriter = new FileWriter(VELOCITY_FILE_TARGET);
+				
+				for (SPHParticle p : model.getParticles())
+				{
+					positionWriter.write(formatFloatInCPPNotation(p.getPositionVector().getX()) + "\t" + 
+										 formatFloatInCPPNotation(p.getPositionVector().getY()) + "\t" + 
+										 formatFloatInCPPNotation(p.getPositionVector().getZ()) + "\t" +
+										 formatFloatInCPPNotation(p.getPositionVector().getP()) + "\r\n");
+					velocityWriter.write(formatFloatInCPPNotation(p.getVelocityVector().getX()) + "\t" + 
+										 formatFloatInCPPNotation(p.getVelocityVector().getY()) + "\t" + 
+										 formatFloatInCPPNotation(p.getVelocityVector().getZ()) + "\t" +
+										 formatFloatInCPPNotation(p.getVelocityVector().getP()) + "\r\n");
+				}
+				
+				positionWriter.flush();
+				velocityWriter.flush();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+			finally
+            {
+                  try
+                  {
+                	  positionWriter.close(); 
+                	  velocityWriter.close();
+                  }
+                  catch(IOException ex)
+                  {
+                        System.out.println("TXT File Closing Error");
+                 }
+            }     
 		}
 
 	}
@@ -135,6 +204,18 @@ public class SPHModelConverter
 			v.setP(new Float(coordinates[3].trim()));
 		}
 		return v;
+	}
+	
+	private static String formatFloatInCPPNotation(float val){
+		NumberFormat formatter = new DecimalFormat("0.000000E000");
+		String formattedVal = formatter.format(val).replace("E", "e");
+		
+		if(formattedVal.charAt(formattedVal.indexOf("e") + 1) != '-')
+		{
+			formattedVal = formattedVal.substring(0, formattedVal.indexOf("e") + 1) + "+" + formattedVal.substring(formattedVal.indexOf("e") + 1, formattedVal.length());
+		}
+		
+		return formattedVal;
 	}
 
 }
