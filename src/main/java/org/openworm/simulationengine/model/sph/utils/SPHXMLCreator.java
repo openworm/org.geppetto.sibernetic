@@ -24,7 +24,7 @@ public class SPHXMLCreator {
 
 	private static final String SPH_XML = "./sphModel.xml";
 	
-	private static final int PARTICLE_COUNT = 296 + 100; //1024*42;
+	private static final int PARTICLE_COUNT = 296 + 216;
 
 
 	private static SPHModel createModel()
