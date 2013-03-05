@@ -76,16 +76,19 @@
 	<element name="SPHModel">
 		<complexType>
 			<sequence>
-				<element name="particles" type="tns:SPHParticle" maxOccurs="unbounded"
-					minOccurs="1">
+				<element name="particles" type="tns:SPHParticle"
+					maxOccurs="unbounded" minOccurs="1">
 				</element>
-				<element name="cells" type="tns:SPHCell" maxOccurs="unbounded"
-					minOccurs="1">
+				<element name="cells" type="tns:SPHCell"
+					maxOccurs="unbounded" minOccurs="1">
 				</element>
 			</sequence>
-			<attribute name="cellX" type="int"></attribute>
-			<attribute name="cellY" type="int"></attribute>
-			<attribute name="cellZ" type="int"></attribute>
+			<attribute name="xMax" type="float"></attribute>
+			<attribute name="xMin" type="float"></attribute>
+			<attribute name="yMax" type="float"></attribute>
+			<attribute name="yMin" type="float"></attribute>
+			<attribute name="zMax" type="float"></attribute>
+			<attribute name="zMin" type="float"></attribute>
 		</complexType>
 	</element>
 

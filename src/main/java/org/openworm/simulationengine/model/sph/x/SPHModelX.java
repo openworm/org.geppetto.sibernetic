@@ -9,10 +9,14 @@ import org.openworm.simulationengine.model.sph.SPHParticle;
 
 public class SPHModelX extends SPHModel implements IModel {
 	
-	public SPHModelX(int cellX, int cellY, int cellZ){
-		this.cellX = cellX;
-		this.cellY = cellY;
-		this.cellZ = cellZ;
+	public SPHModelX(float xMax, float xMin, float yMax, float yMin, float zMax, float zMin){
+		this.xMax = xMax;
+		this.xMin = xMin;
+		this.yMax = yMax;
+		this.yMin = yMin;
+		this.zMax = zMax;
+		this.zMin = zMin;
+		
 		this.particles = new ArrayList<SPHParticle>();
 		this.cells = new ArrayList<SPHCell>();
 	}
@@ -27,9 +31,13 @@ public class SPHModelX extends SPHModel implements IModel {
 
 	public SPHModelX(SPHModel sphModel)
 	{
-		this.cellX = sphModel.getCellX();
-		this.cellY = sphModel.getCellY();
-		this.cellZ = sphModel.getCellZ();
+		
+		this.xMax = sphModel.getXMax();
+		this.xMin = sphModel.getXMin();
+		this.yMax = sphModel.getYMax();
+		this.yMin = sphModel.getYMin();
+		this.zMax = sphModel.getZMax();
+		this.zMin = sphModel.getZMin();
 		this.particles = new ArrayList<SPHParticle>();
 		this.cells = new ArrayList<SPHCell>();
 		for(SPHParticle p:sphModel.getParticles())

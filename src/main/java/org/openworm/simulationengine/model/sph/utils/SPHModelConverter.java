@@ -36,6 +36,13 @@ public class SPHModelConverter
 	private static final String POSITION_FILE_TARGET = "./positionPureLiquid_converted.txt";
 	private static final String VELOCITY_FILE_TARGET = "./velocityPureLiquid_converted.txt";
 	private static final String SPH_XML_SOURCE = "./sphModel_source.xml";
+	
+	public static final float XMIN = 0;
+	public static final float XMAX = 11.69f;
+	public static final float YMIN = 0;
+	public static final float YMAX = 11.69f;
+	public static final float ZMIN = 0;
+	public static final float ZMAX = 11.69f;
 
 	private static String readFile(String path) throws IOException
 	{
@@ -56,7 +63,6 @@ public class SPHModelConverter
 	/**
 	 * @param args
 	 */
-	@SuppressWarnings("resource")
 	public static void main(String[] args)
 	{
 
@@ -66,9 +72,13 @@ public class SPHModelConverter
 
 			try
 			{
-				model.setCellX((int) ((SPHConstants.XMAX - SPHConstants.XMIN) / PhysicsConstants.H) + 1);
-				model.setCellY((int) ((SPHConstants.YMAX - SPHConstants.YMIN) / PhysicsConstants.H) + 1);
-				model.setCellZ((int) ((SPHConstants.ZMAX - SPHConstants.ZMIN) / PhysicsConstants.H) + 1);
+				model.setXMax(XMAX);
+				model.setXMin(XMIN);
+				model.setYMax(YMAX);
+				model.setYMin(YMIN);
+				model.setZMax(ZMAX);
+				model.setZMin(ZMIN);
+				
 				String positionString = readFile(POSITION_FILE_SOURCE);
 				String velocityString = readFile(VELOCITY_FILE_SOURCE);
 

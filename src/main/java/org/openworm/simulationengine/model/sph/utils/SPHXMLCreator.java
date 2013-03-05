@@ -25,24 +25,26 @@ public class SPHXMLCreator {
 	private static final String SPH_XML = "./sphModel.xml";
 	
 	private static final int PARTICLE_COUNT = 296 + 216;
+	public static final float XMIN = 0;
+	public static final float XMAX = 11.69f;
+	public static final float YMIN = 0;
+	public static final float YMAX = 11.69f;
+	public static final float ZMIN = 0;
+	public static final float ZMAX = 11.69f;
 
 
 	private static SPHModel createModel()
 	{
-		int gridCellsX, gridCellsY, gridCellsZ;
-
 		SPHFactory factory = new SPHFactory();
-		
-		// TODO: make sure that dividing by H is correct
-		gridCellsX = (int)( ( SPHConstants.XMAX - SPHConstants.XMIN ) / PhysicsConstants.H ) + 1;
-		gridCellsY = (int)( ( SPHConstants.YMAX - SPHConstants.YMIN ) / PhysicsConstants.H ) + 1;
-		gridCellsZ = (int)( ( SPHConstants.ZMAX - SPHConstants.ZMIN ) / PhysicsConstants.H ) + 1;
 
 		SPHModel model = factory.createSPHModel();
 
-		model.setCellX(gridCellsX);
-		model.setCellY(gridCellsY);
-		model.setCellZ(gridCellsZ);
+		model.setXMax(XMAX);
+		model.setXMin(XMIN);
+		model.setYMax(YMAX);
+		model.setYMin(YMIN);
+		model.setZMax(ZMAX);
+		model.setZMin(ZMIN);
 
 		generateBoundaries(model);
 		// generateBottomLayerOfLiquid(model);
@@ -55,19 +57,19 @@ public class SPHXMLCreator {
 		SPHFactory factory = new SPHFactory();
 		
 		// calculate number of boundary particles by X, Y, Z axis. Distance Between two neighbor particle is equal to 
-		int n = (int)( ( SPHConstants.XMAX - SPHConstants.XMIN ) / PhysicsConstants.R0 ); //X
-		int m = (int)( ( SPHConstants.YMAX - SPHConstants.YMIN ) / PhysicsConstants.R0 ); //Y
-		int k = (int)( ( SPHConstants.ZMAX - SPHConstants.ZMIN ) / PhysicsConstants.R0 ); //Z
+		int n = (int)( ( XMAX - XMIN ) / PhysicsConstants.R0 ); //X
+		int m = (int)( ( YMAX - YMIN ) / PhysicsConstants.R0 ); //Y
+		int k = (int)( ( ZMAX - ZMIN ) / PhysicsConstants.R0 ); //Z
 		
 		float x,y,z;
 		int i = 0;
 		//drop
 		//Creation of Boundary Particle
-		x = SPHConstants.XMIN;
-		z = SPHConstants.ZMIN;
-		y = SPHConstants.YMIN;
+		x = XMIN;
+		z = ZMIN;
+		y = YMIN;
 		float x1, y1, z1;
-		y1 = SPHConstants.YMAX;
+		y1 = YMAX;
 		float speed = 1.0f;
 		float normCorner = (float) (1/Math.sqrt(3.f));
 		float normBoundary = (float) (1/Math.sqrt(2.f));
@@ -103,7 +105,7 @@ public class SPHXMLCreator {
 				velocityVector2.setP(0f);
 				isBoundary = true;
 			}
-			if(x >= SPHConstants.XMAX && z == SPHConstants.ZMIN && !isBoundary){
+			if(x >= XMAX && z == ZMIN && !isBoundary){
 				velocityVector1.setX(-normCorner);
 				velocityVector1.setY(normCorner);
 				velocityVector1.setZ(normCorner);
@@ -116,7 +118,7 @@ public class SPHXMLCreator {
 				isBoundary = true;
 			}
 
-			if(x >= SPHConstants.XMAX && z >= SPHConstants.ZMAX - PhysicsConstants.R0 && !isBoundary){
+			if(x >= XMAX && z >= ZMAX - PhysicsConstants.R0 && !isBoundary){
 				velocityVector1.setX(-normCorner);
 				velocityVector1.setY(normCorner);
 				velocityVector1.setZ(-normCorner);
@@ -128,7 +130,7 @@ public class SPHXMLCreator {
 				velocityVector2.setP(0f);
 				isBoundary = true;
 			}
-			if(x - PhysicsConstants.R0 == SPHConstants.XMIN && z >= SPHConstants.ZMAX - PhysicsConstants.R0 && !isBoundary){
+			if(x - PhysicsConstants.R0 == XMIN && z >= ZMAX - PhysicsConstants.R0 && !isBoundary){
 				velocityVector1.setX(normCorner);
 				velocityVector1.setY(normCorner);
 				velocityVector1.setZ(-normCorner);
@@ -141,7 +143,7 @@ public class SPHXMLCreator {
 				isBoundary = true;
 			}
 
-			if(x >= SPHConstants.XMAX && !isBoundary){
+			if(x >= XMAX && !isBoundary){
 				velocityVector1.setX(-normBoundary);
 				velocityVector1.setY(normBoundary);
 				velocityVector1.setZ(0f);
@@ -154,7 +156,7 @@ public class SPHXMLCreator {
 				isBoundary = true;
 			}
 
-			if(z == SPHConstants.ZMIN && !isBoundary){
+			if(z == ZMIN && !isBoundary){
 				velocityVector1.setX(0f);
 				velocityVector1.setY(normBoundary);
 				velocityVector1.setZ(normBoundary);
@@ -166,7 +168,7 @@ public class SPHXMLCreator {
 				velocityVector2.setP(0f);
 				isBoundary = true;
 			}
-			if(x - PhysicsConstants.R0 == SPHConstants.XMIN && !isBoundary){
+			if(x - PhysicsConstants.R0 == XMIN && !isBoundary){
 				velocityVector1.setX(normBoundary);
 				velocityVector1.setY(normBoundary);
 				velocityVector1.setZ(0f);
@@ -178,7 +180,7 @@ public class SPHXMLCreator {
 				velocityVector2.setP(0f);
 				isBoundary = true;
 			}
-			if(z >= SPHConstants.ZMAX - PhysicsConstants.R0 && !isBoundary){
+			if(z >= ZMAX - PhysicsConstants.R0 && !isBoundary){
 				velocityVector1.setX(0f);
 				velocityVector1.setY(normBoundary);
 				velocityVector1.setZ(-normBoundary);
@@ -217,17 +219,17 @@ public class SPHXMLCreator {
 			
 			// update coordinates for next iteration
 			isBoundary = false;
-			if(x > SPHConstants.XMAX) { 
-				x = SPHConstants.XMIN; 
+			if(x > XMAX) { 
+				x = XMIN; 
 				z += PhysicsConstants.R0; 
 			}
 		}
 
-		x = SPHConstants.XMIN;
-		y = SPHConstants.YMIN + PhysicsConstants.R0;
-		z = SPHConstants.ZMIN;
+		x = XMIN;
+		y = YMIN + PhysicsConstants.R0;
+		z = ZMIN;
 
-		x1 = SPHConstants.XMAX;
+		x1 = XMAX;
 		isBoundary = false;
 		count = 2 *( k * ( m - 2 )  + k + m - 2) + i;
 		for(;i <= count;i+=2)
@@ -247,7 +249,7 @@ public class SPHXMLCreator {
 			Vector3D velocityVector1 = factory.createVector3D();
 			Vector3D velocityVector2 = factory.createVector3D();
 
-			if(z == SPHConstants.ZMIN){
+			if(z == ZMIN){
 				velocityVector1.setX(normBoundary);
 				velocityVector1.setY(0f);
 				velocityVector1.setZ(normBoundary);
@@ -259,7 +261,7 @@ public class SPHXMLCreator {
 				velocityVector2.setP(0f);
 				isBoundary = true;
 			}
-			if(z >= SPHConstants.ZMAX - PhysicsConstants.R0 && !isBoundary){
+			if(z >= ZMAX - PhysicsConstants.R0 && !isBoundary){
 				velocityVector1.setX(normBoundary);
 				velocityVector1.setY(0f);
 				velocityVector1.setZ(-normBoundary);
@@ -300,16 +302,16 @@ public class SPHXMLCreator {
 			isBoundary = false;
 			y+= PhysicsConstants.R0;
 
-			if(y > SPHConstants.YMAX - PhysicsConstants.R0) { 
-				y = SPHConstants.YMIN + PhysicsConstants.R0; z += PhysicsConstants.R0; 
+			if(y > YMAX - PhysicsConstants.R0) { 
+				y = YMIN + PhysicsConstants.R0; z += PhysicsConstants.R0; 
 			}
 		}
 		
-		x = SPHConstants.XMIN + PhysicsConstants.R0;
-		y = SPHConstants.YMIN + PhysicsConstants.R0;
-		z = SPHConstants.ZMIN;
+		x = XMIN + PhysicsConstants.R0;
+		y = YMIN + PhysicsConstants.R0;
+		z = ZMIN;
 
-		z1 = SPHConstants.ZMAX;
+		z1 = ZMAX;
 		count = 2 *( ( n - 2 ) * ( m - 2 )  + n + m - 4) + i;
 		for(;i <= count;i+=2)
 		{
@@ -353,8 +355,8 @@ public class SPHXMLCreator {
 			// update coordinates for next iteration
 			y+= PhysicsConstants.R0;
 
-			if(y > SPHConstants.YMAX - PhysicsConstants.R0) { 
-				y = SPHConstants.YMIN + PhysicsConstants.R0; x += PhysicsConstants.R0; 
+			if(y > YMAX - PhysicsConstants.R0) { 
+				y = YMIN + PhysicsConstants.R0; x += PhysicsConstants.R0; 
 			}
 		}
 	}
@@ -365,7 +367,7 @@ public class SPHXMLCreator {
 		
 		float coeff = 0.2325f; // for particle mass
 		float x,y,z;
-		x = PhysicsConstants.R0 * 5 + 0*SPHConstants.XMAX/4 + PhysicsConstants.H*coeff;
+		x = PhysicsConstants.R0 * 5 + 0*XMAX/4 + PhysicsConstants.H*coeff;
 		y = PhysicsConstants.R0 * 15 + PhysicsConstants.H*coeff;
 		z = PhysicsConstants.R0 * 5 + PhysicsConstants.H*coeff;
 		
@@ -394,10 +396,10 @@ public class SPHXMLCreator {
 			// update coordinates for next iteration
 			x+= 2*PhysicsConstants.H*coeff;
 
-			if(x>SPHConstants.XMAX/2) { 
+			if(x>XMAX/2) { 
 				x = PhysicsConstants.R0 * 5 + PhysicsConstants.H*coeff; z += 2*PhysicsConstants.H*coeff; 
 			}
-			if(z>SPHConstants.ZMAX/2) { 
+			if(z>ZMAX/2) { 
 				x = PhysicsConstants.R0 * 5 + PhysicsConstants.H*coeff; z = PhysicsConstants.R0 * 5 + PhysicsConstants.H*coeff; y += 2*PhysicsConstants.H*coeff; 
 			}
 		}
@@ -413,11 +415,11 @@ public class SPHXMLCreator {
 			float r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
 
 			Vector3D positionVector = factory.createVector3D();
-			positionVector.setX(MathUtils.scale(SPHConstants.XMIN + 1, (SPHConstants.XMAX -1)/10 , r)); 
+			positionVector.setX(MathUtils.scale(XMIN + 1, (XMAX -1)/10 , r)); 
 			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
-			positionVector.setY(MathUtils.scale(SPHConstants.YMIN + 1, SPHConstants.YMAX - 1 , r)); 
+			positionVector.setY(MathUtils.scale(YMIN + 1, YMAX - 1 , r)); 
 			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
-			positionVector.setZ(MathUtils.scale(SPHConstants.ZMIN + 1, SPHConstants.ZMAX -1, r));
+			positionVector.setZ(MathUtils.scale(ZMIN + 1, ZMAX -1, r));
 			positionVector.setP(1.1f);
 			
 			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
