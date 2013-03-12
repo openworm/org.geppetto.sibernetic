@@ -11,6 +11,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openworm.simulationengine.core.model.IModel;
 import org.openworm.simulationengine.core.model.IModelInterpreter;
 import org.openworm.simulationengine.core.visualisation.model.AGeometry;
@@ -32,6 +34,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class SPHModelInterpreterService implements IModelInterpreter
 {
+	
+	private static Log logger = LogFactory.getLog(SPHModelInterpreterService.class);
 
 	/*
 	 * (non-Javadoc)
@@ -70,6 +74,7 @@ public class SPHModelInterpreterService implements IModelInterpreter
 	 */
 	public Scene getSceneFromModel(List<IModel> model)
 	{
+		long starttime=System.currentTimeMillis();
 		Scene scene = new Scene();
 		for (IModel m : model)
 		{
@@ -102,6 +107,7 @@ public class SPHModelInterpreterService implements IModelInterpreter
 				
 			}
 		}
+		logger.info("Model to scene conversion end, took: "+(System.currentTimeMillis()-starttime)+"ms");
 		return scene;
 	}
 

@@ -27,7 +27,7 @@ import org.openworm.simulationengine.model.sph.x.SPHParticleX;
 
 public class SPHModelConverter
 {
-	private static final boolean TXT_TO_XML = false;
+	private static final boolean TXT_TO_XML = true;
 
 	private static final String POSITION_FILE_SOURCE = "./positionPureLiquid_source.txt";
 	private static final String VELOCITY_FILE_SOURCE = "./velocityPureLiquid_source.txt";
@@ -38,11 +38,11 @@ public class SPHModelConverter
 	private static final String SPH_XML_SOURCE = "./sphModel_source.xml";
 	
 	public static final float XMIN = 0;
-	public static final float XMAX = 11.69f;
+	public static final float XMAX = 120.24f;
 	public static final float YMIN = 0;
-	public static final float YMAX = 11.69f;
+	public static final float YMAX = 80.16f;
 	public static final float ZMIN = 0;
-	public static final float ZMAX = 11.69f;
+	public static final float ZMAX = 182.03f;
 
 	private static String readFile(String path) throws IOException
 	{
