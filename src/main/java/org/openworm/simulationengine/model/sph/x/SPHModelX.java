@@ -2,12 +2,16 @@ package org.openworm.simulationengine.model.sph.x;
 
 import java.util.ArrayList;
 
+import javax.swing.text.Position;
+
 import org.openworm.simulationengine.core.model.IModel;
 import org.openworm.simulationengine.model.sph.SPHCell;
 import org.openworm.simulationengine.model.sph.SPHModel;
 import org.openworm.simulationengine.model.sph.SPHParticle;
+import org.openworm.simulationengine.model.sph.Vector3D;
 
-public class SPHModelX extends SPHModel implements IModel {
+public class SPHModelX extends SPHModel implements IModel, Comparable<SPHModelX> {
+	
 	
 	public SPHModelX(float xMax, float xMin, float yMax, float yMin, float zMax, float zMin){
 		this.xMax = xMax;
@@ -53,4 +57,38 @@ public class SPHModelX extends SPHModel implements IModel {
 	public String getId() {
 		return "sph";
 	}
+
+	@Override
+	public int compareTo(SPHModelX o) {
+		int different=0;
+		Object[] parray= particles.toArray();
+		Object[] poarray= o.particles.toArray();
+		for(int i=0;i<parray.length;i++)
+		{
+			Vector3D p=((SPHParticleX)parray[i]).getPositionVector();
+			Vector3D v=((SPHParticleX)parray[i]).getVelocityVector();
+			
+			Vector3D po=((SPHParticleX)poarray[i]).getPositionVector();
+			Vector3D vo=((SPHParticleX)poarray[i]).getVelocityVector();
+			
+			boolean sameP=
+					p.getX().equals(po.getX()) &&
+					p.getY().equals(po.getY()) &&
+					p.getZ().equals(po.getZ()) &&
+					p.getP().equals(po.getP());
+			boolean sameV=
+					v.getX().equals(vo.getX()) &&
+					v.getY().equals(vo.getY()) &&
+					v.getZ().equals(vo.getZ()) &&
+					v.getP().equals(vo.getP());
+			
+			if(!(sameP && sameV)) 
+			{
+				different++;
+			}
+			
+		}
+		return different;
+	}
+	
 }
