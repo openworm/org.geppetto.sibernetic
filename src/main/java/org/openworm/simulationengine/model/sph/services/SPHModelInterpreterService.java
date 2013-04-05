@@ -11,6 +11,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openworm.simulationengine.core.model.IModel;
 import org.openworm.simulationengine.core.model.IModelInterpreter;
 import org.openworm.simulationengine.core.visualisation.model.AGeometry;
@@ -20,7 +22,7 @@ import org.openworm.simulationengine.core.visualisation.model.Point;
 import org.openworm.simulationengine.core.visualisation.model.Scene;
 import org.openworm.simulationengine.model.sph.SPHModel;
 import org.openworm.simulationengine.model.sph.SPHParticle;
-import org.openworm.simulationengine.model.sph.x.SPHFactory;
+import org.openworm.simulationengine.model.sph.common.SPHConstants;
 import org.openworm.simulationengine.model.sph.x.SPHModelX;
 import org.openworm.simulationengine.model.sph.x.SPHParticleX;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class SPHModelInterpreterService implements IModelInterpreter
 {
+	
+	private static Log logger = LogFactory.getLog(SPHModelInterpreterService.class);
 
 	/*
 	 * (non-Javadoc)
@@ -70,18 +74,40 @@ public class SPHModelInterpreterService implements IModelInterpreter
 	 */
 	public Scene getSceneFromModel(List<IModel> model)
 	{
+		long starttime=System.currentTimeMillis();
 		Scene scene = new Scene();
 		for (IModel m : model)
 		{
-			Entity e = new Entity();
-			scene.getEntities().add(e);
+			Entity liquidEntity = new Entity();
+			Entity boundaryEntity = new Entity();
+			Entity elasticEntity = new Entity();
+			
+			scene.getEntities().add(liquidEntity);
+			scene.getEntities().add(boundaryEntity);
+			scene.getEntities().add(elasticEntity);
+			
 			SPHModelX sphModel = (SPHModelX) m;
-			e.setId(sphModel.getId());
+			liquidEntity.setId("LIQUID_"+sphModel.getId());
+			boundaryEntity.setId("BOUNDARY_"+sphModel.getId());
+			elasticEntity.setId("ELASTIC_"+sphModel.getId());
 			for (SPHParticle p : sphModel.getParticles())
 			{
-				e.getGeometries().add(getParticleGeometry(p));
+				if(p.getPositionVector().getP().equals(SPHConstants.LIQUID_TYPE))
+				{
+					liquidEntity.getGeometries().add(getParticleGeometry(p));
+				}
+				else if(p.getPositionVector().getP().equals(SPHConstants.ELASTIC_TYPE))
+				{
+					elasticEntity.getGeometries().add(getParticleGeometry(p));
+				}
+				else if(p.getPositionVector().getP().equals(SPHConstants.BOUNDARY_TYPE))
+				{
+					boundaryEntity.getGeometries().add(getParticleGeometry(p));	
+				}
+				
 			}
 		}
+		logger.info("Model to scene conversion end, took: "+(System.currentTimeMillis()-starttime)+"ms");
 		return scene;
 	}
 

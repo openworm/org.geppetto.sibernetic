@@ -9,7 +9,7 @@
 	<properties>
 		<spring.version>3.0.0.RELEASE</spring.version>
 	</properties>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.commons</groupId>

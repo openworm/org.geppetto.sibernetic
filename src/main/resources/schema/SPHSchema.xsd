@@ -76,30 +76,31 @@
 	<element name="SPHModel">
 		<complexType>
 			<sequence>
-				<element name="particles" type="tns:SPHParticle" maxOccurs="unbounded"
-					minOccurs="1">
+				<element name="particles" type="tns:SPHParticle"
+					maxOccurs="unbounded" minOccurs="1">
 				</element>
-				<element name="cells" type="tns:SPHCell" maxOccurs="unbounded"
-					minOccurs="1">
+				<element name="cells" type="tns:SPHCell"
+					maxOccurs="unbounded" minOccurs="1">
 				</element>
 			</sequence>
-			<attribute name="cellX" type="int"></attribute>
-			<attribute name="cellY" type="int"></attribute>
-			<attribute name="cellZ" type="int"></attribute>
+			<attribute name="xMax" type="float"></attribute>
+			<attribute name="xMin" type="float"></attribute>
+			<attribute name="yMax" type="float"></attribute>
+			<attribute name="yMin" type="float"></attribute>
+			<attribute name="zMax" type="float"></attribute>
+			<attribute name="zMin" type="float"></attribute>
 		</complexType>
 	</element>
 
 	<complexType name="SPHCell">
 		<annotation>
-			<documentation>Contains indexes of particles which consists in this
-				cell.</documentation>
+			<documentation>Contains indexes of particles that are in this cell.</documentation>
 		</annotation>
 		<sequence>
 			<element name="particalIndexes" type="int" maxOccurs="unbounded"
 				minOccurs="0">
 				<annotation>
-					<documentation>Conteins indexes of partical which consists in this
-						c</documentation>
+					<documentation>Contains indexes of particles</documentation>
 				</annotation>
 			</element>
 		</sequence>
