@@ -13,6 +13,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.openworm.simulationengine.core.constants.PhysicsConstants;
 import org.openworm.simulationengine.core.model.MathUtils;
+import org.openworm.simulationengine.model.sph.Connection;
 import org.openworm.simulationengine.model.sph.SPHModel;
 import org.openworm.simulationengine.model.sph.SPHParticle;
 import org.openworm.simulationengine.model.sph.Vector3D;
@@ -26,11 +27,11 @@ public class SPHXMLCreator {
 	
 	private static final int PARTICLE_COUNT = 296 + 216;
 	public static final float XMIN = 0;
-	public static final float XMAX = 11.69f;
+	public static final float XMAX = 120.24f;
 	public static final float YMIN = 0;
-	public static final float YMAX = 11.69f;
+	public static final float YMAX = 80.16f;
 	public static final float ZMIN = 0;
-	public static final float ZMAX = 11.69f;
+	public static final float ZMAX = 182.03f;
 
 
 	private static SPHModel createModel()
@@ -46,9 +47,10 @@ public class SPHXMLCreator {
 		model.setZMax(ZMAX);
 		model.setZMin(ZMIN);
 
-		generateBoundaries(model);
+		// generateBoundaries(model);
 		// generateBottomLayerOfLiquid(model);
-		generateRandomLiquidConfiguration(model);
+		// generateRandomLiquidConfiguration(model);
+		generateElasticScene(model);
 		
 		return model;
 	}
@@ -438,6 +440,362 @@ public class SPHXMLCreator {
 			particle.setMass(1f);
 			model.getParticles().add(particle);
 		}
+	}
+	
+	public static void generateElasticScene(SPHModel model){
+		SPHFactory factory = new SPHFactory();
+		int numOfLiquidP = 0;
+		int numOfElasticP = 0;
+		int numOfBoundaryP = 0;
+		
+		for(int stage=0; stage<2; stage++)
+		{
+			int PARTICLE_COUNT_ELASTIC_SCENE = 0;
+			
+			// ported from C++ version - owHelper::generateConfiguration
+			float x,y,z;
+			float p_type = SPHConstants.LIQUID_TYPE;
+			int i = 0;// particle counter
+			int ix,iy,iz;
+			int ecc = 0;//elastic connections counter
+	
+			int nx = (int)( ( XMAX - XMIN ) / PhysicsConstants.R0 ); //X
+			int ny = (int)( ( YMAX - YMIN ) / PhysicsConstants.R0 ); //Y
+			int nz = (int)( ( ZMAX - ZMIN ) / PhysicsConstants.R0 ); //Z
+	
+			int nEx = 9;
+			int nEy = 5;
+			int nEz = 35;
+		
+			if(stage==0)
+			{
+				numOfLiquidP = 0;
+				numOfElasticP = nEx*nEy*nEz;
+				numOfBoundaryP = 0;
+				
+				// no need to init anything as we have a list
+			}
+	
+			//=============== create elastic particles ==================================================
+			if(stage==1)
+			{
+				p_type = SPHConstants.ELASTIC_TYPE;
+	
+				for(x=0;x<nEx;x+=1.f)
+				for(y=0;y<nEy;y+=1.f)
+				for(z=0;z<nEz;z+=1.f)
+				{
+					
+					Vector3D positionVector = factory.createVector3D();
+					positionVector.setX(XMAX/2+x*PhysicsConstants.R0-nEx*PhysicsConstants.R0/2);
+					positionVector.setY(YMAX/2+y*PhysicsConstants.R0-nEy*PhysicsConstants.R0/2 + YMAX*3/8);
+					positionVector.setZ(ZMAX/2+z*PhysicsConstants.R0-nEz*PhysicsConstants.R0/2);
+					positionVector.setP(p_type);
+	
+					Vector3D velocityVector = factory.createVector3D();
+					velocityVector.setX(0f);
+					velocityVector.setY(0f);
+					velocityVector.setZ(0f);
+					velocityVector.setP(p_type);
+					
+					// add particles
+					SPHParticle particle = factory.createSPHParticle();
+					particle.setPositionVector(positionVector);
+					particle.setVelocityVector(velocityVector);
+					particle.setMass(1f);
+					model.getParticles().add(particle);
+	
+					i++;
+				}
+	
+				for(int i_ec = 0; i_ec < numOfElasticP * SPHConstants.NEIGHBOR_COUNT; i_ec++)
+				{
+					Connection conn = new Connection();
+					conn.setP1(SPHConstants.NO_PARTICLE_ID);
+					conn.setP2(0f);
+					conn.setDistance(0f);
+					
+					model.getConnections().add(conn);
+				}
+	
+				float r2ij;
+				float dx2,dy2,dz2;
+	
+				for(int i_ec = 0; i_ec < numOfElasticP; i_ec++)
+				{
+					ecc = 0;
+	
+					for(int j_ec = 0; j_ec < numOfElasticP; j_ec++)
+					{
+						if(i_ec!=j_ec)
+						{
+							SPHParticle p_i_ec = model.getParticles().get(i_ec);
+							SPHParticle p_j_ec = model.getParticles().get(j_ec);
+							
+							dx2 = (p_i_ec.getPositionVector().getX() - p_j_ec.getPositionVector().getX());
+							dy2 = (p_i_ec.getPositionVector().getY() - p_j_ec.getPositionVector().getY());
+							dz2 = (p_i_ec.getPositionVector().getZ() - p_j_ec.getPositionVector().getZ());
+							dx2 *= dx2;
+							dy2 *= dy2;
+							dz2 *= dz2;
+							r2ij = dx2 + dy2 + dz2;
+	
+							if(r2ij<=PhysicsConstants.R0*PhysicsConstants.R0*3.05f)
+							{
+								//connect elastic particles 0 and 1
+								model.getConnections().get(SPHConstants.NEIGHBOR_COUNT * i_ec + ecc).setP1(((float)j_ec) + 0.1f);
+								model.getConnections().get(SPHConstants.NEIGHBOR_COUNT * i_ec + ecc).setP2((float)Math.sqrt(r2ij)* PhysicsConstants.SIMULATION_SCALE);
+								model.getConnections().get(SPHConstants.NEIGHBOR_COUNT * i_ec + ecc).setDistance((float) (0 + 1.1 * ((((dz2>100*dx2)&&(dz2>100*dy2))) ? 1 : 0)));
+								ecc++;
+							}
+	
+							if(ecc>=SPHConstants.NEIGHBOR_COUNT) break;
+						}
+					}
+				}
+			}
+	
+			//============= create volume of liquid =========================================================================
+			p_type = SPHConstants.LIQUID_TYPE;
+	
+			for(x = 15*PhysicsConstants.R0/2;x<(XMAX-XMIN)/5 +3*PhysicsConstants.R0/2;x += PhysicsConstants.R0)
+			for(y =  3*PhysicsConstants.R0/2;y<(YMAX-YMIN)   -3*PhysicsConstants.R0/2;y += PhysicsConstants.R0)
+			for(z =  3*PhysicsConstants.R0/2+(ZMAX-ZMIN)*3/10;z<(ZMAX-ZMIN)*7/10-3*PhysicsConstants.R0/2;z += PhysicsConstants.R0)
+			{
+				// stage==0 - preliminary run
+				// stage==1 - final run
+				if(stage==1)
+				{
+					if(i>=numOfLiquidP+numOfElasticP) 
+					{
+						System.out.println("Warning - final particle count >= preliminary particle count!");
+						return;
+					}
+					
+					SPHParticle p = model.getParticles().get(i);
+					
+					//write particle coordinates to corresponding arrays
+					p.getPositionVector().setX(x);
+					p.getPositionVector().setY(y);
+					p.getPositionVector().setZ(z);
+					p.getPositionVector().setP(p_type);
+					
+					p.getVelocityVector().setX(0f);
+					p.getVelocityVector().setY(0f);
+					p.getVelocityVector().setZ(0f);
+					p.getVelocityVector().setP(p_type);
+				}
+	
+				i++; // necessary for both stages
+			}
+			// end
+	
+			if(stage==0) 
+			{
+				numOfLiquidP = i;// - numOfElasticP;
+				numOfBoundaryP = 2 * ( nx*ny + (nx+ny-2)*(nz-2) ); 
+			}
+			else
+			if(stage==1)
+			{
+				//===================== create boundary particles ==========================================================
+				p_type = SPHConstants.BOUNDARY_TYPE;
+	
+				// 1 - top and bottom 
+				for(ix=0;ix<nx;ix++)
+				{
+					for(iy=0;iy<ny;iy++)
+					{
+						if( ((ix==0)||(ix==nx-1)) || ((iy==0)||(iy==ny-1)) )
+						{
+							if( ((ix==0)||(ix==nx-1)) && ((iy==0)||(iy==ny-1)) )//corners
+							{
+								SPHParticle p = model.getParticles().get(i);
+								p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
+								p.getPositionVector().setY( iy*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
+								p.getPositionVector().setZ(  0*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
+								p.getPositionVector().setP( p_type);
+								p.getVelocityVector().setX( (float) (( 1.f*((ix==0)?1:0) -1 * ((ix==nx-1)?1:0) )/Math.sqrt(3.f)));//norm x
+								p.getVelocityVector().setY( (float) (( 1.f*((iy==0)?1:0) -1 * ((iy==ny-1)?1:0) )/Math.sqrt(3.f)));//norm y
+								p.getVelocityVector().setZ(  (float) (1.f/Math.sqrt(3.f)));//norm z
+								p.getVelocityVector().setP( p_type);
+								i++;
+								
+								p = model.getParticles().get(i);
+								p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
+								p.getPositionVector().setY( iy*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
+								p.getPositionVector().setZ( (nz-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
+								p.getPositionVector().setP( p_type);
+								p.getVelocityVector().setX( (float) ((1*((ix==0)?1:0) -1*((ix==nx-1)?1:0) )/Math.sqrt(3.f)));//norm x
+								p.getVelocityVector().setY( (float) ((1*((iy==0)?1:0) -1*((iy==ny-1)?1:0) )/Math.sqrt(3.f)));//norm y
+								p.getVelocityVector().setZ( (float) (-1.f/Math.sqrt(3.f)));//norm z
+								p.getVelocityVector().setP( p_type);
+								i++;
+							}
+							else //edges
+							{
+								SPHParticle p = model.getParticles().get(i);
+								
+								p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
+								p.getPositionVector().setY( iy*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
+								p.getPositionVector().setZ(  0*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
+								p.getPositionVector().setP( p_type);
+								p.getVelocityVector().setX(  (float) (1.f*(((ix==0)?1:0) - ((ix==nx-1)?1:0))/Math.sqrt(2.f)));//norm x
+								p.getVelocityVector().setY(  (float) (1.f*(((iy==0)?1:0) - ((iy==ny-1)?1:0))/Math.sqrt(2.f)));//norm y
+								p.getVelocityVector().setZ(  (float) (1.f/Math.sqrt(2.f)));//norm z
+								p.getVelocityVector().setP( p_type);
+								i++;
+								
+								p = model.getParticles().get(i);
+								p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
+								p.getPositionVector().setY( iy*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
+								p.getPositionVector().setZ( (nz-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
+								p.getPositionVector().setP( p_type);
+								p.getVelocityVector().setX( (float) (1.f*(((ix==0)?1:0) - ((ix==nx-1)?1:0))/Math.sqrt(2.f)));//norm x
+								p.getVelocityVector().setY( (float) (1.f*(((iy==0)?1:0) - ((iy==ny-1)?1:0))/Math.sqrt(2.f)));//norm y
+								p.getVelocityVector().setZ( (float) (-1.f/Math.sqrt(2.f)));//norm z
+								p.getVelocityVector().setP( p_type);
+								i++;
+							}
+						}
+						else //planes
+						{
+							SPHParticle p = model.getParticles().get(i);
+							
+							p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
+							p.getPositionVector().setY( iy*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
+							p.getPositionVector().setZ( 0*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
+							p.getPositionVector().setP( p_type);
+							p.getVelocityVector().setX( 0f);//norm x
+							p.getVelocityVector().setY( 0f);//norm y
+							p.getVelocityVector().setZ( 1f);//norm z
+							p.getVelocityVector().setP( p_type);
+							i++;
+							
+							p = model.getParticles().get(i);
+							p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
+							p.getPositionVector().setY( iy*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
+							p.getPositionVector().setZ( (nz-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
+							p.getPositionVector().setP( p_type);
+							p.getVelocityVector().setX( 0f);//norm x
+							p.getVelocityVector().setY( 0f);//norm y
+							p.getVelocityVector().setZ( -1f);//norm z
+							p.getVelocityVector().setP( p_type);
+							i++;
+						}
+					}
+				}
+	
+				// 2 - side walls OX-OZ and opposite
+				for(ix=0;ix<nx;ix++)
+				{
+					for(iz=1;iz<nz-1;iz++)
+					{
+						//edges
+						if((ix==0)||(ix==nx-1))
+						{
+							SPHParticle p = model.getParticles().get(i);
+							p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
+							p.getPositionVector().setY( 0*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
+							p.getPositionVector().setZ( iz*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
+							p.getPositionVector().setP( p_type);
+							p.getVelocityVector().setX( 0f);//norm x
+							p.getVelocityVector().setY( (float) (1.f/Math.sqrt(2.f)));//norm y
+							p.getVelocityVector().setZ( (float) (1.f*(((iz==0)?1:0) - ((iz==nz-1)?1:0))/Math.sqrt(2.f)));//norm z
+							p.getVelocityVector().setP( p_type);
+							i++;
+							
+							p = model.getParticles().get(i);
+							p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
+							p.getPositionVector().setY( (ny-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
+							p.getPositionVector().setZ( iz*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
+							p.getPositionVector().setP( p_type);
+							p.getVelocityVector().setX( (float) 0);//norm x
+							p.getVelocityVector().setY( (float) (-1.f/Math.sqrt(2.f)));//norm y
+							p.getVelocityVector().setZ( (float) (1.f*(((iz==0)?1:0) - ((iz==nz-1)?1:0))/Math.sqrt(2.f)));//norm z
+							p.getVelocityVector().setP( p_type);
+							i++;
+						}
+						else //planes
+						{
+							SPHParticle p = model.getParticles().get(i);
+							p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
+							p.getPositionVector().setY( 0*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
+							p.getPositionVector().setZ( iz*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
+							p.getPositionVector().setP( p_type);
+							p.getVelocityVector().setX( 0f);//norm x
+							p.getVelocityVector().setY( 1f);//norm y
+							p.getVelocityVector().setZ( 0f);//norm z
+							p.getVelocityVector().setP( p_type);
+							i++;
+							
+							p = model.getParticles().get(i);
+							p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
+							p.getPositionVector().setY( (ny-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
+							p.getPositionVector().setZ( iz*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
+							p.getPositionVector().setP( p_type);
+							p.getVelocityVector().setX( 0f);//norm x
+							p.getVelocityVector().setY( -1f);//norm y
+							p.getVelocityVector().setZ( 0f);//norm z
+							p.getVelocityVector().setP( p_type);
+							i++;
+						}
+					}
+				}
+	
+				// 3 - side walls OY-OZ and opposite
+				for(iy=1;iy<ny-1;iy++)
+				{
+					for(iz=1;iz<nz-1;iz++)
+					{
+						SPHParticle p = model.getParticles().get(i);
+						p.getPositionVector().setX(  0*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
+						p.getPositionVector().setY( iy*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
+						p.getPositionVector().setZ( iz*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
+						p.getPositionVector().setP( p_type);
+						p.getVelocityVector().setX( 1f);//norm x
+						p.getVelocityVector().setY( 0f);//norm y
+						p.getVelocityVector().setZ( 0f);//norm z
+						p.getVelocityVector().setP( p_type);
+						i++;
+						
+						p = model.getParticles().get(i);
+						p.getPositionVector().setX( (nx-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
+						p.getPositionVector().setY( iy*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
+						p.getPositionVector().setZ( iz*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
+						p.getPositionVector().setP( p_type);
+						p.getVelocityVector().setX( -1f);//norm x
+						p.getVelocityVector().setY( 0f);//norm y
+						p.getVelocityVector().setZ( 0f);//norm z
+						p.getVelocityVector().setP( p_type);
+						i++;
+					}
+				}
+			}
+	
+			if(stage==0)
+			{
+				PARTICLE_COUNT_ELASTIC_SCENE = numOfLiquidP + numOfBoundaryP + numOfElasticP;
+	
+				if(PARTICLE_COUNT_ELASTIC_SCENE<=0) 
+				{
+					System.out.println("Warning! Generated scene contains " + PARTICLE_COUNT_ELASTIC_SCENE + " particles!");
+					return;
+				}
+			}
+			else
+			if(stage==1)
+			{
+				if(PARTICLE_COUNT_ELASTIC_SCENE!=i) 
+				{
+					System.out.println("Warning! Preliminary " + PARTICLE_COUNT_ELASTIC_SCENE + " and final " + i + " particle count are different!");
+					return;
+				}
+			}
+		}
+
+		System.out.println("Generate elastic scene - all was good!");
+		return;
 	}
 
 

@@ -17,7 +17,8 @@
 			<element name="velocityEvaluationVector" type="tns:Vector3D">
 				<annotation>
 					<documentation>Estimation of velocity value during each step of the
-						integration process</documentation>
+						integration process
+					</documentation>
 				</annotation>
 			</element>
 			<element name="viscosityForceVector" type="tns:Vector3D">
@@ -56,7 +57,8 @@
 		<attribute name="density" type="float">
 			<annotation>
 				<documentation>Density of the particle estimated with smoothing
-					kernel </documentation>
+					kernel
+				</documentation>
 			</annotation>
 		</attribute>
 		<attribute name="pressure" type="float">
@@ -72,13 +74,33 @@
 		<attribute name="z" type="float"></attribute>
 		<attribute name="p" type="float"></attribute>
 	</complexType>
-	
-	<element name="SPHModel" type="tns:SPHModel">
+
+	<element name="SPHModel">
+		<complexType>
+			<sequence>
+				<element name="particles" type="tns:SPHParticle" maxOccurs="unbounded"
+					minOccurs="1">
+				</element>
+				<element name="cells" type="tns:SPHCell" maxOccurs="unbounded"
+					minOccurs="1">
+				</element>
+				<element name="connections" type="tns:Connection" maxOccurs="unbounded"
+					minOccurs="0"></element>
+			</sequence>
+			<attribute name="xMax" type="float"></attribute>
+			<attribute name="xMin" type="float"></attribute>
+			<attribute name="yMax" type="float"></attribute>
+			<attribute name="yMin" type="float"></attribute>
+			<attribute name="zMax" type="float"></attribute>
+			<attribute name="zMin" type="float"></attribute>
+
+		</complexType>
 	</element>
 
 	<complexType name="SPHCell">
 		<annotation>
-			<documentation>Contains indexes of particles that are in this cell.</documentation>
+			<documentation>Contains indexes of particles that are in this cell.
+			</documentation>
 		</annotation>
 		<sequence>
 			<element name="particalIndexes" type="int" maxOccurs="unbounded"
@@ -92,14 +114,14 @@
 
 	<complexType name="Connection">
 		<sequence>
-			<element name="p1" type="tns:SPHParticle">
+			<element name="p1" type="float">
 				<annotation>
 					<documentation>
 						One extreme of the connection
 					</documentation>
 				</annotation>
 			</element>
-			<element name="p2" type="tns:SPHParticle">
+			<element name="p2" type="float">
 				<annotation>
 					<documentation>
 						One extreme of the connection
@@ -110,25 +132,8 @@
 		</sequence>
 
 	</complexType>
-	
 
 
-	<complexType name="SPHModel">
-		<sequence>
-				<element name="particles" type="tns:SPHParticle"
-					maxOccurs="unbounded" minOccurs="1">
-				</element>
-				<element name="cells" type="tns:SPHCell"
-					maxOccurs="unbounded" minOccurs="1">
-				</element>
-							<element name="connections" type="tns:Connection" maxOccurs="unbounded" minOccurs="0"></element>
-		</sequence>
-			<attribute name="xMax" type="float"></attribute>
-			<attribute name="xMin" type="float"></attribute>
-			<attribute name="yMax" type="float"></attribute>
-			<attribute name="yMin" type="float"></attribute>
-			<attribute name="zMax" type="float"></attribute>
-			<attribute name="zMin" type="float"></attribute>
 
-	</complexType>
+
 </schema>

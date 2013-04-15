@@ -8,6 +8,7 @@ public class SPHConstants {
 	public static final float BOUNDARY_TYPE = 3.1f;
 	
 	public static final int NO_CELL_ID = -1;
+	public static final int NO_PARTICLE_ID = -1;
 	
 	public static final int DECIMAL_ROUNDING_FACTOR = 1000000;
 }
