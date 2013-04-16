@@ -2,9 +2,8 @@ package org.openworm.simulationengine.model.sph.x;
 
 import java.util.ArrayList;
 
-import javax.swing.text.Position;
-
 import org.openworm.simulationengine.core.model.IModel;
+import org.openworm.simulationengine.model.sph.Connection;
 import org.openworm.simulationengine.model.sph.SPHCell;
 import org.openworm.simulationengine.model.sph.SPHModel;
 import org.openworm.simulationengine.model.sph.SPHParticle;
@@ -20,12 +19,12 @@ public class SPHModelX extends SPHModel implements IModel, Comparable<SPHModelX>
 		this.yMin = yMin;
 		this.zMax = zMax;
 		this.zMin = zMin;
-		
+		this.connections = new ArrayList<Connection>();
 		this.particles = new ArrayList<SPHParticle>();
 		this.cells = new ArrayList<SPHCell>();
 	}
 	
-	public int getNumberOfParticals(){
+	public int getNumberOfParticles(){
 		return particles.size();
 	}
 	
@@ -42,6 +41,7 @@ public class SPHModelX extends SPHModel implements IModel, Comparable<SPHModelX>
 		this.yMin = sphModel.getYMin();
 		this.zMax = sphModel.getZMax();
 		this.zMin = sphModel.getZMin();
+		this.connections = new ArrayList<Connection>();
 		this.particles = new ArrayList<SPHParticle>();
 		this.cells = new ArrayList<SPHCell>();
 		for(SPHParticle p:sphModel.getParticles())
@@ -51,6 +51,10 @@ public class SPHModelX extends SPHModel implements IModel, Comparable<SPHModelX>
 		for(SPHCell c:sphModel.getCells())
 		{
 			getCells().add(c);
+		}
+		for(Connection c:sphModel.getConnections())
+		{
+			getConnections().add(c);
 		}
 	}
 
