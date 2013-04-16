@@ -485,25 +485,10 @@ public class SPHXMLCreator {
 				for(y=0;y<nEy;y+=1.f)
 				for(z=0;z<nEz;z+=1.f)
 				{
-					
-					Vector3D positionVector = factory.createVector3D();
-					positionVector.setX(XMAX/2+x*PhysicsConstants.R0-nEx*PhysicsConstants.R0/2);
-					positionVector.setY(YMAX/2+y*PhysicsConstants.R0-nEy*PhysicsConstants.R0/2 + YMAX*3/8);
-					positionVector.setZ(ZMAX/2+z*PhysicsConstants.R0-nEz*PhysicsConstants.R0/2);
-					positionVector.setP(p_type);
-	
-					Vector3D velocityVector = factory.createVector3D();
-					velocityVector.setX(0f);
-					velocityVector.setY(0f);
-					velocityVector.setZ(0f);
-					velocityVector.setP(p_type);
-					
-					// add particles
-					SPHParticle particle = factory.createSPHParticle();
-					particle.setPositionVector(positionVector);
-					particle.setVelocityVector(velocityVector);
-					particle.setMass(1f);
-					model.getParticles().add(particle);
+					createParticle(model, factory, XMAX/2+x*PhysicsConstants.R0-nEx*PhysicsConstants.R0/2, 
+												   YMAX/2+y*PhysicsConstants.R0-nEy*PhysicsConstants.R0/2 + YMAX*3/8, 
+												   ZMAX/2+z*PhysicsConstants.R0-nEz*PhysicsConstants.R0/2, 
+												   0f, 0f, 0f, p_type);
 	
 					i++;
 				}
@@ -572,18 +557,7 @@ public class SPHXMLCreator {
 						return;
 					}
 					
-					SPHParticle p = model.getParticles().get(i);
-					
-					//write particle coordinates to corresponding arrays
-					p.getPositionVector().setX(x);
-					p.getPositionVector().setY(y);
-					p.getPositionVector().setZ(z);
-					p.getPositionVector().setP(p_type);
-					
-					p.getVelocityVector().setX(0f);
-					p.getVelocityVector().setY(0f);
-					p.getVelocityVector().setZ(0f);
-					p.getVelocityVector().setP(p_type);
+					createParticle(model, factory, x, y, z, 0f, 0f, 0f, p_type);
 				}
 	
 				i++; // necessary for both stages
@@ -595,8 +569,7 @@ public class SPHXMLCreator {
 				numOfLiquidP = i;// - numOfElasticP;
 				numOfBoundaryP = 2 * ( nx*ny + (nx+ny-2)*(nz-2) ); 
 			}
-			else
-			if(stage==1)
+			else if(stage==1)
 			{
 				//===================== create boundary particles ==========================================================
 				p_type = SPHConstants.BOUNDARY_TYPE;
@@ -610,77 +583,59 @@ public class SPHXMLCreator {
 						{
 							if( ((ix==0)||(ix==nx-1)) && ((iy==0)||(iy==ny-1)) )//corners
 							{
-								SPHParticle p = model.getParticles().get(i);
-								p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
-								p.getPositionVector().setY( iy*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
-								p.getPositionVector().setZ(  0*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
-								p.getPositionVector().setP( p_type);
-								p.getVelocityVector().setX( (float) (( 1.f*((ix==0)?1:0) -1 * ((ix==nx-1)?1:0) )/Math.sqrt(3.f)));//norm x
-								p.getVelocityVector().setY( (float) (( 1.f*((iy==0)?1:0) -1 * ((iy==ny-1)?1:0) )/Math.sqrt(3.f)));//norm y
-								p.getVelocityVector().setZ(  (float) (1.f/Math.sqrt(3.f)));//norm z
-								p.getVelocityVector().setP( p_type);
+								createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+															   iy*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+															   0*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+															   (float) (( 1.f*((ix==0)?1:0) -1 * ((ix==nx-1)?1:0) )/Math.sqrt(3.f)), 
+															   (float) (( 1.f*((iy==0)?1:0) -1 * ((iy==ny-1)?1:0) )/Math.sqrt(3.f)), 
+															   (float) (1.f/Math.sqrt(3.f)), p_type);
+								
 								i++;
 								
-								p = model.getParticles().get(i);
-								p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
-								p.getPositionVector().setY( iy*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
-								p.getPositionVector().setZ( (nz-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
-								p.getPositionVector().setP( p_type);
-								p.getVelocityVector().setX( (float) ((1*((ix==0)?1:0) -1*((ix==nx-1)?1:0) )/Math.sqrt(3.f)));//norm x
-								p.getVelocityVector().setY( (float) ((1*((iy==0)?1:0) -1*((iy==ny-1)?1:0) )/Math.sqrt(3.f)));//norm y
-								p.getVelocityVector().setZ( (float) (-1.f/Math.sqrt(3.f)));//norm z
-								p.getVelocityVector().setP( p_type);
+								createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+															   iy*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+															   (nz-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+															   (float) ((1*((ix==0)?1:0) -1*((ix==nx-1)?1:0) )/Math.sqrt(3.f)), 
+															   (float) ((1*((iy==0)?1:0) -1*((iy==ny-1)?1:0) )/Math.sqrt(3.f)), 
+															   (float) (-1.f/Math.sqrt(3.f)), p_type);
+								
 								i++;
 							}
 							else //edges
 							{
-								SPHParticle p = model.getParticles().get(i);
+								createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+															   iy*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+															   0*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+															   (float) (1.f*(((ix==0)?1:0) - ((ix==nx-1)?1:0))/Math.sqrt(2.f)), 
+															   (float) (1.f*(((iy==0)?1:0) - ((iy==ny-1)?1:0))/Math.sqrt(2.f)), 
+															   (float) (1.f/Math.sqrt(2.f)), p_type);
 								
-								p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
-								p.getPositionVector().setY( iy*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
-								p.getPositionVector().setZ(  0*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
-								p.getPositionVector().setP( p_type);
-								p.getVelocityVector().setX(  (float) (1.f*(((ix==0)?1:0) - ((ix==nx-1)?1:0))/Math.sqrt(2.f)));//norm x
-								p.getVelocityVector().setY(  (float) (1.f*(((iy==0)?1:0) - ((iy==ny-1)?1:0))/Math.sqrt(2.f)));//norm y
-								p.getVelocityVector().setZ(  (float) (1.f/Math.sqrt(2.f)));//norm z
-								p.getVelocityVector().setP( p_type);
 								i++;
 								
-								p = model.getParticles().get(i);
-								p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
-								p.getPositionVector().setY( iy*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
-								p.getPositionVector().setZ( (nz-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
-								p.getPositionVector().setP( p_type);
-								p.getVelocityVector().setX( (float) (1.f*(((ix==0)?1:0) - ((ix==nx-1)?1:0))/Math.sqrt(2.f)));//norm x
-								p.getVelocityVector().setY( (float) (1.f*(((iy==0)?1:0) - ((iy==ny-1)?1:0))/Math.sqrt(2.f)));//norm y
-								p.getVelocityVector().setZ( (float) (-1.f/Math.sqrt(2.f)));//norm z
-								p.getVelocityVector().setP( p_type);
+								createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+															   iy*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+															   (nz-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+															   (float) (1.f*(((ix==0)?1:0) - ((ix==nx-1)?1:0))/Math.sqrt(2.f)), 
+															   (float) (1.f*(((iy==0)?1:0) - ((iy==ny-1)?1:0))/Math.sqrt(2.f)), 
+															   (float) (-1.f/Math.sqrt(2.f)), p_type);
+								
 								i++;
 							}
 						}
 						else //planes
 						{
-							SPHParticle p = model.getParticles().get(i);
-							
-							p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
-							p.getPositionVector().setY( iy*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
-							p.getPositionVector().setZ( 0*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
-							p.getPositionVector().setP( p_type);
-							p.getVelocityVector().setX( 0f);//norm x
-							p.getVelocityVector().setY( 0f);//norm y
-							p.getVelocityVector().setZ( 1f);//norm z
-							p.getVelocityVector().setP( p_type);
+							createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+														   iy*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+														   0*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+														   0f, 0f, 1f, p_type);
+					
 							i++;
 							
-							p = model.getParticles().get(i);
-							p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
-							p.getPositionVector().setY( iy*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
-							p.getPositionVector().setZ( (nz-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
-							p.getPositionVector().setP( p_type);
-							p.getVelocityVector().setX( 0f);//norm x
-							p.getVelocityVector().setY( 0f);//norm y
-							p.getVelocityVector().setZ( -1f);//norm z
-							p.getVelocityVector().setP( p_type);
+							createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+									 					   iy*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+									 					  (nz-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+									 					   0f, 0f, -1f, p_type);
+							
 							i++;
 						}
 					}
@@ -694,50 +649,42 @@ public class SPHXMLCreator {
 						//edges
 						if((ix==0)||(ix==nx-1))
 						{
-							SPHParticle p = model.getParticles().get(i);
-							p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
-							p.getPositionVector().setY( 0*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
-							p.getPositionVector().setZ( iz*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
-							p.getPositionVector().setP( p_type);
-							p.getVelocityVector().setX( 0f);//norm x
-							p.getVelocityVector().setY( (float) (1.f/Math.sqrt(2.f)));//norm y
-							p.getVelocityVector().setZ( (float) (1.f*(((iz==0)?1:0) - ((iz==nz-1)?1:0))/Math.sqrt(2.f)));//norm z
-							p.getVelocityVector().setP( p_type);
+							createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+														   0*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+														   iz*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+														   0f, 
+														   (float) (1.f/Math.sqrt(2.f)), 
+														   (float) (1.f*(((iz==0)?1:0) - ((iz==nz-1)?1:0))/Math.sqrt(2.f)), p_type);
+
 							i++;
 							
-							p = model.getParticles().get(i);
-							p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
-							p.getPositionVector().setY( (ny-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
-							p.getPositionVector().setZ( iz*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
-							p.getPositionVector().setP( p_type);
-							p.getVelocityVector().setX( (float) 0);//norm x
-							p.getVelocityVector().setY( (float) (-1.f/Math.sqrt(2.f)));//norm y
-							p.getVelocityVector().setZ( (float) (1.f*(((iz==0)?1:0) - ((iz==nz-1)?1:0))/Math.sqrt(2.f)));//norm z
-							p.getVelocityVector().setP( p_type);
+							createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+														   (ny-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+														   iz*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+														   0f, 
+														   (float) (-1.f/Math.sqrt(2.f)), 
+														   (float) (1.f*(((iz==0)?1:0) - ((iz==nz-1)?1:0))/Math.sqrt(2.f)), p_type);
+							
 							i++;
 						}
 						else //planes
 						{
-							SPHParticle p = model.getParticles().get(i);
-							p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
-							p.getPositionVector().setY( 0*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
-							p.getPositionVector().setZ( iz*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
-							p.getPositionVector().setP( p_type);
-							p.getVelocityVector().setX( 0f);//norm x
-							p.getVelocityVector().setY( 1f);//norm y
-							p.getVelocityVector().setZ( 0f);//norm z
-							p.getVelocityVector().setP( p_type);
+							createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+														   0*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+														   iz*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+														   0f, 
+														   1f, 
+														   0f, p_type);
+							
 							i++;
 							
-							p = model.getParticles().get(i);
-							p.getPositionVector().setX( ix*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
-							p.getPositionVector().setY( (ny-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
-							p.getPositionVector().setZ( iz*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
-							p.getPositionVector().setP( p_type);
-							p.getVelocityVector().setX( 0f);//norm x
-							p.getVelocityVector().setY( -1f);//norm y
-							p.getVelocityVector().setZ( 0f);//norm z
-							p.getVelocityVector().setP( p_type);
+							createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+														   (ny-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+														   iz*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+														   0f, 
+														   -1f, 
+														   0f, p_type);
+							
 							i++;
 						}
 					}
@@ -748,26 +695,22 @@ public class SPHXMLCreator {
 				{
 					for(iz=1;iz<nz-1;iz++)
 					{
-						SPHParticle p = model.getParticles().get(i);
-						p.getPositionVector().setX(  0*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
-						p.getPositionVector().setY( iy*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
-						p.getPositionVector().setZ( iz*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
-						p.getPositionVector().setP( p_type);
-						p.getVelocityVector().setX( 1f);//norm x
-						p.getVelocityVector().setY( 0f);//norm y
-						p.getVelocityVector().setZ( 0f);//norm z
-						p.getVelocityVector().setP( p_type);
+						createParticle(model, factory, 0*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+													   iy*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+													   iz*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+													   1f, 
+													   0f, 
+													   0f, p_type);
+						
 						i++;
 						
-						p = model.getParticles().get(i);
-						p.getPositionVector().setX( (nx-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2);//x
-						p.getPositionVector().setY( iy*PhysicsConstants.R0 + PhysicsConstants.R0/2);//y
-						p.getPositionVector().setZ( iz*PhysicsConstants.R0 + PhysicsConstants.R0/2);//z
-						p.getPositionVector().setP( p_type);
-						p.getVelocityVector().setX( -1f);//norm x
-						p.getVelocityVector().setY( 0f);//norm y
-						p.getVelocityVector().setZ( 0f);//norm z
-						p.getVelocityVector().setP( p_type);
+						createParticle(model, factory, (nx-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+													   iy*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+													   iz*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+													   -1f, 
+													   0f, 
+													   0f, p_type);
+
 						i++;
 					}
 				}
@@ -783,8 +726,7 @@ public class SPHXMLCreator {
 					return;
 				}
 			}
-			else
-			if(stage==1)
+			else if(stage==1)
 			{
 				if(PARTICLE_COUNT_ELASTIC_SCENE!=i) 
 				{
@@ -796,6 +738,27 @@ public class SPHXMLCreator {
 
 		System.out.println("Generate elastic scene - all was good!");
 		return;
+	}
+
+	private static void createParticle(SPHModel model, SPHFactory factory, float p_x, float p_y, float p_z, float v_x, float v_y, float v_z, float p_type) {
+		Vector3D positionVector = factory.createVector3D();
+		positionVector.setX(p_x);
+		positionVector.setY(p_y);
+		positionVector.setZ(p_z);
+		positionVector.setP(p_type);
+
+		Vector3D velocityVector = factory.createVector3D();
+		velocityVector.setX(v_x);
+		velocityVector.setY(v_y);
+		velocityVector.setZ(v_z);
+		velocityVector.setP(p_type);
+		
+		// add particles
+		SPHParticle particle = factory.createSPHParticle();
+		particle.setPositionVector(positionVector);
+		particle.setVelocityVector(velocityVector);
+		particle.setMass(1f);
+		model.getParticles().add(particle);
 	}
 
 
