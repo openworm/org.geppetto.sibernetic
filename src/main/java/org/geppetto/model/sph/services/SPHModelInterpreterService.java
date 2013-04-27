@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.openworm.simulationengine.model.sph.services;
+package org.geppetto.model.sph.services;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -13,18 +13,18 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openworm.simulationengine.core.model.IModel;
-import org.openworm.simulationengine.core.model.IModelInterpreter;
-import org.openworm.simulationengine.core.visualisation.model.AGeometry;
-import org.openworm.simulationengine.core.visualisation.model.Entity;
-import org.openworm.simulationengine.core.visualisation.model.Particle;
-import org.openworm.simulationengine.core.visualisation.model.Point;
-import org.openworm.simulationengine.core.visualisation.model.Scene;
-import org.openworm.simulationengine.model.sph.SPHModel;
-import org.openworm.simulationengine.model.sph.SPHParticle;
-import org.openworm.simulationengine.model.sph.common.SPHConstants;
-import org.openworm.simulationengine.model.sph.x.SPHModelX;
-import org.openworm.simulationengine.model.sph.x.SPHParticleX;
+import org.geppetto.core.model.IModel;
+import org.geppetto.core.model.IModelInterpreter;
+import org.geppetto.core.visualisation.model.AGeometry;
+import org.geppetto.core.visualisation.model.Entity;
+import org.geppetto.core.visualisation.model.Particle;
+import org.geppetto.core.visualisation.model.Point;
+import org.geppetto.core.visualisation.model.Scene;
+import org.geppetto.model.sph.SPHModel;
+import org.geppetto.model.sph.SPHParticle;
+import org.geppetto.model.sph.common.SPHConstants;
+import org.geppetto.model.sph.x.SPHModelX;
+import org.geppetto.model.sph.x.SPHParticleX;
 import org.springframework.stereotype.Service;
 
 /**
@@ -41,7 +41,7 @@ public class SPHModelInterpreterService implements IModelInterpreter
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.openworm.simulationengine.core.model.IModelProvider#readModel(java
+	 * org.geppetto.core.model.IModelProvider#readModel(java
 	 * .lang.String)
 	 */
 	public List<IModel> readModel(URL url)
@@ -70,7 +70,7 @@ public class SPHModelInterpreterService implements IModelInterpreter
 	}
 
 	/* (non-Javadoc)
-	 * @see org.openworm.simulationengine.core.model.IModelInterpreter#getSceneFromModel(java.util.List)
+	 * @see org.geppetto.core.model.IModelInterpreter#getSceneFromModel(java.util.List)
 	 */
 	public Scene getSceneFromModel(List<IModel> model)
 	{

@@ -1,14 +1,14 @@
 /**
  * 
  */
-package org.openworm.simulationengine.model.sph.x;
+package org.geppetto.model.sph.x;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
-import org.openworm.simulationengine.model.sph.ObjectFactory;
-import org.openworm.simulationengine.model.sph.SPHModel;
-import org.openworm.simulationengine.model.sph.SPHParticle;
-import org.openworm.simulationengine.model.sph.Vector3D;
+import org.geppetto.model.sph.ObjectFactory;
+import org.geppetto.model.sph.SPHModel;
+import org.geppetto.model.sph.SPHParticle;
+import org.geppetto.model.sph.Vector3D;
 
 /**
  * @author matteocantarelli

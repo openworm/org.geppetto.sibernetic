@@ -1,4 +1,4 @@
-package org.openworm.simulationengine.model.sph.common;
+package org.geppetto.model.sph.common;
 
 public class SPHConstants {
 	public static final int NEIGHBOR_COUNT = 32;

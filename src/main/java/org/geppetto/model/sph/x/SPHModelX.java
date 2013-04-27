@@ -1,13 +1,13 @@
-package org.openworm.simulationengine.model.sph.x;
+package org.geppetto.model.sph.x;
 
 import java.util.ArrayList;
 
-import org.openworm.simulationengine.core.model.IModel;
-import org.openworm.simulationengine.model.sph.Connection;
-import org.openworm.simulationengine.model.sph.SPHCell;
-import org.openworm.simulationengine.model.sph.SPHModel;
-import org.openworm.simulationengine.model.sph.SPHParticle;
-import org.openworm.simulationengine.model.sph.Vector3D;
+import org.geppetto.core.model.IModel;
+import org.geppetto.model.sph.Connection;
+import org.geppetto.model.sph.SPHCell;
+import org.geppetto.model.sph.SPHModel;
+import org.geppetto.model.sph.SPHParticle;
+import org.geppetto.model.sph.Vector3D;
 
 public class SPHModelX extends SPHModel implements IModel, Comparable<SPHModelX> {
 	

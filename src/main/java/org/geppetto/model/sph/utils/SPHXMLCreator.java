@@ -1,4 +1,4 @@
-package org.openworm.simulationengine.model.sph.utils;
+package org.geppetto.model.sph.utils;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -11,14 +11,14 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.openworm.simulationengine.core.constants.PhysicsConstants;
-import org.openworm.simulationengine.core.model.MathUtils;
-import org.openworm.simulationengine.model.sph.Connection;
-import org.openworm.simulationengine.model.sph.SPHModel;
-import org.openworm.simulationengine.model.sph.SPHParticle;
-import org.openworm.simulationengine.model.sph.Vector3D;
-import org.openworm.simulationengine.model.sph.common.SPHConstants;
-import org.openworm.simulationengine.model.sph.x.SPHFactory;
+import org.geppetto.core.constants.PhysicsConstants;
+import org.geppetto.core.model.MathUtils;
+import org.geppetto.model.sph.Connection;
+import org.geppetto.model.sph.SPHModel;
+import org.geppetto.model.sph.SPHParticle;
+import org.geppetto.model.sph.Vector3D;
+import org.geppetto.model.sph.common.SPHConstants;
+import org.geppetto.model.sph.x.SPHFactory;
 
 public class SPHXMLCreator {
 

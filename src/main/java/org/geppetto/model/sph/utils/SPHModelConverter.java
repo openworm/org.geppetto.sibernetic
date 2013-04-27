@@ -1,4 +1,4 @@
-package org.openworm.simulationengine.model.sph.utils;
+package org.geppetto.model.sph.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,13 +17,13 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.openworm.simulationengine.core.constants.PhysicsConstants;
-import org.openworm.simulationengine.model.sph.SPHModel;
-import org.openworm.simulationengine.model.sph.SPHParticle;
-import org.openworm.simulationengine.model.sph.Vector3D;
-import org.openworm.simulationengine.model.sph.common.SPHConstants;
-import org.openworm.simulationengine.model.sph.x.SPHModelX;
-import org.openworm.simulationengine.model.sph.x.SPHParticleX;
+import org.geppetto.core.constants.PhysicsConstants;
+import org.geppetto.model.sph.SPHModel;
+import org.geppetto.model.sph.SPHParticle;
+import org.geppetto.model.sph.Vector3D;
+import org.geppetto.model.sph.common.SPHConstants;
+import org.geppetto.model.sph.x.SPHModelX;
+import org.geppetto.model.sph.x.SPHParticleX;
 
 public class SPHModelConverter
 {

@@ -5,7 +5,7 @@
 	<jxb:bindings schemaLocation="../SPHSchema.xsd" node="/xs:schema">
 	    	         
     	<jxb:schemaBindings>			
-    		<jxb:package name="org.openworm.simulationengine.model.sph"/>
+    		<jxb:package name="org.geppetto.model.sph"/>
     	</jxb:schemaBindings>
 	
 	    
