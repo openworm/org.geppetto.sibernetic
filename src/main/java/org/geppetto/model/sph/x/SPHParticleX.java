@@ -1,9 +1,9 @@
-package org.openworm.simulationengine.model.sph.x;
+package org.geppetto.model.sph.x;
 
 import java.util.List;
 
-import org.openworm.simulationengine.model.sph.SPHParticle;
-import org.openworm.simulationengine.model.sph.Vector3D;
+import org.geppetto.model.sph.SPHParticle;
+import org.geppetto.model.sph.Vector3D;
 
 public class SPHParticleX extends SPHParticle {
 

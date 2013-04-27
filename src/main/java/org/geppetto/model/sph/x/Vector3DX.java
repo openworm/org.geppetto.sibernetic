@@ -6,9 +6,9 @@
 //
 
 
-package org.openworm.simulationengine.model.sph.x;
+package org.geppetto.model.sph.x;
 
-import org.openworm.simulationengine.model.sph.Vector3D;
+import org.geppetto.model.sph.Vector3D;
 
 
 public class Vector3DX extends Vector3D{
