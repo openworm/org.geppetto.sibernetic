@@ -11,4 +11,7 @@ public class SPHConstants {
 	public static final int NO_PARTICLE_ID = -1;
 	
 	public static final int DECIMAL_ROUNDING_FACTOR = 1000000;
+	
+	public static final String CPU_PROFILE = "CPU";
+	public static final String GPU_PROFILE = "GPU";
 }
