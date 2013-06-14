@@ -47,9 +47,6 @@ public class SPHXMLCreator {
 		model.setZMax(ZMAX);
 		model.setZMin(ZMIN);
 
-		// generateBoundaries(model);
-		// generateBottomLayerOfLiquid(model);
-		// generateRandomLiquidConfiguration(model);
 		generateElasticScene(model);
 		
 		return model;
@@ -497,8 +494,8 @@ public class SPHXMLCreator {
 				{
 					Connection conn = new Connection();
 					conn.setP1(SPHConstants.NO_PARTICLE_ID);
-					conn.setP2(0f);
 					conn.setDistance(0f);
+					conn.setMysteryValue(0f);
 					
 					model.getConnections().add(conn);
 				}
@@ -529,8 +526,8 @@ public class SPHXMLCreator {
 							{
 								//connect elastic particles 0 and 1
 								model.getConnections().get(SPHConstants.NEIGHBOR_COUNT * i_ec + ecc).setP1(((float)j_ec) + 0.1f);
-								model.getConnections().get(SPHConstants.NEIGHBOR_COUNT * i_ec + ecc).setP2((float)Math.sqrt(r2ij)* PhysicsConstants.SIMULATION_SCALE);
-								model.getConnections().get(SPHConstants.NEIGHBOR_COUNT * i_ec + ecc).setDistance((float) (0 + 1.1 * ((((dz2>100*dx2)&&(dz2>100*dy2))) ? 1 : 0)));
+								model.getConnections().get(SPHConstants.NEIGHBOR_COUNT * i_ec + ecc).setDistance((float)Math.sqrt(r2ij)* PhysicsConstants.SIMULATION_SCALE);
+								model.getConnections().get(SPHConstants.NEIGHBOR_COUNT * i_ec + ecc).setMysteryValue((float) (0 + 1.1 * ((((dz2>100*dx2)&&(dz2>100*dy2))) ? 1 : 0)));
 								ecc++;
 							}
 	

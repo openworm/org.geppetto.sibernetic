@@ -121,14 +121,14 @@
 					</documentation>
 				</annotation>
 			</element>
-			<element name="p2" type="float">
+			<element name="distance" type="float">
 				<annotation>
 					<documentation>
 						One extreme of the connection
 					</documentation>
 				</annotation>
 			</element>
-			<element name="distance" type="float"></element>
+			<element name="mysteryValue" type="float"></element>
 		</sequence>
 
 	</complexType>
