@@ -51,6 +51,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.geppetto.core.constants.PhysicsConstants;
+import org.geppetto.model.sph.Connection;
 import org.geppetto.model.sph.SPHModel;
 import org.geppetto.model.sph.SPHParticle;
 import org.geppetto.model.sph.Vector3D;
@@ -60,14 +61,15 @@ import org.geppetto.model.sph.x.SPHParticleX;
 
 public class SPHModelConverter
 {
-	private static final boolean TXT_TO_XML = true;
+	private static final boolean TXT_TO_XML = false;
 
-	private static final String POSITION_FILE_SOURCE = "./positionPureLiquid_source.txt";
-	private static final String VELOCITY_FILE_SOURCE = "./velocityPureLiquid_source.txt";
+	private static final String POSITION_FILE_SOURCE = "./position_source.txt";
+	private static final String VELOCITY_FILE_SOURCE = "./velocity_source.txt";
 	private static final String SPH_XML_TARGET = "./sphModel_converted.xml";
 
-	private static final String POSITION_FILE_TARGET = "./positionPureLiquid_converted.txt";
-	private static final String VELOCITY_FILE_TARGET = "./velocityPureLiquid_converted.txt";
+	private static final String POSITION_FILE_TARGET = "./position_converted.txt";
+	private static final String VELOCITY_FILE_TARGET = "./velocity_converted.txt";
+	private static final String ELASTIC_FILE_TARGET = "./elastic_connections_converted.txt";
 	private static final String SPH_XML_SOURCE = "./sphModel_source.xml";
 	
 	public static final float XMIN = 0;
@@ -194,6 +196,7 @@ public class SPHModelConverter
 			
 			Writer positionWriter = null;
 			Writer velocityWriter = null;
+			Writer elasticWriter = null;
 			try
 			{
 				// write txt files
@@ -214,6 +217,18 @@ public class SPHModelConverter
 				
 				positionWriter.flush();
 				velocityWriter.flush();
+				
+				elasticWriter = new FileWriter(ELASTIC_FILE_TARGET);
+				
+				for (Connection c : model.getConnections())
+				{
+					elasticWriter.write(c.getP1() + "\t" + 
+										c.getDistance() + "\t" + 
+										c.getMysteryValue() + "\t" +
+										0.0f + "\r\n");
+				}
+				
+				elasticWriter.flush();
 			}
 			catch (IOException e)
 			{
