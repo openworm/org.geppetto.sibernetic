@@ -1,7 +1,5 @@
 package org.geppetto.model.sph.test;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -14,7 +12,6 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.geppetto.core.model.IModel;
 import org.geppetto.model.sph.Connection;
 import org.geppetto.model.sph.Vector3D;
 import org.geppetto.model.sph.services.SPHModelInterpreterService;
@@ -97,7 +94,7 @@ public class TestSceneGeneration {
 		//Assert.assertTrue(connectionsMismatches.size() + " connections mismatches", connectionsMismatches.size() == 0);
 	}
 	
-	private static String readFile(String path) throws IOException
+	private String readFile(String path) throws IOException
 	{
 		FileInputStream stream = new FileInputStream(new File(path));
 		try
@@ -113,7 +110,7 @@ public class TestSceneGeneration {
 		}
 	}
 	
-	private static Vector3D get3DVector(String triplet)
+	private Vector3D get3DVector(String triplet)
 	{
 		Vector3D v = new Vector3D();
 		String[] coordinates = triplet.split("\t");
@@ -126,5 +123,5 @@ public class TestSceneGeneration {
 		}
 		return v;
 	}
-
+	
 }
