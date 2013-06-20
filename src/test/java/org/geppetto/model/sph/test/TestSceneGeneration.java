@@ -3,6 +3,7 @@ package org.geppetto.model.sph.test;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -54,18 +55,18 @@ public class TestSceneGeneration {
 			Vector3D velocityV = get3DVector(velocityLines[i]);
 			
 			// positions
-			if ( !(p.getPositionVector().getX().equals(positionV.getX()) &&
-				   p.getPositionVector().getY().equals(positionV.getY()) &&
-				   p.getPositionVector().getZ().equals(positionV.getZ()) &&
+			if ( !(round(p.getPositionVector().getX(), 3) == positionV.getX().floatValue() &&
+				   round(p.getPositionVector().getY(), 3) == positionV.getY().floatValue() &&
+				   round(p.getPositionVector().getZ(), 3) == positionV.getZ().floatValue() &&
 				   Math.round(p.getPositionVector().getP()) == Math.round(positionV.getP())))
 			{
 				positionMismatches.add(i);
 			}
 			
 			// velocities
-			if ( !(p.getVelocityVector().getX().equals(velocityV.getX()) &&
-				   p.getVelocityVector().getY().equals(velocityV.getY()) &&
-				   p.getVelocityVector().getZ().equals(velocityV.getZ()) &&
+			if ( !(round(p.getVelocityVector().getX(), 6) == velocityV.getX().floatValue() &&
+				   round(p.getVelocityVector().getY(), 6) == velocityV.getY().floatValue() &&
+				   round(p.getVelocityVector().getZ(), 6) == velocityV.getZ().floatValue() &&
 				   Math.round(p.getVelocityVector().getP()) == Math.round(velocityV.getP())))
 			{
 				velocityMismatches.add(i);	
@@ -79,9 +80,9 @@ public class TestSceneGeneration {
 			Vector3D connectionV = get3DVector(connectionLines[i]);
 			
 			// positions
-			if ( !(c.getP1() == connectionV.getX().floatValue() &&
-				   c.getDistance() == connectionV.getY().floatValue() &&
-				   c.getMysteryValue() == connectionV.getZ().floatValue() &&
+			if ( !(round(c.getP1(), 8) == connectionV.getX().floatValue() &&
+				   round(c.getDistance(), 8) == connectionV.getY().floatValue() &&
+				   round(c.getMysteryValue(), 8) == connectionV.getZ().floatValue() &&
 				   0f == connectionV.getP().floatValue()))
 			{
 				connectionsMismatches.add(i);
@@ -89,8 +90,8 @@ public class TestSceneGeneration {
 		}
 		
 		// 5. assert and output differences
-		//Assert.assertTrue(positionMismatches.size() + " positions mismatches", positionMismatches.size() == 0);
-		//Assert.assertTrue(velocityMismatches.size() + " velocities mismatches", velocityMismatches.size() == 0);
+		Assert.assertTrue(positionMismatches.size() + " positions mismatches", positionMismatches.size() == 0);
+		Assert.assertTrue(velocityMismatches.size() + " velocities mismatches", velocityMismatches.size() == 0);
 		//Assert.assertTrue(connectionsMismatches.size() + " connections mismatches", connectionsMismatches.size() == 0);
 	}
 	
@@ -124,4 +125,10 @@ public class TestSceneGeneration {
 		return v;
 	}
 	
+	public static float round(float d, int decimalPlace) 
+	{
+		BigDecimal bd = new BigDecimal(Float.toString(d));
+		bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+		return bd.floatValue();
+	}
 }
