@@ -80,9 +80,9 @@ public class TestSceneGeneration {
 			Vector3D connectionV = get3DVector(connectionLines[i]);
 			
 			// positions
-			if ( !(round(c.getP1(), 8) == connectionV.getX().floatValue() &&
-				   round(c.getDistance(), 8) == connectionV.getY().floatValue() &&
-				   round(c.getMysteryValue(), 8) == connectionV.getZ().floatValue() &&
+			if ( !(round(c.getP1(), 7) == round(connectionV.getX(), 7) &&
+				   round(c.getDistance(), 7) == round(connectionV.getY(), 7) &&
+				   round(c.getMysteryValue(), 7) == round(connectionV.getZ(), 7) &&
 				   0f == connectionV.getP().floatValue()))
 			{
 				connectionsMismatches.add(i);
