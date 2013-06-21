@@ -80,9 +80,9 @@ public class TestSceneGeneration {
 			Vector3D connectionV = get3DVector(connectionLines[i]);
 			
 			// positions
-			if ( !(round(c.getP1(), 7) == round(connectionV.getX(), 7) &&
-				   round(c.getDistance(), 7) == round(connectionV.getY(), 7) &&
-				   round(c.getMysteryValue(), 7) == round(connectionV.getZ(), 7) &&
+			if ( !(round(c.getP1(), 6) == round(connectionV.getX(), 6) &&
+				   round(c.getDistance(), 6) == round(connectionV.getY(), 6) &&
+				   round(c.getMysteryValue(), 6) == round(connectionV.getZ(), 6) &&
 				   0f == connectionV.getP().floatValue()))
 			{
 				connectionsMismatches.add(i);
@@ -92,7 +92,7 @@ public class TestSceneGeneration {
 		// 5. assert and output differences
 		Assert.assertTrue(positionMismatches.size() + " positions mismatches", positionMismatches.size() == 0);
 		Assert.assertTrue(velocityMismatches.size() + " velocities mismatches", velocityMismatches.size() == 0);
-		//Assert.assertTrue(connectionsMismatches.size() + " connections mismatches", connectionsMismatches.size() == 0);
+		Assert.assertTrue(connectionsMismatches.size() + " connections mismatches", connectionsMismatches.size() == 0);
 	}
 	
 	private String readFile(String path) throws IOException
