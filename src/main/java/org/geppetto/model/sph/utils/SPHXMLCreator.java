@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.math.BigDecimal;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -739,15 +740,15 @@ public class SPHXMLCreator {
 
 	private static void createParticle(SPHModel model, SPHFactory factory, float p_x, float p_y, float p_z, float v_x, float v_y, float v_z, float p_type) {
 		Vector3D positionVector = factory.createVector3D();
-		positionVector.setX(p_x);
-		positionVector.setY(p_y);
-		positionVector.setZ(p_z);
+		positionVector.setX(round(p_x, 3));
+		positionVector.setY(round(p_y, 3));
+		positionVector.setZ(round(p_z, 3));
 		positionVector.setP(p_type);
 
 		Vector3D velocityVector = factory.createVector3D();
-		velocityVector.setX(v_x);
-		velocityVector.setY(v_y);
-		velocityVector.setZ(v_z);
+		velocityVector.setX(round(v_x, 6));
+		velocityVector.setY(round(v_y, 6));
+		velocityVector.setZ(round(v_z, 6));
 		velocityVector.setP(p_type);
 		
 		// add particles
@@ -757,7 +758,13 @@ public class SPHXMLCreator {
 		particle.setMass(1f);
 		model.getParticles().add(particle);
 	}
-
+	
+	public static float round(float d, int decimalPlace) 
+	{
+		BigDecimal bd = new BigDecimal(Float.toString(d));
+		bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+		return bd.floatValue();
+	}
 
 	/**
 	 * @param args
