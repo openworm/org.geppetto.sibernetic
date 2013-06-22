@@ -128,6 +128,58 @@ public class TestStaticGeneratedScene {
 		Assert.assertTrue(connectionsMismatches.size() + " connections mismatches", connectionsMismatches.size() == 0);
 	}
 	
+	@Test
+	public void Test_LiquidScene_InitialConditions() throws Exception {
+		// 1. load reference initial conditions from C++ exported scene
+		String positionString = readFile(TestStaticGeneratedScene.class.getResource("/liquid_position_log_0.txt").getPath());
+		String velocityString = readFile(TestStaticGeneratedScene.class.getResource("/liquid_velocity_log_0.txt").getPath());
+		String[] positionLines = positionString.split(System.getProperty("line.separator"));
+		String[] velocityLines = velocityString.split(System.getProperty("line.separator"));
+		
+		// 2. load Java generated scene
+		URL url = this.getClass().getResource("/sphModel_Liquid.xml");
+		SPHModelInterpreterService modelInterpreter = new SPHModelInterpreterService();
+		SPHModelX model = (SPHModelX)modelInterpreter.readModel(url);
+		
+		// 3. assert number of particles is fine
+		Assert.assertTrue("number of lines on velocity and positions files do not match", velocityLines.length == positionLines.length);
+		Assert.assertTrue("number of lines on positions and number of particles on sphModel do not match", model.getParticles().size() == positionLines.length);
+		
+		List<Integer> positionMismatches = new ArrayList<Integer>();
+		List<Integer> velocityMismatches = new ArrayList<Integer>();
+		
+		// 4. compare and save differences 
+		// positions & velocities
+		for (int i = 0; i < positionLines.length; i++)
+		{
+			SPHParticleX p = (SPHParticleX) model.getParticles().get(i);
+			Vector3D positionV = get3DVector(positionLines[i]);
+			Vector3D velocityV = get3DVector(velocityLines[i]);
+			
+			// positions
+			if ( !(round(p.getPositionVector().getX(), 2) == round(positionV.getX(), 2) &&
+				   round(p.getPositionVector().getY(), 2) == round(positionV.getY(), 2) &&
+				   round(p.getPositionVector().getZ(), 2) == round(positionV.getZ(), 2) &&
+				   Math.round(p.getPositionVector().getP()) == Math.round(positionV.getP())))
+			{
+				positionMismatches.add(i);
+			}
+			
+			// velocities
+			if ( !(round(p.getVelocityVector().getX(), 3) == round(velocityV.getX(), 3) &&
+				   round(p.getVelocityVector().getY(), 3) == round(velocityV.getY(), 3) &&
+				   round(p.getVelocityVector().getZ(), 3) == round(velocityV.getZ(), 3) &&
+				   Math.round(p.getVelocityVector().getP()) == Math.round(velocityV.getP())))
+			{
+				velocityMismatches.add(i);	
+			}
+		}
+		
+		// 5. assert and output differences
+		Assert.assertTrue(positionMismatches.size() + " positions mismatches", positionMismatches.size() == 0);
+		Assert.assertTrue(velocityMismatches.size() + " velocities mismatches", velocityMismatches.size() == 0);
+	}
+	
 	private String readFile(String path) throws IOException
 	{
 		FileInputStream stream = new FileInputStream(new File(path));
