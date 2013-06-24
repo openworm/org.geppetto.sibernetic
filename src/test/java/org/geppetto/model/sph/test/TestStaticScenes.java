@@ -56,7 +56,7 @@ import org.junit.Test;
 public class TestStaticScenes {
 
 	@Test
-	public void Test_ElasticScene_InitialConditions() throws Exception {
+	public void testElasticSceneInitialConditions() throws Exception {
 		// 1. load reference initial conditions from C++ exported scene
 		String positionString = readFile(TestStaticScenes.class.getResource("/elastic_position_log_0.txt").getPath());
 		String velocityString = readFile(TestStaticScenes.class.getResource("/elastic_velocity_log_0.txt").getPath());
@@ -129,7 +129,7 @@ public class TestStaticScenes {
 	}
 	
 	@Test
-	public void Test_LiquidScene_InitialConditions() throws Exception {
+	public void testLiquidSceneInitialConditions() throws Exception {
 		// 1. load reference initial conditions from C++ exported scene
 		String positionString = readFile(TestStaticScenes.class.getResource("/liquid_position_log_0.txt").getPath());
 		String velocityString = readFile(TestStaticScenes.class.getResource("/liquid_velocity_log_0.txt").getPath());
