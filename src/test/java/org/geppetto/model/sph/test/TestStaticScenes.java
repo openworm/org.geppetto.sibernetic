@@ -53,14 +53,14 @@ import org.geppetto.model.sph.x.SPHModelX;
 import org.geppetto.model.sph.x.SPHParticleX;
 import org.junit.Test;
 
-public class TestStaticGeneratedScene {
+public class TestStaticScenes {
 
 	@Test
 	public void Test_ElasticScene_InitialConditions() throws Exception {
 		// 1. load reference initial conditions from C++ exported scene
-		String positionString = readFile(TestStaticGeneratedScene.class.getResource("/elastic_position_log_0.txt").getPath());
-		String velocityString = readFile(TestStaticGeneratedScene.class.getResource("/elastic_velocity_log_0.txt").getPath());
-		String connectionsString = readFile(TestStaticGeneratedScene.class.getResource("/elastic_connections_log_0.txt").getPath());
+		String positionString = readFile(TestStaticScenes.class.getResource("/elastic_position_log_0.txt").getPath());
+		String velocityString = readFile(TestStaticScenes.class.getResource("/elastic_velocity_log_0.txt").getPath());
+		String connectionsString = readFile(TestStaticScenes.class.getResource("/elastic_connections_log_0.txt").getPath());
 		String[] positionLines = positionString.split(System.getProperty("line.separator"));
 		String[] velocityLines = velocityString.split(System.getProperty("line.separator"));
 		String[] connectionLines = connectionsString.split(System.getProperty("line.separator"));
@@ -131,8 +131,8 @@ public class TestStaticGeneratedScene {
 	@Test
 	public void Test_LiquidScene_InitialConditions() throws Exception {
 		// 1. load reference initial conditions from C++ exported scene
-		String positionString = readFile(TestStaticGeneratedScene.class.getResource("/liquid_position_log_0.txt").getPath());
-		String velocityString = readFile(TestStaticGeneratedScene.class.getResource("/liquid_velocity_log_0.txt").getPath());
+		String positionString = readFile(TestStaticScenes.class.getResource("/liquid_position_log_0.txt").getPath());
+		String velocityString = readFile(TestStaticScenes.class.getResource("/liquid_velocity_log_0.txt").getPath());
 		String[] positionLines = positionString.split(System.getProperty("line.separator"));
 		String[] velocityLines = velocityString.split(System.getProperty("line.separator"));
 		
