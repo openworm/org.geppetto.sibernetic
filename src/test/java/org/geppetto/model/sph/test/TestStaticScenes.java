@@ -157,18 +157,18 @@ public class TestStaticScenes {
 			Vector3D velocityV = get3DVector(velocityLines[i]);
 			
 			// positions
-			if ( !(round(p.getPositionVector().getX(), 2) == round(positionV.getX(), 2) &&
-				   round(p.getPositionVector().getY(), 2) == round(positionV.getY(), 2) &&
-				   round(p.getPositionVector().getZ(), 2) == round(positionV.getZ(), 2) &&
+			if ( !(p.getPositionVector().getX().floatValue() == positionV.getX().floatValue() &&
+				   p.getPositionVector().getY().floatValue() == positionV.getY().floatValue() &&
+				   p.getPositionVector().getZ().floatValue() == positionV.getZ().floatValue() &&
 				   Math.round(p.getPositionVector().getP()) == Math.round(positionV.getP())))
 			{
 				positionMismatches.add(i);
 			}
 			
 			// velocities
-			if ( !(round(p.getVelocityVector().getX(), 3) == round(velocityV.getX(), 3) &&
-				   round(p.getVelocityVector().getY(), 3) == round(velocityV.getY(), 3) &&
-				   round(p.getVelocityVector().getZ(), 3) == round(velocityV.getZ(), 3) &&
+			if ( !(p.getVelocityVector().getX().floatValue() == velocityV.getX().floatValue() &&
+				   p.getVelocityVector().getY().floatValue() == velocityV.getY().floatValue() &&
+				   p.getVelocityVector().getZ().floatValue() == velocityV.getZ().floatValue() &&
 				   Math.round(p.getVelocityVector().getP()) == Math.round(velocityV.getP())))
 			{
 				velocityMismatches.add(i);	
