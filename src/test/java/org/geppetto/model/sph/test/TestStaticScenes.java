@@ -131,13 +131,13 @@ public class TestStaticScenes {
 	@Test
 	public void testLiquidSceneInitialConditions() throws Exception {
 		// 1. load reference initial conditions from C++ exported scene
-		String positionString = readFile(TestStaticScenes.class.getResource("/liquid_position_log_0.txt").getPath());
-		String velocityString = readFile(TestStaticScenes.class.getResource("/liquid_velocity_log_0.txt").getPath());
+		String positionString = readFile(TestStaticScenes.class.getResource("/liquid_16974_position_log_0.txt").getPath());
+		String velocityString = readFile(TestStaticScenes.class.getResource("/liquid_16974_velocity_log_0.txt").getPath());
 		String[] positionLines = positionString.split(System.getProperty("line.separator"));
 		String[] velocityLines = velocityString.split(System.getProperty("line.separator"));
 		
 		// 2. load Java generated scene
-		URL url = this.getClass().getResource("/sphModel_Liquid.xml");
+		URL url = this.getClass().getResource("/sphModel_liquid_16974.xml");
 		SPHModelInterpreterService modelInterpreter = new SPHModelInterpreterService();
 		SPHModelX model = (SPHModelX)modelInterpreter.readModel(url);
 		
