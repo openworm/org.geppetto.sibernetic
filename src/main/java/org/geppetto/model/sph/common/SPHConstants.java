@@ -45,13 +45,13 @@ public class SPHConstants {
 	
 	public static final int DECIMAL_ROUNDING_FACTOR = 1000000;
 	
-	// TODO: add reference of where these constant / formulas come from
 	public static final float M_PI = 3.1415927f;
 	public static final int RAND_MAX = 0x7fff;
 
 	public static final float RHO0 = 1000.0f;
 	public static final float STIFFNESS = 0.75f;
 	public static final float H = 3.34f;
+	// R0 is the distance between two boundary particle == equilibrium distance between 2 particles / Ihmsen et al., 2010, page 4, line 3
 	public static final float R0 = 0.5f * H;
 
 	public static final float MASS = 0.0003f;
