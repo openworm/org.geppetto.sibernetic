@@ -84,7 +84,7 @@ public class SPHModelInterpreterService implements IModelInterpreter
 		}
 		catch(JAXBException e1)
 		{
-			e1.printStackTrace();
+			logger.error("Unable to read model with url: " + url);
 		}
 		return sphModelX;
 	}

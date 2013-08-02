@@ -50,12 +50,10 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.geppetto.core.constants.PhysicsConstants;
 import org.geppetto.model.sph.Connection;
 import org.geppetto.model.sph.SPHModel;
 import org.geppetto.model.sph.SPHParticle;
 import org.geppetto.model.sph.Vector3D;
-import org.geppetto.model.sph.common.SPHConstants;
 import org.geppetto.model.sph.x.SPHModelX;
 import org.geppetto.model.sph.x.SPHParticleX;
 

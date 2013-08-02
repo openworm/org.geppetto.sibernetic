@@ -12,7 +12,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.geppetto.core.constants.PhysicsConstants;
 import org.geppetto.core.model.MathUtils;
 import org.geppetto.model.sph.Connection;
 import org.geppetto.model.sph.SPHModel;
@@ -57,9 +56,9 @@ public class SPHXMLCreator {
 		SPHFactory factory = new SPHFactory();
 		
 		// calculate number of boundary particles by X, Y, Z axis. Distance Between two neighbor particle is equal to 
-		int n = (int)( ( XMAX - XMIN ) / PhysicsConstants.R0 ); //X
-		int m = (int)( ( YMAX - YMIN ) / PhysicsConstants.R0 ); //Y
-		int k = (int)( ( ZMAX - ZMIN ) / PhysicsConstants.R0 ); //Z
+		int n = (int)( ( XMAX - XMIN ) / SPHConstants.R0 ); //X
+		int m = (int)( ( YMAX - YMIN ) / SPHConstants.R0 ); //Y
+		int k = (int)( ( ZMAX - ZMIN ) / SPHConstants.R0 ); //Z
 		
 		float x,y,z;
 		int i = 0;
@@ -92,7 +91,7 @@ public class SPHXMLCreator {
 			Vector3D velocityVector1 = factory.createVector3D();
 			Vector3D velocityVector2 = factory.createVector3D();
 			
-			x+= PhysicsConstants.R0;		
+			x+= SPHConstants.R0;		
 			if(i == 0){
 				velocityVector1.setX(normCorner);
 				velocityVector1.setY(normCorner);
@@ -118,7 +117,7 @@ public class SPHXMLCreator {
 				isBoundary = true;
 			}
 
-			if(x >= XMAX && z >= ZMAX - PhysicsConstants.R0 && !isBoundary){
+			if(x >= XMAX && z >= ZMAX - SPHConstants.R0 && !isBoundary){
 				velocityVector1.setX(-normCorner);
 				velocityVector1.setY(normCorner);
 				velocityVector1.setZ(-normCorner);
@@ -130,7 +129,7 @@ public class SPHXMLCreator {
 				velocityVector2.setP(0f);
 				isBoundary = true;
 			}
-			if(x - PhysicsConstants.R0 == XMIN && z >= ZMAX - PhysicsConstants.R0 && !isBoundary){
+			if(x - SPHConstants.R0 == XMIN && z >= ZMAX - SPHConstants.R0 && !isBoundary){
 				velocityVector1.setX(normCorner);
 				velocityVector1.setY(normCorner);
 				velocityVector1.setZ(-normCorner);
@@ -168,7 +167,7 @@ public class SPHXMLCreator {
 				velocityVector2.setP(0f);
 				isBoundary = true;
 			}
-			if(x - PhysicsConstants.R0 == XMIN && !isBoundary){
+			if(x - SPHConstants.R0 == XMIN && !isBoundary){
 				velocityVector1.setX(normBoundary);
 				velocityVector1.setY(normBoundary);
 				velocityVector1.setZ(0f);
@@ -180,7 +179,7 @@ public class SPHXMLCreator {
 				velocityVector2.setP(0f);
 				isBoundary = true;
 			}
-			if(z >= ZMAX - PhysicsConstants.R0 && !isBoundary){
+			if(z >= ZMAX - SPHConstants.R0 && !isBoundary){
 				velocityVector1.setX(0f);
 				velocityVector1.setY(normBoundary);
 				velocityVector1.setZ(-normBoundary);
@@ -221,12 +220,12 @@ public class SPHXMLCreator {
 			isBoundary = false;
 			if(x > XMAX) { 
 				x = XMIN; 
-				z += PhysicsConstants.R0; 
+				z += SPHConstants.R0; 
 			}
 		}
 
 		x = XMIN;
-		y = YMIN + PhysicsConstants.R0;
+		y = YMIN + SPHConstants.R0;
 		z = ZMIN;
 
 		x1 = XMAX;
@@ -261,7 +260,7 @@ public class SPHXMLCreator {
 				velocityVector2.setP(0f);
 				isBoundary = true;
 			}
-			if(z >= ZMAX - PhysicsConstants.R0 && !isBoundary){
+			if(z >= ZMAX - SPHConstants.R0 && !isBoundary){
 				velocityVector1.setX(normBoundary);
 				velocityVector1.setY(0f);
 				velocityVector1.setZ(-normBoundary);
@@ -300,15 +299,15 @@ public class SPHXMLCreator {
 			
 			// update coordinates for next iteration
 			isBoundary = false;
-			y+= PhysicsConstants.R0;
+			y+= SPHConstants.R0;
 
-			if(y > YMAX - PhysicsConstants.R0) { 
-				y = YMIN + PhysicsConstants.R0; z += PhysicsConstants.R0; 
+			if(y > YMAX - SPHConstants.R0) { 
+				y = YMIN + SPHConstants.R0; z += SPHConstants.R0; 
 			}
 		}
 		
-		x = XMIN + PhysicsConstants.R0;
-		y = YMIN + PhysicsConstants.R0;
+		x = XMIN + SPHConstants.R0;
+		y = YMIN + SPHConstants.R0;
 		z = ZMIN;
 
 		z1 = ZMAX;
@@ -353,10 +352,10 @@ public class SPHXMLCreator {
 			model.getParticles().add(particle2);
 			
 			// update coordinates for next iteration
-			y+= PhysicsConstants.R0;
+			y+= SPHConstants.R0;
 
-			if(y > YMAX - PhysicsConstants.R0) { 
-				y = YMIN + PhysicsConstants.R0; x += PhysicsConstants.R0; 
+			if(y > YMAX - SPHConstants.R0) { 
+				y = YMIN + SPHConstants.R0; x += SPHConstants.R0; 
 			}
 		}
 	}
@@ -367,9 +366,9 @@ public class SPHXMLCreator {
 		
 		float coeff = 0.2325f; // for particle mass
 		float x,y,z;
-		x = PhysicsConstants.R0 * 5 + 0*XMAX/4 + PhysicsConstants.H*coeff;
-		y = PhysicsConstants.R0 * 15 + PhysicsConstants.H*coeff;
-		z = PhysicsConstants.R0 * 5 + PhysicsConstants.H*coeff;
+		x = SPHConstants.R0 * 5 + 0*XMAX/4 + SPHConstants.H*coeff;
+		y = SPHConstants.R0 * 15 + SPHConstants.H*coeff;
+		z = SPHConstants.R0 * 5 + SPHConstants.H*coeff;
 		
 		int pCount = model.getParticles().size();
 		for( ; pCount < PARTICLE_COUNT; ++pCount )
@@ -394,13 +393,13 @@ public class SPHXMLCreator {
 			model.getParticles().add(particle);
 			
 			// update coordinates for next iteration
-			x+= 2*PhysicsConstants.H*coeff;
+			x+= 2*SPHConstants.H*coeff;
 
 			if(x>XMAX/2) { 
-				x = PhysicsConstants.R0 * 5 + PhysicsConstants.H*coeff; z += 2*PhysicsConstants.H*coeff; 
+				x = SPHConstants.R0 * 5 + SPHConstants.H*coeff; z += 2*SPHConstants.H*coeff; 
 			}
 			if(z>ZMAX/2) { 
-				x = PhysicsConstants.R0 * 5 + PhysicsConstants.H*coeff; z = PhysicsConstants.R0 * 5 + PhysicsConstants.H*coeff; y += 2*PhysicsConstants.H*coeff; 
+				x = SPHConstants.R0 * 5 + SPHConstants.H*coeff; z = SPHConstants.R0 * 5 + SPHConstants.H*coeff; y += 2*SPHConstants.H*coeff; 
 			}
 		}
 	}
@@ -412,23 +411,23 @@ public class SPHXMLCreator {
 		int pCount = model.getParticles().size();
 		for( ; pCount < PARTICLE_COUNT; pCount++ )
 		{
-			float r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
+			float r = ((float)MathUtils.randomGenerator.nextInt(SPHConstants.RAND_MAX) / (float)SPHConstants.RAND_MAX );
 
 			Vector3D positionVector = factory.createVector3D();
 			positionVector.setX(MathUtils.scale(XMIN + 1, (XMAX -1)/10 , r)); 
-			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
+			r = ((float)MathUtils.randomGenerator.nextInt(SPHConstants.RAND_MAX) / (float)SPHConstants.RAND_MAX );
 			positionVector.setY(MathUtils.scale(YMIN + 1, YMAX - 1 , r)); 
-			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
+			r = ((float)MathUtils.randomGenerator.nextInt(SPHConstants.RAND_MAX) / (float)SPHConstants.RAND_MAX );
 			positionVector.setZ(MathUtils.scale(ZMIN + 1, ZMAX -1, r));
 			positionVector.setP(1.1f);
 			
-			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
+			r = ((float)MathUtils.randomGenerator.nextInt(SPHConstants.RAND_MAX) / (float)SPHConstants.RAND_MAX );
 			
 			Vector3D velocityVector = factory.createVector3D();
 			velocityVector.setX(MathUtils.scale(-1.0f, 1.0f, r));
-			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
+			r = ((float)MathUtils.randomGenerator.nextInt(SPHConstants.RAND_MAX) / (float)SPHConstants.RAND_MAX );
 			velocityVector.setY(MathUtils.scale(-1.0f, 1.0f, r));
-			r = ((float)MathUtils.randomGenerator.nextInt(PhysicsConstants.RAND_MAX) / (float)PhysicsConstants.RAND_MAX );
+			r = ((float)MathUtils.randomGenerator.nextInt(SPHConstants.RAND_MAX) / (float)SPHConstants.RAND_MAX );
 			velocityVector.setZ(MathUtils.scale(-1.0f, 1.0f, r));
 			velocityVector.setP(0f);
 
@@ -457,9 +456,9 @@ public class SPHXMLCreator {
 			int ix,iy,iz;
 			int ecc = 0;//elastic connections counter
 	
-			int nx = (int)( ( XMAX - XMIN ) / PhysicsConstants.R0 ); //X
-			int ny = (int)( ( YMAX - YMIN ) / PhysicsConstants.R0 ); //Y
-			int nz = (int)( ( ZMAX - ZMIN ) / PhysicsConstants.R0 ); //Z
+			int nx = (int)( ( XMAX - XMIN ) / SPHConstants.R0 ); //X
+			int ny = (int)( ( YMAX - YMIN ) / SPHConstants.R0 ); //Y
+			int nz = (int)( ( ZMAX - ZMIN ) / SPHConstants.R0 ); //Z
 	
 			int nEx = 9;
 			int nEy = 5;
@@ -483,9 +482,9 @@ public class SPHXMLCreator {
 				for(y=0;y<nEy;y+=1.f)
 				for(z=0;z<nEz;z+=1.f)
 				{
-					createParticle(model, factory, XMAX/2+x*PhysicsConstants.R0-nEx*PhysicsConstants.R0/2, 
-												   YMAX/2+y*PhysicsConstants.R0-nEy*PhysicsConstants.R0/2 + YMAX*3/8, 
-												   ZMAX/2+z*PhysicsConstants.R0-nEz*PhysicsConstants.R0/2, 
+					createParticle(model, factory, XMAX/2+x*SPHConstants.R0-nEx*SPHConstants.R0/2, 
+												   YMAX/2+y*SPHConstants.R0-nEy*SPHConstants.R0/2 + YMAX*3/8, 
+												   ZMAX/2+z*SPHConstants.R0-nEz*SPHConstants.R0/2, 
 												   0f, 0f, 0f, p_type);
 	
 					i++;
@@ -523,11 +522,11 @@ public class SPHXMLCreator {
 							dz2 *= dz2;
 							r2ij = dx2 + dy2 + dz2;
 	
-							if(r2ij<=PhysicsConstants.R0*PhysicsConstants.R0*3.05f)
+							if(r2ij<=SPHConstants.R0*SPHConstants.R0*3.05f)
 							{
 								//connect elastic particles 0 and 1
 								model.getConnections().get(SPHConstants.NEIGHBOR_COUNT * i_ec + ecc).setP1(((float)j_ec) + 0.1f);
-								model.getConnections().get(SPHConstants.NEIGHBOR_COUNT * i_ec + ecc).setDistance((float)Math.sqrt(r2ij)* PhysicsConstants.SIMULATION_SCALE);
+								model.getConnections().get(SPHConstants.NEIGHBOR_COUNT * i_ec + ecc).setDistance((float)Math.sqrt(r2ij)* SPHConstants.SIMULATION_SCALE);
 								model.getConnections().get(SPHConstants.NEIGHBOR_COUNT * i_ec + ecc).setMysteryValue((float) (0 + 1.1 * ((((dz2>100*dx2)&&(dz2>100*dy2))) ? 1 : 0)));
 								ecc++;
 							}
@@ -541,9 +540,9 @@ public class SPHXMLCreator {
 			//============= create volume of liquid =========================================================================
 			p_type = SPHConstants.LIQUID_TYPE;
 	
-			for(x = 15*PhysicsConstants.R0/2;x<(XMAX-XMIN)/5 +3*PhysicsConstants.R0/2;x += PhysicsConstants.R0)
-			for(y =  3*PhysicsConstants.R0/2;y<(YMAX-YMIN)   -3*PhysicsConstants.R0/2;y += PhysicsConstants.R0)
-			for(z =  3*PhysicsConstants.R0/2+(ZMAX-ZMIN)*3/10;z<(ZMAX-ZMIN)*7/10-3*PhysicsConstants.R0/2;z += PhysicsConstants.R0)
+			for(x = 15*SPHConstants.R0/2;x<(XMAX-XMIN)/5 +3*SPHConstants.R0/2;x += SPHConstants.R0)
+			for(y =  3*SPHConstants.R0/2;y<(YMAX-YMIN)   -3*SPHConstants.R0/2;y += SPHConstants.R0)
+			for(z =  3*SPHConstants.R0/2+(ZMAX-ZMIN)*3/10;z<(ZMAX-ZMIN)*7/10-3*SPHConstants.R0/2;z += SPHConstants.R0)
 			{
 				// stage==0 - preliminary run
 				// stage==1 - final run
@@ -581,18 +580,18 @@ public class SPHXMLCreator {
 						{
 							if( ((ix==0)||(ix==nx-1)) && ((iy==0)||(iy==ny-1)) )//corners
 							{
-								createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-															   iy*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-															   0*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+								createParticle(model, factory, ix*SPHConstants.R0 + SPHConstants.R0/2, 
+															   iy*SPHConstants.R0 + SPHConstants.R0/2, 
+															   0*SPHConstants.R0 + SPHConstants.R0/2, 
 															   (float) (( 1.f*((ix==0)?1:0) -1 * ((ix==nx-1)?1:0) )/Math.sqrt(3.f)), 
 															   (float) (( 1.f*((iy==0)?1:0) -1 * ((iy==ny-1)?1:0) )/Math.sqrt(3.f)), 
 															   (float) (1.f/Math.sqrt(3.f)), p_type);
 								
 								i++;
 								
-								createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-															   iy*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-															   (nz-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+								createParticle(model, factory, ix*SPHConstants.R0 + SPHConstants.R0/2, 
+															   iy*SPHConstants.R0 + SPHConstants.R0/2, 
+															   (nz-1)*SPHConstants.R0 + SPHConstants.R0/2, 
 															   (float) ((1*((ix==0)?1:0) -1*((ix==nx-1)?1:0) )/Math.sqrt(3.f)), 
 															   (float) ((1*((iy==0)?1:0) -1*((iy==ny-1)?1:0) )/Math.sqrt(3.f)), 
 															   (float) (-1.f/Math.sqrt(3.f)), p_type);
@@ -601,18 +600,18 @@ public class SPHXMLCreator {
 							}
 							else //edges
 							{
-								createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-															   iy*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-															   0*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+								createParticle(model, factory, ix*SPHConstants.R0 + SPHConstants.R0/2, 
+															   iy*SPHConstants.R0 + SPHConstants.R0/2, 
+															   0*SPHConstants.R0 + SPHConstants.R0/2, 
 															   (float) (1.f*(((ix==0)?1:0) - ((ix==nx-1)?1:0))/Math.sqrt(2.f)), 
 															   (float) (1.f*(((iy==0)?1:0) - ((iy==ny-1)?1:0))/Math.sqrt(2.f)), 
 															   (float) (1.f/Math.sqrt(2.f)), p_type);
 								
 								i++;
 								
-								createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-															   iy*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-															   (nz-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+								createParticle(model, factory, ix*SPHConstants.R0 + SPHConstants.R0/2, 
+															   iy*SPHConstants.R0 + SPHConstants.R0/2, 
+															   (nz-1)*SPHConstants.R0 + SPHConstants.R0/2, 
 															   (float) (1.f*(((ix==0)?1:0) - ((ix==nx-1)?1:0))/Math.sqrt(2.f)), 
 															   (float) (1.f*(((iy==0)?1:0) - ((iy==ny-1)?1:0))/Math.sqrt(2.f)), 
 															   (float) (-1.f/Math.sqrt(2.f)), p_type);
@@ -622,16 +621,16 @@ public class SPHXMLCreator {
 						}
 						else //planes
 						{
-							createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-														   iy*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-														   0*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+							createParticle(model, factory, ix*SPHConstants.R0 + SPHConstants.R0/2, 
+														   iy*SPHConstants.R0 + SPHConstants.R0/2, 
+														   0*SPHConstants.R0 + SPHConstants.R0/2, 
 														   0f, 0f, 1f, p_type);
 					
 							i++;
 							
-							createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-									 					   iy*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-									 					  (nz-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+							createParticle(model, factory, ix*SPHConstants.R0 + SPHConstants.R0/2, 
+									 					   iy*SPHConstants.R0 + SPHConstants.R0/2, 
+									 					  (nz-1)*SPHConstants.R0 + SPHConstants.R0/2, 
 									 					   0f, 0f, -1f, p_type);
 							
 							i++;
@@ -647,18 +646,18 @@ public class SPHXMLCreator {
 						//edges
 						if((ix==0)||(ix==nx-1))
 						{
-							createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-														   0*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-														   iz*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+							createParticle(model, factory, ix*SPHConstants.R0 + SPHConstants.R0/2, 
+														   0*SPHConstants.R0 + SPHConstants.R0/2, 
+														   iz*SPHConstants.R0 + SPHConstants.R0/2, 
 														   0f, 
 														   (float) (1.f/Math.sqrt(2.f)), 
 														   (float) (1.f*(((iz==0)?1:0) - ((iz==nz-1)?1:0))/Math.sqrt(2.f)), p_type);
 
 							i++;
 							
-							createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-														   (ny-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-														   iz*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+							createParticle(model, factory, ix*SPHConstants.R0 + SPHConstants.R0/2, 
+														   (ny-1)*SPHConstants.R0 + SPHConstants.R0/2, 
+														   iz*SPHConstants.R0 + SPHConstants.R0/2, 
 														   0f, 
 														   (float) (-1.f/Math.sqrt(2.f)), 
 														   (float) (1.f*(((iz==0)?1:0) - ((iz==nz-1)?1:0))/Math.sqrt(2.f)), p_type);
@@ -667,18 +666,18 @@ public class SPHXMLCreator {
 						}
 						else //planes
 						{
-							createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-														   0*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-														   iz*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+							createParticle(model, factory, ix*SPHConstants.R0 + SPHConstants.R0/2, 
+														   0*SPHConstants.R0 + SPHConstants.R0/2, 
+														   iz*SPHConstants.R0 + SPHConstants.R0/2, 
 														   0f, 
 														   1f, 
 														   0f, p_type);
 							
 							i++;
 							
-							createParticle(model, factory, ix*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-														   (ny-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-														   iz*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+							createParticle(model, factory, ix*SPHConstants.R0 + SPHConstants.R0/2, 
+														   (ny-1)*SPHConstants.R0 + SPHConstants.R0/2, 
+														   iz*SPHConstants.R0 + SPHConstants.R0/2, 
 														   0f, 
 														   -1f, 
 														   0f, p_type);
@@ -693,18 +692,18 @@ public class SPHXMLCreator {
 				{
 					for(iz=1;iz<nz-1;iz++)
 					{
-						createParticle(model, factory, 0*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-													   iy*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-													   iz*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+						createParticle(model, factory, 0*SPHConstants.R0 + SPHConstants.R0/2, 
+													   iy*SPHConstants.R0 + SPHConstants.R0/2, 
+													   iz*SPHConstants.R0 + SPHConstants.R0/2, 
 													   1f, 
 													   0f, 
 													   0f, p_type);
 						
 						i++;
 						
-						createParticle(model, factory, (nx-1)*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-													   iy*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
-													   iz*PhysicsConstants.R0 + PhysicsConstants.R0/2, 
+						createParticle(model, factory, (nx-1)*SPHConstants.R0 + SPHConstants.R0/2, 
+													   iy*SPHConstants.R0 + SPHConstants.R0/2, 
+													   iz*SPHConstants.R0 + SPHConstants.R0/2, 
 													   -1f, 
 													   0f, 
 													   0f, p_type);
