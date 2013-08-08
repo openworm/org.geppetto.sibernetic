@@ -78,14 +78,15 @@
 	<element name="SPHModel">
 		<complexType>
 			<sequence>
-				<element name="particles" type="tns:SPHParticle" maxOccurs="unbounded"
-					minOccurs="1">
+				<element name="particles" type="tns:SPHParticle"
+					maxOccurs="unbounded" minOccurs="1">
 				</element>
-				<element name="cells" type="tns:SPHCell" maxOccurs="unbounded"
-					minOccurs="1">
+				<element name="cells" type="tns:SPHCell"
+					maxOccurs="unbounded" minOccurs="1">
 				</element>
-				<element name="connections" type="tns:Connection" maxOccurs="unbounded"
-					minOccurs="0"></element>
+				<element name="connections" type="tns:Connection"
+					maxOccurs="unbounded" minOccurs="0">
+				</element>
 			</sequence>
 			<attribute name="xMax" type="float"></attribute>
 			<attribute name="xMin" type="float"></attribute>
@@ -94,6 +95,7 @@
 			<attribute name="zMax" type="float"></attribute>
 			<attribute name="zMin" type="float"></attribute>
 
+			<attribute name="elasticBundles" type="int"></attribute>
 		</complexType>
 	</element>
 
