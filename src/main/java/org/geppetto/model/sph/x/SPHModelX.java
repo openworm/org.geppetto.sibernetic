@@ -74,6 +74,7 @@ public class SPHModelX extends SPHModel implements IModel, Comparable<SPHModelX>
 		this.yMin = sphModel.getYMin();
 		this.zMax = sphModel.getZMax();
 		this.zMin = sphModel.getZMin();
+		this.elasticBundles = sphModel.getElasticBundles();
 		this.connections = new ArrayList<Connection>();
 		this.particles = new ArrayList<SPHParticle>();
 		this.cells = new ArrayList<SPHCell>();
