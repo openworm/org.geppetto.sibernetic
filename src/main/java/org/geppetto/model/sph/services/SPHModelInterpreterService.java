@@ -44,7 +44,7 @@ import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.model.IModel;
 import org.geppetto.core.model.IModelInterpreter;
 import org.geppetto.core.model.state.StateTreeRoot;
-import org.geppetto.core.visualisation.model.Scene;
+import org.geppetto.core.pojo.model.Scene;
 import org.geppetto.model.sph.SPHModel;
 import org.geppetto.model.sph.SPHParticle;
 import org.geppetto.model.sph.x.SPHModelX;
