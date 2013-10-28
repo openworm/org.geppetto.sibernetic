@@ -36,10 +36,10 @@ import org.geppetto.core.model.state.CompositeStateNode;
 import org.geppetto.core.model.state.SimpleStateNode;
 import org.geppetto.core.model.state.visitors.DefaultStateVisitor;
 import org.geppetto.core.model.values.FloatValue;
-import org.geppetto.core.pojo.model.Entity;
-import org.geppetto.core.pojo.model.Particle;
-import org.geppetto.core.pojo.model.Point;
-import org.geppetto.core.pojo.model.Scene;
+import org.geppetto.core.visualisation.model.Entity;
+import org.geppetto.core.visualisation.model.Particle;
+import org.geppetto.core.visualisation.model.Point;
+import org.geppetto.core.visualisation.model.Scene;
 import org.geppetto.model.sph.common.SPHConstants;
 
 /**
