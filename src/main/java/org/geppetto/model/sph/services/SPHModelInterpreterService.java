@@ -43,7 +43,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.model.IModel;
 import org.geppetto.core.model.IModelInterpreter;
+import org.geppetto.core.model.state.CompositeStateNode;
 import org.geppetto.core.model.state.StateTreeRoot;
+import org.geppetto.core.model.state.StateTreeRoot.SUBTREE;
 import org.geppetto.core.visualisation.model.Scene;
 import org.geppetto.model.sph.SPHModel;
 import org.geppetto.model.sph.SPHParticle;
@@ -96,10 +98,12 @@ public class SPHModelInterpreterService implements IModelInterpreter
 	 */
 	public Scene getSceneFromModel(IModel model, StateTreeRoot stateTree)
 	{
+		CompositeStateNode modelTree = stateTree.getSubTree(SUBTREE.MODEL_TREE);
+		
 		long starttime = System.currentTimeMillis();
 		logger.info("SPH Model to scene conversion starting...");
 		CreateSPHSceneVisitor createSceneVisitor=new CreateSPHSceneVisitor(model.getId());
-		stateTree.apply(createSceneVisitor);
+		modelTree.apply(createSceneVisitor);
 		logger.info("Model to scene conversion end, took: " + (System.currentTimeMillis() - starttime) + "ms");
 		return createSceneVisitor.getScene();
 	}
