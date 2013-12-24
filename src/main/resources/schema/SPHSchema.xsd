@@ -82,7 +82,11 @@
 			<element name="particle_k" type="int"></element>
 		</sequence>
 	</complexType>
-
+	<complexType name="MembraneIndex">
+		<sequence>
+			<element name="index" type="int"></element>
+		</sequence>
+	</complexType>
 	<element name="SPHModel">
 		<complexType>
 			<sequence>
@@ -96,6 +100,8 @@
 					maxOccurs="unbounded" minOccurs="0">
 				</element>
 				<element name="membranes" type="tns:Membrane" maxOccurs="unbounded"
+				minOccurs="0"></element>
+				<element name="particleMembranesList" type="tns:MembraneIndex" maxOccurs="unbounded"
 				minOccurs="0"></element>
 			</sequence>
 			<attribute name="xMax" type="float"></attribute>
@@ -144,9 +150,5 @@
 		</sequence>
 
 	</complexType>
-
-
-
-
 </schema>
 
