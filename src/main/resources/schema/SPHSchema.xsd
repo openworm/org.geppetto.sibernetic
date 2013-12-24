@@ -80,7 +80,6 @@
 			<element name="particlesIndexes" type="int" maxOccurs="unbounded"
 				minOccurs="1"></element>
 		</sequence>
-		<attribute name="typeOfMembrane" type="int"></attribute>
 	</complexType>
 
 	<element name="SPHModel">
