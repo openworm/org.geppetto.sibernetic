@@ -74,6 +74,14 @@
 		<attribute name="z" type="float"></attribute>
 		<attribute name="p" type="float"></attribute>
 	</complexType>
+	
+	<complexType name="Membrane">
+		<sequence>
+			<element name="particlesIndexes" type="int" maxOccurs="unbounded"
+				minOccurs="1"></element>
+		</sequence>
+		<attribute name="typeOfMembrane" type="int"></attribute>
+	</complexType>
 
 	<element name="SPHModel">
 		<complexType>
@@ -87,6 +95,8 @@
 				<element name="connections" type="tns:Connection"
 					maxOccurs="unbounded" minOccurs="0">
 				</element>
+				<element name="membranes" type="tns:Membrane" maxOccurs="unbounded"
+				minOccurs="0"></element>
 			</sequence>
 			<attribute name="xMax" type="float"></attribute>
 			<attribute name="xMin" type="float"></attribute>
@@ -139,3 +149,4 @@
 
 
 </schema>
+
