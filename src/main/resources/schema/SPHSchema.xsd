@@ -77,8 +77,9 @@
 	
 	<complexType name="Membrane">
 		<sequence>
-			<element name="particlesIndexes" type="int" maxOccurs="unbounded"
-				minOccurs="1"></element>
+			<element name="particle_i" type="int"></element>
+			<element name="particle_j" type="int"></element>
+			<element name="particle_k" type="int"></element>
 		</sequence>
 	</complexType>
 

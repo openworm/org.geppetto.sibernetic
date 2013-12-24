@@ -35,6 +35,7 @@ package org.geppetto.model.sph.common;
 
 public class SPHConstants {
 	public static final int NEIGHBOR_COUNT = 32;
+	public static final int MAX_MEMBRANES_INCLUDING_SAME_PARTICLE = 7;
 	
 	public static final float LIQUID_TYPE = 1.1f;
 	public static final float ELASTIC_TYPE = 2.1f;
