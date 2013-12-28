@@ -55,28 +55,32 @@ public class SPHConstants {
 	// R0 is the distance between two boundary particle == equilibrium distance between 2 particles / Ihmsen et al., 2010, page 4, line 3
 	public static final float R0 = 0.5f * H;
 
-	public static final float MASS = 0.0003f;
+	public static final float MASS = 3.25e-14f;
 	public static final float HASH_GRID_CELL_SIZE = 2.0f * H;
 	public static final float HASH_GRID_CELL_SIZE_INV = 1.0f / HASH_GRID_CELL_SIZE;
-	public static final float SIMULATION_SCALE = 0.004f;
+	public static final float SIMULATION_SCALE = (float) ( 0.004f * Math.pow( MASS, 1.f/3.f ) / Math.pow( 0.00025f, 1.f/3.f ) );
 	public static final float SIMULATION_SCALE_INV = 1.0f / SIMULATION_SCALE;
-	public static final float MU = 10.0f;
-	public static final float TIME_STEP = 0.001f; 
+	public static final float viscosity = 0.00008f;
+	public static final float TIME_STEP = 8.0e-06f; //s
 	public static final float CFLLimit = 100.0f;
-
+	//Looks Like this is useless constant and will be removed but I need ask Andrey before
+	public static final float INTERNAL_PARTICLE_DISTANCE = 0.5f * H * SIMULATION_SCALE;
+	public static final float PREMILINARY_WORM_LENGTH = 311 * INTERNAL_PARTICLE_DISTANCE;
+	//
 	public static final float DAMPING = 0.75f;
+	public static final int MUSCLE_COUNT = 100;//increase this value and modify corresponding code if you plan to add more than 10 muscles
 
-	public static final float W_POLY_6_COEFFICIENT = (float) (315.0f / ( 64.0f * M_PI * Math.pow( H * SIMULATION_SCALE, 9.0f ) ));
-	public static final float GRAD_W_SPIKY_COEFFICIENT= (float) (-45.0f / ( M_PI * Math.pow( H * SIMULATION_SCALE, 6.0f ) ));
-	public static final float DEL_2_W_VISCOSITY_COEFFICIENT = -GRAD_W_SPIKY_COEFFICIENT;
+	public static final double W_POLY_6_COEFFICIENT = (315.0 / ( 64.0 * M_PI * Math.pow( (double) (H * SIMULATION_SCALE), 9.0 ) ));
+	public static final double GRAD_W_SPIKY_COEFFICIENT= (-45.0 / ( M_PI * Math.pow( (double)(H * SIMULATION_SCALE), 6.0 ) ));
+	public static final double DEL_2_W_VISCOSITY_COEFFICIENT = -GRAD_W_SPIKY_COEFFICIENT;
 
 	public static final float GRAVITY_X = 0.0f;
 	public static final float GRAVITY_Y = -9.8f;
 	public static final float GRAVITY_Z = 0.0f;
 	
 	// B. Solenthaler's dissertation, formula 3.6 (end of page 30)
-	public static final float BETA = TIME_STEP*TIME_STEP * MASS*MASS * 2 / ( RHO0*RHO0 );
-	public static final float BETA_INV = 1.0f / BETA;
+	public static final double BETA = TIME_STEP * TIME_STEP * MASS * MASS * 2 / ( RHO0 * RHO0 );
+	public static final double BETA_INV = 1.0f / BETA;
 	
 	public static final float DELTA = getDELTA();
 	
@@ -88,7 +92,7 @@ public class SPHConstants {
 		float sum1_x = 0.f;
 		float sum1_y = 0.f;
 		float sum1_z = 0.f;
-	    float sum1 = 0.f, sum2 = 0.f;
+	    double sum1 = 0.f, sum2 = 0.f;
 		float v_x = 0.f;
 		float v_y = 0.f;
 		float v_z = 0.f;
@@ -118,6 +122,6 @@ public class SPHConstants {
 
 		sum1 = sum1_x*sum1_x + sum1_y*sum1_y + sum1_z*sum1_z;
 
-		return  1.0f / (BETA * GRAD_W_SPIKY_COEFFICIENT * GRAD_W_SPIKY_COEFFICIENT * (sum1 + sum2));
+		return (float) (1.0f / (BETA * GRAD_W_SPIKY_COEFFICIENT * GRAD_W_SPIKY_COEFFICIENT * (sum1 + sum2)));
 	}
 }
