@@ -43,6 +43,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.model.IModel;
 import org.geppetto.core.model.IModelInterpreter;
+import org.geppetto.core.model.ModelInterpreterException;
 import org.geppetto.core.model.state.CompositeStateNode;
 import org.geppetto.core.model.state.StateTreeRoot;
 import org.geppetto.core.model.state.StateTreeRoot.SUBTREE;
@@ -68,7 +69,7 @@ public class SPHModelInterpreterService implements IModelInterpreter
 	 * 
 	 * @see org.geppetto.core.model.IModelProvider#readModel(java .lang.String)
 	 */
-	public IModel readModel(URL url)
+	public IModel readModel(URL url) throws ModelInterpreterException
 	{
 		JAXBContext context;
 		SPHModelX sphModelX = null;
@@ -87,6 +88,7 @@ public class SPHModelInterpreterService implements IModelInterpreter
 		catch(JAXBException e1)
 		{
 			logger.error("Unable to read model with url: " + url);
+			throw new ModelInterpreterException(e1);
 		}
 		return sphModelX;
 	}
