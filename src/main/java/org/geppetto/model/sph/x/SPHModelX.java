@@ -37,6 +37,7 @@ import java.util.ArrayList;
 
 import org.geppetto.core.model.IModel;
 import org.geppetto.model.sph.Connection;
+import org.geppetto.model.sph.Membrane;
 import org.geppetto.model.sph.SPHCell;
 import org.geppetto.model.sph.SPHModel;
 import org.geppetto.model.sph.SPHParticle;
@@ -76,6 +77,8 @@ public class SPHModelX extends SPHModel implements IModel, Comparable<SPHModelX>
 		this.zMin = sphModel.getZMin();
 		this.elasticBundles = sphModel.getElasticBundles();
 		this.connections = new ArrayList<Connection>();
+		this.membranes = new ArrayList<Membrane>();
+		this.particleMembranesList = new ArrayList<Integer>();
 		this.particles = new ArrayList<SPHParticle>();
 		this.cells = new ArrayList<SPHCell>();
 		for(SPHParticle p:sphModel.getParticles())
@@ -89,6 +92,14 @@ public class SPHModelX extends SPHModel implements IModel, Comparable<SPHModelX>
 		for(Connection c:sphModel.getConnections())
 		{
 			getConnections().add(c);
+		}
+		for(Membrane m:sphModel.getMembranes())
+		{
+			getMembranes().add(m);
+		}
+		for(Integer index:sphModel.getParticleMembranesList())
+		{
+			getParticleMembranesList().add(index);
 		}
 	}
 

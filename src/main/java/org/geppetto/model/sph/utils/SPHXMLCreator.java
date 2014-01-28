@@ -490,7 +490,7 @@ public class SPHXMLCreator {
 					i++;
 				}
 	
-				for(int i_ec = 0; i_ec < numOfElasticP * SPHConstants.NEIGHBOR_COUNT; i_ec++)
+				for(int i_ec = 0; i_ec < numOfElasticP * SPHConstants.MAX_NEIGHBOR_COUNT; i_ec++)
 				{
 					Connection conn = new Connection();
 					conn.setP1(SPHConstants.NO_PARTICLE_ID);
@@ -525,13 +525,13 @@ public class SPHXMLCreator {
 							if(r2ij<=SPHConstants.R0*SPHConstants.R0*3.05f)
 							{
 								//connect elastic particles 0 and 1
-								model.getConnections().get(SPHConstants.NEIGHBOR_COUNT * i_ec + ecc).setP1(((float)j_ec) + 0.1f);
-								model.getConnections().get(SPHConstants.NEIGHBOR_COUNT * i_ec + ecc).setDistance((float)Math.sqrt(r2ij)* SPHConstants.SIMULATION_SCALE);
-								model.getConnections().get(SPHConstants.NEIGHBOR_COUNT * i_ec + ecc).setMysteryValue((float) (0 + 1.1 * ((((dz2>100*dx2)&&(dz2>100*dy2))) ? 1 : 0)));
+								model.getConnections().get(SPHConstants.MAX_NEIGHBOR_COUNT * i_ec + ecc).setP1(((float)j_ec) + 0.1f);
+								model.getConnections().get(SPHConstants.MAX_NEIGHBOR_COUNT * i_ec + ecc).setDistance((float)Math.sqrt(r2ij)* SPHConstants.SIMULATION_SCALE);
+								model.getConnections().get(SPHConstants.MAX_NEIGHBOR_COUNT * i_ec + ecc).setMysteryValue((float) (0 + 1.1 * ((((dz2>100*dx2)&&(dz2>100*dy2))) ? 1 : 0)));
 								ecc++;
 							}
 	
-							if(ecc>=SPHConstants.NEIGHBOR_COUNT) break;
+							if(ecc>=SPHConstants.MAX_NEIGHBOR_COUNT) break;
 						}
 					}
 				}

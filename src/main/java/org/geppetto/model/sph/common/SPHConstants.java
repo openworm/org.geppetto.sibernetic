@@ -34,7 +34,7 @@
 package org.geppetto.model.sph.common;
 
 public class SPHConstants {
-	public static final int NEIGHBOR_COUNT = 32;
+	public static final int MAX_NEIGHBOR_COUNT = 32;
 	public static final int MAX_MEMBRANES_INCLUDING_SAME_PARTICLE = 7;
 	
 	public static final float LIQUID_TYPE = 1.1f;
@@ -61,7 +61,7 @@ public class SPHConstants {
 	public static final float SIMULATION_SCALE = (float) ( 0.004f * Math.pow( MASS, 1.f/3.f ) / Math.pow( 0.00025f, 1.f/3.f ) );
 	public static final float SIMULATION_SCALE_INV = 1.0f / SIMULATION_SCALE;
 	public static final float viscosity = 0.00008f;
-	public static final float TIME_STEP = 8.0e-06f; //s
+	public static final float TIME_STEP = 5.0e-06f; //s
 	public static final float CFLLimit = 100.0f;
 	//Looks Like this is useless constant and will be removed but I need ask Andrey before
 	public static final float INTERNAL_PARTICLE_DISTANCE = 0.5f * H * SIMULATION_SCALE;
