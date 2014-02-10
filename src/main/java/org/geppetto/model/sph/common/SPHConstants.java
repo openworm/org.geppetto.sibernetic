@@ -60,7 +60,7 @@ public class SPHConstants {
 	public static final float HASH_GRID_CELL_SIZE_INV = 1.0f / HASH_GRID_CELL_SIZE;
 	public static final float SIMULATION_SCALE = (float) ( 0.004f * Math.pow( MASS, 1.f/3.f ) / Math.pow( 0.00025f, 1.f/3.f ) );
 	public static final float SIMULATION_SCALE_INV = 1.0f / SIMULATION_SCALE;
-	public static final float viscosity = 0.00008f;
+	public static final float viscosity = 0.00005f;
 	public static final float TIME_STEP = 5.0e-06f; //s
 	public static final float CFLLimit = 100.0f;
 	//Looks Like this is useless constant and will be removed but I need ask Andrey before
