@@ -16,7 +16,7 @@
 			<entry key="discoverableID" value="sphModelInterpreter" />
 		</osgi:service-properties>
 	</osgi:service>
-	<bean id="SPHModelInterpreterService" scope="session" class="org.geppetto.model.sph.services.SPHModelInterpreterService">
+	<bean id="SPHModelInterpreterService" scope="thread" class="org.geppetto.model.sph.services.SPHModelInterpreterService">
 	<aop:scoped-proxy proxy-target-class="false"/>
 	</bean>
 </beans>
