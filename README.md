@@ -1,4 +1,9 @@
-# Geppetto Model bundle for Smoothed Particle Hydrodynamics
-http://openworm.org
+[![Build Status](https://travis-ci.org/openworm/org.geppetto.model.sph.png?branch=master)](https://travis-ci.org/openworm/org.geppetto.model.sph)
 
-Please see installation information [available online](http://bit.ly/NBuKjd).
+<p align="center">
+  <img src="https://raw.github.com/openworm/org.geppetto.frontend/master/src/main/webapp/images/geppetto-logo@2x.png" alt="Geppetto logo"/>
+</p>
+
+# Geppetto Sibernetic (PCI-SPH) model interpreter
+
+This module contains a Geppetto model interpreter which is capable of parsing a particle model (whose schema is based on the original [Sibernetic](http://openworm.github.io/Smoothed-Particle-Hydrodynamics/) implementation) and to create a visualisation model which is compatible with the frontend of Geppetto.
