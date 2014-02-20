@@ -11,5 +11,15 @@
 	<!-- Instructs Spring to scan for internal service components to instantiate and configure -->
 	<context:annotation-config />			
 	<context:component-scan base-package="org.geppetto.model.sph.services" />
-		
+	
+	<bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+		<property name="scopes">
+			<map>		
+				<entry key="thread">
+					<ref bean="threadScope" />
+				</entry>
+			</map>
+		</property>
+	</bean>
+	<bean id="threadScope" class="org.geppetto.core.scope.ThreadScope"/>
 </beans>
