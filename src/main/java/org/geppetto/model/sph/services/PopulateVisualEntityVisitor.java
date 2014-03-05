@@ -36,45 +36,49 @@ import org.geppetto.core.model.state.CompositeStateNode;
 import org.geppetto.core.model.state.SimpleStateNode;
 import org.geppetto.core.model.state.visitors.DefaultStateVisitor;
 import org.geppetto.core.model.values.FloatValue;
-import org.geppetto.core.visualisation.model.Entity;
+import org.geppetto.core.visualisation.model.CEntity;
 import org.geppetto.core.visualisation.model.Particle;
 import org.geppetto.core.visualisation.model.Point;
-import org.geppetto.core.visualisation.model.Scene;
+import org.geppetto.core.visualisation.model.VisualModel;
 import org.geppetto.model.sph.common.SPHConstants;
 
 /**
  * @author matteocantarelli
  *
  */
-public class CreateSPHSceneVisitor extends DefaultStateVisitor
+public class PopulateVisualEntityVisitor extends DefaultStateVisitor
 {
 
-	private Scene _scene = new Scene();
-	private Entity _liquidEntity = new Entity();
-	private Entity _boundaryEntity = new Entity();
-	private Entity _elasticEntity = new Entity();
+	private VisualModel _liquidModel = new VisualModel();
+	private VisualModel _boundaryModel = new VisualModel();
+	private VisualModel _elasticModel = new VisualModel();
 	private Float _particleKind;
 	private Particle _newParticle;
 	private Point _newPoint;
+	private CEntity _cEntity;
 	
 	
-	public Scene getScene()
-	{
-		return _scene;
-	}
-	
-	public CreateSPHSceneVisitor(String modelId)
+	/**
+	 * @param cEntity
+	 * @param modelId
+	 */
+	public PopulateVisualEntityVisitor(CEntity cEntity, String modelId)
 	{
 		super();
-		_scene.getEntities().add(_liquidEntity);
-		_scene.getEntities().add(_boundaryEntity);
-		_scene.getEntities().add(_elasticEntity);
+		this._cEntity = cEntity;
+		_cEntity.getAspects().get(0).getVisualModel().add(_liquidModel);
+		_cEntity.getAspects().get(0).getVisualModel().add(_boundaryModel);
+		_cEntity.getAspects().get(0).getVisualModel().add(_elasticModel);
 
-		_liquidEntity.setId("LIQUID_" + modelId);
-		_boundaryEntity.setId("BOUNDARY_" + modelId);
-		_elasticEntity.setId("ELASTIC_" + modelId);
+		_liquidModel.setId("LIQUID_" + modelId);
+		_boundaryModel.setId("BOUNDARY_" + modelId);
+		_elasticModel.setId("ELASTIC_" + modelId);
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see org.geppetto.core.model.state.visitors.DefaultStateVisitor#inCompositeStateNode(org.geppetto.core.model.state.CompositeStateNode)
+	 */
 	@Override
 	public boolean inCompositeStateNode(CompositeStateNode node)
 	{
@@ -88,6 +92,9 @@ public class CreateSPHSceneVisitor extends DefaultStateVisitor
 		return super.inCompositeStateNode(node);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.geppetto.core.model.state.visitors.DefaultStateVisitor#outCompositeStateNode(org.geppetto.core.model.state.CompositeStateNode)
+	 */
 	@Override
 	public boolean outCompositeStateNode(CompositeStateNode node)
 	{
@@ -95,15 +102,15 @@ public class CreateSPHSceneVisitor extends DefaultStateVisitor
 		{
 			if(_particleKind.equals(SPHConstants.LIQUID_TYPE))
 			{
-				_liquidEntity.getGeometries().add(_newParticle);
+				_liquidModel.getObjects().add(_newParticle);
 			}
 			else if(_particleKind.equals(SPHConstants.ELASTIC_TYPE))
 			{
-				_elasticEntity.getGeometries().add(_newParticle);
+				_elasticModel.getObjects().add(_newParticle);
 			}
 			else if(_particleKind.equals(SPHConstants.BOUNDARY_TYPE))
 			{
-				_boundaryEntity.getGeometries().add(_newParticle);
+				_boundaryModel.getObjects().add(_newParticle);
 			}
 			_newParticle=null;
 			_newPoint=null;
@@ -111,6 +118,9 @@ public class CreateSPHSceneVisitor extends DefaultStateVisitor
 		return super.outCompositeStateNode(node);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.geppetto.core.model.state.visitors.DefaultStateVisitor#visitSimpleStateNode(org.geppetto.core.model.state.SimpleStateNode)
+	 */
 	@Override
 	public boolean visitSimpleStateNode(SimpleStateNode node)
 	{
@@ -132,5 +142,6 @@ public class CreateSPHSceneVisitor extends DefaultStateVisitor
 		}
 		return super.visitSimpleStateNode(node);
 	}
+
 
 }

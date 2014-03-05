@@ -44,10 +44,12 @@ import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.model.IModel;
 import org.geppetto.core.model.IModelInterpreter;
 import org.geppetto.core.model.ModelInterpreterException;
+import org.geppetto.core.model.simulation.Aspect;
 import org.geppetto.core.model.state.CompositeStateNode;
 import org.geppetto.core.model.state.StateTreeRoot;
 import org.geppetto.core.model.state.StateTreeRoot.SUBTREE;
-import org.geppetto.core.visualisation.model.Scene;
+import org.geppetto.core.visualisation.model.CAspect;
+import org.geppetto.core.visualisation.model.CEntity;
 import org.geppetto.model.sph.SPHModel;
 import org.geppetto.model.sph.SPHParticle;
 import org.geppetto.model.sph.x.SPHModelX;
@@ -93,22 +95,7 @@ public class SPHModelInterpreterService implements IModelInterpreter
 		return sphModelX;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.geppetto.core.model.IModelInterpreter#getSceneFromModel(java.util.List)
-	 */
-	public Scene getSceneFromModel(IModel model, StateTreeRoot stateTree)
-	{
-		CompositeStateNode modelTree = stateTree.getSubTree(SUBTREE.MODEL_TREE);
-		
-		long starttime = System.currentTimeMillis();
-		logger.info("SPH Model to scene conversion starting...");
-		CreateSPHSceneVisitor createSceneVisitor=new CreateSPHSceneVisitor(model.getId());
-		modelTree.apply(createSceneVisitor);
-		logger.info("Model to scene conversion end, took: " + (System.currentTimeMillis() - starttime) + "ms");
-		return createSceneVisitor.getScene();
-	}
+
 
 	public static String getPropertyPath(int index, String vector, String property)
 	{
@@ -118,6 +105,23 @@ public class SPHModelInterpreterService implements IModelInterpreter
 	public static String getParticleId(int index)
 	{
 		return "p[" + index + "]";
+	}
+
+	@Override
+	public CEntity getVisualEntity(IModel model, Aspect aspect, StateTreeRoot stateTree) throws ModelInterpreterException
+	{
+		CompositeStateNode modelTree = stateTree.getSubTree(SUBTREE.MODEL_TREE);
+		CEntity visualEntity=new CEntity();
+		CAspect visualAspect=new CAspect();
+		visualAspect.setId(aspect.getId());
+		visualEntity.getAspects().add(visualAspect);
+		
+		long starttime = System.currentTimeMillis();
+		logger.info("SPH Model to scene conversion starting...");
+		PopulateVisualEntityVisitor createSceneVisitor=new PopulateVisualEntityVisitor(visualEntity,model.getId());
+		modelTree.apply(createSceneVisitor);
+		logger.info("Model to scene conversion end, took: " + (System.currentTimeMillis() - starttime) + "ms");
+		return visualEntity;
 	}
 	
 }
