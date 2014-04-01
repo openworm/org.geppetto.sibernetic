@@ -10,7 +10,7 @@
 		<spring.version>3.0.0.RELEASE</spring.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	<version>0.0.9</version>
+	<version>0.1.0</version>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -48,7 +48,7 @@
 		<dependency>
 			<groupId>org.geppetto</groupId>
 			<artifactId>core</artifactId>
-			<version>0.0.9</version>
+			<version>0.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
@@ -81,6 +81,14 @@
 
 	<build>
 		<plugins>
+		<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-surefire-plugin</artifactId>
+	<version>2.12.4</version>
+	<configuration>
+		<skipTests>true</skipTests>
+	</configuration>
+    </plugin>
 			<plugin>
 				<groupId>org.jvnet.jaxb2.maven2</groupId>
 				<artifactId>maven-jaxb2-plugin</artifactId>
@@ -133,6 +141,9 @@
 						<Include-Resource>
 							{maven-resources},META-INF/spring=src/main/java/META-INF/spring
 						</Include-Resource>
+						<Import-Package>
+							org.geppetto.core.scope,org.aopalliance.aop,org.springframework.aop,,org.springframework.aop.scope,org.springframework.aop.framework,*
+						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
