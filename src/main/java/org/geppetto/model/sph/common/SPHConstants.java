@@ -33,6 +33,8 @@
 
 package org.geppetto.model.sph.common;
 
+import org.springframework.beans.support.ArgumentConvertingMethodInvoker;
+
 public class SPHConstants {
 	public static final int MAX_NEIGHBOR_COUNT = 32;
 	public static final int MAX_MEMBRANES_INCLUDING_SAME_PARTICLE = 7;
@@ -55,36 +57,55 @@ public class SPHConstants {
 	// R0 is the distance between two boundary particle == equilibrium distance between 2 particles / Ihmsen et al., 2010, page 4, line 3
 	public static final float R0 = 0.5f * H;
 
-	public static final float MASS = 3.25e-14f;
+	public static final float MASS = 0.0003f;
 	public static final float HASH_GRID_CELL_SIZE = 2.0f * H;
 	public static final float HASH_GRID_CELL_SIZE_INV = 1.0f / HASH_GRID_CELL_SIZE;
 	public static final float SIMULATION_SCALE = (float) ( 0.004f * Math.pow( MASS, 1.f/3.f ) / Math.pow( 0.00025f, 1.f/3.f ) );
 	public static final float SIMULATION_SCALE_INV = 1.0f / SIMULATION_SCALE;
-	public static final float viscosity = 0.00005f;
-	public static final float TIME_STEP = 5.0e-06f; //s
+	public static final float viscosity = 1.f;
+	public static final float TIME_STEP = 0.001f; //s
 	public static final float CFLLimit = 100.0f;
 	//Looks Like this is useless constant and will be removed but I need ask Andrey before
-	public static final float INTERNAL_PARTICLE_DISTANCE = 0.5f * H * SIMULATION_SCALE;
-	public static final float PREMILINARY_WORM_LENGTH = 311 * INTERNAL_PARTICLE_DISTANCE;
+	public static float INTERNAL_PARTICLE_DISTANCE;
+	public static float PREMILINARY_WORM_LENGTH;
 	//
 	public static final float DAMPING = 0.75f;
 	public static final int MUSCLE_COUNT = 100;//increase this value and modify corresponding code if you plan to add more than 10 muscles
 
-	public static final double W_POLY_6_COEFFICIENT = (315.0 / ( 64.0 * M_PI * Math.pow( (double) (H * SIMULATION_SCALE), 9.0 ) ));
-	public static final double GRAD_W_SPIKY_COEFFICIENT= (-45.0 / ( M_PI * Math.pow( (double)(H * SIMULATION_SCALE), 6.0 ) ));
-	public static final double DEL_2_W_VISCOSITY_COEFFICIENT = -GRAD_W_SPIKY_COEFFICIENT;
+	public static double W_POLY_6_COEFFICIENT;
+	public static double GRAD_W_SPIKY_COEFFICIENT;
+	public static double DEL_2_W_VISCOSITY_COEFFICIENT;
 
 	public static final float GRAVITY_X = 0.0f;
 	public static final float GRAVITY_Y = -9.8f;
 	public static final float GRAVITY_Z = 0.0f;
 	
+	
+	public static final float SURFACE_TENSION_COEFFICIENT = -0.0013f;
+	public static final float ELASTICITY_COEFFICIENT = 100000.0f * MASS;
+
 	// B. Solenthaler's dissertation, formula 3.6 (end of page 30)
-	public static final double BETA = TIME_STEP * TIME_STEP * MASS * MASS * 2 / ( RHO0 * RHO0 );
-	public static final double BETA_INV = 1.0f / BETA;
-	
-	public static final float DELTA = getDELTA();
-	
-	private static float getDELTA(){
+	public static double BETA = 0.0;
+	public static double BETA_INV;
+	public static float DELTA;
+	public static void setDependingParammeters(float simulationScale, float mass){
+		if(simulationScale == 0.0f || mass == 0.0f)
+			throw new IllegalArgumentException("Simulation parametrs couldn't be zero, check mass and simulationScale parametrs.");
+		INTERNAL_PARTICLE_DISTANCE = 0.5f * H * simulationScale;
+		PREMILINARY_WORM_LENGTH = 311 * INTERNAL_PARTICLE_DISTANCE;
+		W_POLY_6_COEFFICIENT = (315.0 / ( 64.0 * M_PI * Math.pow( (double) (H * simulationScale), 9.0 ) ));
+		GRAD_W_SPIKY_COEFFICIENT= (-45.0 / ( M_PI * Math.pow( (double)(H * simulationScale), 6.0 ) ));
+		DEL_2_W_VISCOSITY_COEFFICIENT = -GRAD_W_SPIKY_COEFFICIENT;
+		DELTA = getDELTA(simulationScale, mass);
+	}
+	public static void setBeta(float timeStep, float mass){
+		BETA = timeStep * timeStep * mass * mass * 2 / ( RHO0 * RHO0 );
+		if(BETA != 0)
+			BETA_INV = 1.0f / BETA;
+		else
+			throw new ArithmeticException("BETA wasn't init. Check configuration one of simulation's parametters is equal to zero check mass and timeStep.");
+	}
+	private static float getDELTA(float simulationScale, float mass){
 	    float x[] = { 1, 1, 0,-1,-1,-1, 0, 1, 1, 1, 0,-1,-1,-1, 0, 1, 1, 1, 0,-1,-1,-1, 0, 1, 2,-2, 0, 0, 0, 0, 0, 0 };
 	    float y[] = { 0, 1, 1, 1, 0,-1,-1,-1, 0, 1, 1, 1, 0,-1,-1,-1, 0, 1, 1, 1, 0,-1,-1,-1, 0, 0, 2,-2, 0, 0, 0, 0 };
 	    float z[] = { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,-1,-1,-1,-1,-1,-1,-1,-1, 0, 0, 0, 0, 2,-2, 1,-1 };
@@ -97,7 +118,7 @@ public class SPHConstants {
 		float v_y = 0.f;
 		float v_z = 0.f;
 		float dist;
-		float particleRadius = (float) Math.pow(MASS/RHO0,1.f/3.f);
+		float particleRadius = (float) Math.pow(mass/RHO0,1.f/3.f);
 		float h_r_2;									
 
 	    for (int i = 0; i < 32; i++)
@@ -110,7 +131,7 @@ public class SPHConstants {
 
 	        if (dist <= H)
 	        {
-				h_r_2 = (float) Math.pow((H*SIMULATION_SCALE - dist),2);
+				h_r_2 = (float) Math.pow((H*simulationScale - dist),2);
 
 	            sum1_x += h_r_2 * v_x / dist;
 				sum1_y += h_r_2 * v_y / dist;
@@ -121,7 +142,9 @@ public class SPHConstants {
 	    }
 
 		sum1 = sum1_x*sum1_x + sum1_y*sum1_y + sum1_z*sum1_z;
-
-		return (float) (1.0f / (BETA * GRAD_W_SPIKY_COEFFICIENT * GRAD_W_SPIKY_COEFFICIENT * (sum1 + sum2)));
+		if(BETA != 0.0)
+			return (float) (1.0f / (BETA * GRAD_W_SPIKY_COEFFICIENT * GRAD_W_SPIKY_COEFFICIENT * (sum1 + sum2)));
+		else
+			throw new ArithmeticException("BETA wasn't initialized it equal to zero. DELTA isn't init.");
 	}
 }

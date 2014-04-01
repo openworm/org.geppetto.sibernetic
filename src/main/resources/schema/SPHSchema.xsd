@@ -94,10 +94,12 @@
 				<element name="connections" type="tns:Connection"
 					maxOccurs="unbounded" minOccurs="0">
 				</element>
-				<element name="membranes" type="tns:Membrane" maxOccurs="unbounded"
-				minOccurs="0"></element>
-				<element name="particleMembranesList" type="int" maxOccurs="unbounded"
-				minOccurs="0"></element>
+				<element name="membranes" type="tns:Membrane"
+					maxOccurs="unbounded" minOccurs="0">
+				</element>
+				<element name="particleMembranesList" type="int"
+					maxOccurs="unbounded" minOccurs="0">
+				</element>
 			</sequence>
 			<attribute name="xMax" type="float"></attribute>
 			<attribute name="xMin" type="float"></attribute>
@@ -107,6 +109,11 @@
 			<attribute name="zMin" type="float"></attribute>
 
 			<attribute name="elasticBundles" type="int"></attribute>
+			<attribute name="mass" type="float"></attribute>
+			<attribute name="timeStep" type="float"></attribute>
+			<attribute name="surfTensionCoeff" type="float"></attribute>
+			<attribute name="elasticitiCoeff" type="float"></attribute>
+			<attribute name="viscosityCoeff" type="float"></attribute>
 		</complexType>
 	</element>
 
