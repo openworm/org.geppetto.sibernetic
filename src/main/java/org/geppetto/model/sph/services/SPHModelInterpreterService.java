@@ -34,6 +34,7 @@
 package org.geppetto.model.sph.services;
 
 import java.net.URL;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -71,7 +72,7 @@ public class SPHModelInterpreterService implements IModelInterpreter
 	 * 
 	 * @see org.geppetto.core.model.IModelProvider#readModel(java .lang.String)
 	 */
-	public IModel readModel(URL url) throws ModelInterpreterException
+	public IModel readModel(URL url, List<URL> recordings, String instancePath) throws ModelInterpreterException
 	{
 		JAXBContext context;
 		SPHModelX sphModelX = null;
@@ -81,6 +82,7 @@ public class SPHModelInterpreterService implements IModelInterpreter
 			Unmarshaller um = context.createUnmarshaller();
 			SPHModel sphModel = (SPHModel) um.unmarshal(url);
 			sphModelX = new SPHModelX(sphModel);
+			sphModelX.setInstancePath(instancePath);
 			int i = 0;
 			for(SPHParticle p : sphModelX.getParticles())
 			{
