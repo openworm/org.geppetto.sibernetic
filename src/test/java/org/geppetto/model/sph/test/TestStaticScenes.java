@@ -68,7 +68,7 @@ public class TestStaticScenes {
 		// 2. load Java generated scene
 		URL url = this.getClass().getResource("/sphModel_Elastic.xml");
 		SPHModelInterpreterService modelInterpreter = new SPHModelInterpreterService();
-		SPHModelX model = (SPHModelX)modelInterpreter.readModel(url);
+		SPHModelX model = (SPHModelX)modelInterpreter.readModel(url,null,"");
 		
 		// 3. assert number of particles is fine
 		Assert.assertTrue("number of lines on velocity and positions files do not match", velocityLines.length == positionLines.length);
@@ -139,7 +139,7 @@ public class TestStaticScenes {
 		// 2. load Java generated scene
 		URL url = this.getClass().getResource("/sphModel_liquid_16974.xml");
 		SPHModelInterpreterService modelInterpreter = new SPHModelInterpreterService();
-		SPHModelX model = (SPHModelX)modelInterpreter.readModel(url);
+		SPHModelX model = (SPHModelX)modelInterpreter.readModel(url,null,"");
 		
 		// 3. assert number of particles is fine
 		Assert.assertTrue("number of lines on velocity and positions files do not match", velocityLines.length == positionLines.length);
