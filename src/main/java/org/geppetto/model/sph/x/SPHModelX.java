@@ -46,6 +46,8 @@ import org.geppetto.model.sph.Vector3D;
 public class SPHModelX extends SPHModel implements IModel, Comparable<SPHModelX> {
 	
 	
+	private String _instancePath;
+
 	public SPHModelX(float xMax, float xMin, float yMax, float yMin, float zMax, float zMin){
 		this.xMax = xMax;
 		this.xMin = xMin;
@@ -143,6 +145,18 @@ public class SPHModelX extends SPHModel implements IModel, Comparable<SPHModelX>
 			
 		}
 		return different;
+	}
+
+	@Override
+	public void setInstancePath(String instancePath)
+	{
+		_instancePath=instancePath;
+	}
+
+	@Override
+	public String getInstancePath()
+	{
+		return _instancePath;
 	}
 	
 }
