@@ -46,7 +46,7 @@ import org.geppetto.core.model.IModel;
 import org.geppetto.core.model.IModelInterpreter;
 import org.geppetto.core.model.ModelInterpreterException;
 import org.geppetto.core.model.simulation.Aspect;
-import org.geppetto.core.model.state.CompositeStateNode;
+import org.geppetto.core.model.state.ACompositeStateNode;
 import org.geppetto.core.model.state.StateTreeRoot;
 import org.geppetto.core.model.state.StateTreeRoot.SUBTREE;
 import org.geppetto.core.visualisation.model.CAspect;
@@ -112,7 +112,7 @@ public class SPHModelInterpreterService implements IModelInterpreter
 	@Override
 	public CEntity getVisualEntity(IModel model, Aspect aspect, StateTreeRoot stateTree) throws ModelInterpreterException
 	{
-		CompositeStateNode modelTree = stateTree.getSubTree(SUBTREE.MODEL_TREE);
+		ACompositeStateNode modelTree = stateTree.getSubTree(SUBTREE.MODEL_TREE);
 		CEntity visualEntity=new CEntity();
 		CAspect visualAspect=new CAspect();
 		visualAspect.setId(aspect.getId());

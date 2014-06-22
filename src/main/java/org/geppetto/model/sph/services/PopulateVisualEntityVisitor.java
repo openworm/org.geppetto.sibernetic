@@ -32,8 +32,8 @@
  *******************************************************************************/
 package org.geppetto.model.sph.services;
 
-import org.geppetto.core.model.state.CompositeStateNode;
-import org.geppetto.core.model.state.SimpleStateNode;
+import org.geppetto.core.model.state.ACompositeStateNode;
+import org.geppetto.core.model.state.ASimpleStateNode;
 import org.geppetto.core.model.state.visitors.DefaultStateVisitor;
 import org.geppetto.core.model.values.FloatValue;
 import org.geppetto.core.visualisation.model.CEntity;
@@ -80,7 +80,7 @@ public class PopulateVisualEntityVisitor extends DefaultStateVisitor
 	 * @see org.geppetto.core.model.state.visitors.DefaultStateVisitor#inCompositeStateNode(org.geppetto.core.model.state.CompositeStateNode)
 	 */
 	@Override
-	public boolean inCompositeStateNode(CompositeStateNode node)
+	public boolean inCompositeStateNode(ACompositeStateNode node)
 	{
 		if(node.getName().startsWith("p["))
 		{
@@ -96,7 +96,7 @@ public class PopulateVisualEntityVisitor extends DefaultStateVisitor
 	 * @see org.geppetto.core.model.state.visitors.DefaultStateVisitor#outCompositeStateNode(org.geppetto.core.model.state.CompositeStateNode)
 	 */
 	@Override
-	public boolean outCompositeStateNode(CompositeStateNode node)
+	public boolean outCompositeStateNode(ACompositeStateNode node)
 	{
 		if(node.getName().startsWith("p["))
 		{
@@ -122,7 +122,7 @@ public class PopulateVisualEntityVisitor extends DefaultStateVisitor
 	 * @see org.geppetto.core.model.state.visitors.DefaultStateVisitor#visitSimpleStateNode(org.geppetto.core.model.state.SimpleStateNode)
 	 */
 	@Override
-	public boolean visitSimpleStateNode(SimpleStateNode node)
+	public boolean visitSimpleStateNode(ASimpleStateNode node)
 	{
 		if(node.getName()=="x")
 		{
