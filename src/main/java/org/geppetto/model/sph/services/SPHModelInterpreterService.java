@@ -47,10 +47,10 @@ import org.geppetto.core.model.IModelInterpreter;
 import org.geppetto.core.model.ModelInterpreterException;
 import org.geppetto.core.model.simulation.Aspect;
 import org.geppetto.core.model.state.ACompositeStateNode;
-import org.geppetto.core.model.state.StateTreeRoot;
-import org.geppetto.core.model.state.StateTreeRoot.SUBTREE;
-import org.geppetto.core.visualisation.model.CAspect;
-import org.geppetto.core.visualisation.model.CEntity;
+import org.geppetto.core.model.state.AspectNode;
+import org.geppetto.core.model.state.AspectTreeNode;
+import org.geppetto.core.model.state.AspectTreeNode.SUBTREE;
+import org.geppetto.core.model.state.EntityNode;
 import org.geppetto.model.sph.SPHModel;
 import org.geppetto.model.sph.SPHParticle;
 import org.geppetto.model.sph.x.SPHModelX;
@@ -110,11 +110,11 @@ public class SPHModelInterpreterService implements IModelInterpreter
 	}
 
 	@Override
-	public CEntity getVisualEntity(IModel model, Aspect aspect, StateTreeRoot stateTree) throws ModelInterpreterException
+	public EntityNode getVisualEntity(IModel model, Aspect aspect, AspectTreeNode stateTree) throws ModelInterpreterException
 	{
 		ACompositeStateNode modelTree = stateTree.getSubTree(SUBTREE.MODEL_TREE);
-		CEntity visualEntity=new CEntity();
-		CAspect visualAspect=new CAspect();
+		EntityNode visualEntity=new EntityNode();
+		AspectNode visualAspect=new AspectNode();
 		visualAspect.setId(aspect.getId());
 		visualEntity.getAspects().add(visualAspect);
 		
@@ -124,6 +124,28 @@ public class SPHModelInterpreterService implements IModelInterpreter
 		modelTree.apply(createSceneVisitor);
 		logger.info("Model to scene conversion end, took: " + (System.currentTimeMillis() - starttime) + "ms");
 		return visualEntity;
+	}
+
+	@Override
+	public boolean populateVisualTree(AspectNode aspectNode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+
+	@Override
+	public boolean populateModelTree(AspectNode aspectNode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+
+	@Override
+	public boolean populateRuntimeTree(AspectNode aspectNode) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 }

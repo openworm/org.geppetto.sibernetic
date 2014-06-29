@@ -33,10 +33,10 @@
 package org.geppetto.model.sph.services;
 
 import org.geppetto.core.model.state.ACompositeStateNode;
-import org.geppetto.core.model.state.ASimpleStateNode;
+import org.geppetto.core.model.state.EntityNode;
+import org.geppetto.core.model.state.StateVariableNode;
 import org.geppetto.core.model.state.visitors.DefaultStateVisitor;
 import org.geppetto.core.model.values.FloatValue;
-import org.geppetto.core.visualisation.model.CEntity;
 import org.geppetto.core.visualisation.model.Particle;
 import org.geppetto.core.visualisation.model.Point;
 import org.geppetto.core.visualisation.model.VisualModel;
@@ -55,20 +55,20 @@ public class PopulateVisualEntityVisitor extends DefaultStateVisitor
 	private Float _particleKind;
 	private Particle _newParticle;
 	private Point _newPoint;
-	private CEntity _cEntity;
+	private EntityNode _EntityNode;
 	
 	
 	/**
-	 * @param cEntity
+	 * @param EntityNode
 	 * @param modelId
 	 */
-	public PopulateVisualEntityVisitor(CEntity cEntity, String modelId)
+	public PopulateVisualEntityVisitor(EntityNode EntityNode, String modelId)
 	{
 		super();
-		this._cEntity = cEntity;
-		_cEntity.getAspects().get(0).getVisualModel().add(_liquidModel);
-		_cEntity.getAspects().get(0).getVisualModel().add(_boundaryModel);
-		_cEntity.getAspects().get(0).getVisualModel().add(_elasticModel);
+		this._EntityNode = EntityNode;
+		_EntityNode.getAspects().get(0).getVisualModel().add(_liquidModel);
+		_EntityNode.getAspects().get(0).getVisualModel().add(_boundaryModel);
+		_EntityNode.getAspects().get(0).getVisualModel().add(_elasticModel);
 
 		_liquidModel.setId("LIQUID_" + modelId);
 		_boundaryModel.setId("BOUNDARY_" + modelId);
@@ -122,7 +122,7 @@ public class PopulateVisualEntityVisitor extends DefaultStateVisitor
 	 * @see org.geppetto.core.model.state.visitors.DefaultStateVisitor#visitSimpleStateNode(org.geppetto.core.model.state.SimpleStateNode)
 	 */
 	@Override
-	public boolean visitSimpleStateNode(ASimpleStateNode node)
+	public boolean visitStateVariableNode(StateVariableNode node)
 	{
 		if(node.getName()=="x")
 		{
@@ -140,7 +140,7 @@ public class PopulateVisualEntityVisitor extends DefaultStateVisitor
 		{
 			_particleKind=((FloatValue)node.consumeFirstValue()).getAsFloat();
 		}
-		return super.visitSimpleStateNode(node);
+		return super.visitStateVariableNode(node);
 	}
 
 
