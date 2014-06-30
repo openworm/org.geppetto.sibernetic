@@ -33,6 +33,7 @@
 package org.geppetto.model.sph.services;
 
 import org.geppetto.core.model.state.ACompositeStateNode;
+import org.geppetto.core.model.state.AspectNode;
 import org.geppetto.core.model.state.EntityNode;
 import org.geppetto.core.model.state.StateVariableNode;
 import org.geppetto.core.model.state.visitors.DefaultStateVisitor;
@@ -46,7 +47,7 @@ import org.geppetto.model.sph.common.SPHConstants;
  * @author matteocantarelli
  *
  */
-public class PopulateVisualEntityVisitor extends DefaultStateVisitor
+public class PopulateVisualTreeVisitor extends DefaultStateVisitor
 {
 
 	private VisualModel _liquidModel = new VisualModel();
@@ -55,26 +56,24 @@ public class PopulateVisualEntityVisitor extends DefaultStateVisitor
 	private Float _particleKind;
 	private Particle _newParticle;
 	private Point _newPoint;
-	private EntityNode _EntityNode;
-	
-	
+	private AspectNode _aspectNode;
+
 	/**
 	 * @param EntityNode
 	 * @param modelId
 	 */
-	public PopulateVisualEntityVisitor(EntityNode EntityNode, String modelId)
+	public PopulateVisualTreeVisitor(AspectNode aspectNode, String modelId)
 	{
 		super();
-		this._EntityNode = EntityNode;
-		_EntityNode.getAspects().get(0).getVisualModel().add(_liquidModel);
-		_EntityNode.getAspects().get(0).getVisualModel().add(_boundaryModel);
-		_EntityNode.getAspects().get(0).getVisualModel().add(_elasticModel);
+		this._aspectNode = aspectNode;
+		this._aspectNode.getVisualModel().add(_liquidModel);
+		this._aspectNode.getVisualModel().add(_boundaryModel);
+		this._aspectNode.getVisualModel().add(_elasticModel);
 
 		_liquidModel.setId("LIQUID_" + modelId);
 		_boundaryModel.setId("BOUNDARY_" + modelId);
 		_elasticModel.setId("ELASTIC_" + modelId);
 	}
-
 	
 	/* (non-Javadoc)
 	 * @see org.geppetto.core.model.state.visitors.DefaultStateVisitor#inCompositeStateNode(org.geppetto.core.model.state.CompositeStateNode)
