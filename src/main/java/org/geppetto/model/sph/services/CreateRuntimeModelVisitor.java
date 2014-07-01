@@ -1,7 +1,7 @@
 package org.geppetto.model.sph.services;
 
-import org.geppetto.core.model.state.ACompositeStateNode;
 import org.geppetto.core.model.state.AspectNode;
+import org.geppetto.core.model.state.CompositeVariableNode;
 import org.geppetto.core.model.state.StateVariableNode;
 import org.geppetto.core.model.state.visitors.DefaultStateVisitor;
 
@@ -18,7 +18,7 @@ public class CreateRuntimeModelVisitor extends DefaultStateVisitor{
 	 * @see org.geppetto.core.model.state.visitors.DefaultStateVisitor#inCompositeStateNode(org.geppetto.core.model.state.CompositeStateNode)
 	 */
 	@Override
-	public boolean inCompositeStateNode(ACompositeStateNode node)
+	public boolean inCompositeStateNode(CompositeVariableNode node)
 	{
 		return super.inCompositeStateNode(node);
 	}
@@ -27,7 +27,7 @@ public class CreateRuntimeModelVisitor extends DefaultStateVisitor{
 	 * @see org.geppetto.core.model.state.visitors.DefaultStateVisitor#outCompositeStateNode(org.geppetto.core.model.state.CompositeStateNode)
 	 */
 	@Override
-	public boolean outCompositeStateNode(ACompositeStateNode node)
+	public boolean outCompositeStateNode(CompositeVariableNode node)
 	{
 		return super.outCompositeStateNode(node);
 	}

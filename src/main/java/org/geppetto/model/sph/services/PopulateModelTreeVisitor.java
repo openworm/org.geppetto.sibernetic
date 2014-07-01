@@ -1,6 +1,5 @@
 package org.geppetto.model.sph.services;
 
-import org.geppetto.core.model.state.ACompositeStateNode;
 import org.geppetto.core.model.state.AspectNode;
 import org.geppetto.core.model.state.StateVariableNode;
 import org.geppetto.core.model.state.visitors.DefaultStateVisitor;
@@ -18,18 +17,18 @@ public class PopulateModelTreeVisitor extends DefaultStateVisitor{
 	 * @see org.geppetto.core.model.state.visitors.DefaultStateVisitor#inCompositeStateNode(org.geppetto.core.model.state.CompositeStateNode)
 	 */
 	@Override
-	public boolean inCompositeStateNode(ACompositeStateNode node)
+	public boolean inAspectNode(AspectNode node)
 	{
-		return super.inCompositeStateNode(node);
+		return super.inAspectNode(node);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.geppetto.core.model.state.visitors.DefaultStateVisitor#outCompositeStateNode(org.geppetto.core.model.state.CompositeStateNode)
 	 */
 	@Override
-	public boolean outCompositeStateNode(ACompositeStateNode node)
+	public boolean outAspectNode(AspectNode node)
 	{
-		return super.outCompositeStateNode(node);
+		return super.outAspectNode(node);
 	}
 
 	/* (non-Javadoc)

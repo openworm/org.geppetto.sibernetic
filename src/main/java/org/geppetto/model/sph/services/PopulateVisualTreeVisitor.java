@@ -32,15 +32,13 @@
  *******************************************************************************/
 package org.geppetto.model.sph.services;
 
-import org.geppetto.core.model.state.ACompositeStateNode;
 import org.geppetto.core.model.state.AspectNode;
-import org.geppetto.core.model.state.EntityNode;
+import org.geppetto.core.model.state.ParticleNode;
 import org.geppetto.core.model.state.StateVariableNode;
+import org.geppetto.core.model.state.VisualModelNode;
 import org.geppetto.core.model.state.visitors.DefaultStateVisitor;
 import org.geppetto.core.model.values.FloatValue;
-import org.geppetto.core.visualisation.model.Particle;
 import org.geppetto.core.visualisation.model.Point;
-import org.geppetto.core.visualisation.model.VisualModel;
 import org.geppetto.model.sph.common.SPHConstants;
 
 /**
@@ -50,11 +48,11 @@ import org.geppetto.model.sph.common.SPHConstants;
 public class PopulateVisualTreeVisitor extends DefaultStateVisitor
 {
 
-	private VisualModel _liquidModel = new VisualModel();
-	private VisualModel _boundaryModel = new VisualModel();
-	private VisualModel _elasticModel = new VisualModel();
+	private VisualModelNode _liquidModel = new VisualModelNode();
+	private VisualModelNode _boundaryModel = new VisualModelNode();
+	private VisualModelNode _elasticModel = new VisualModelNode();
 	private Float _particleKind;
-	private Particle _newParticle;
+	private ParticleNode _newParticle;
 	private Point _newPoint;
 	private AspectNode _aspectNode;
 
@@ -79,23 +77,23 @@ public class PopulateVisualTreeVisitor extends DefaultStateVisitor
 	 * @see org.geppetto.core.model.state.visitors.DefaultStateVisitor#inCompositeStateNode(org.geppetto.core.model.state.CompositeStateNode)
 	 */
 	@Override
-	public boolean inCompositeStateNode(ACompositeStateNode node)
+	public boolean inAspectNode(AspectNode node)
 	{
 		if(node.getName().startsWith("p["))
 		{
-			_newParticle=new Particle();
+			_newParticle=new ParticleNode();
 			_newParticle.setId(node.getName());
 			_newPoint=new Point();
 			_newParticle.setPosition(_newPoint);
 		}
-		return super.inCompositeStateNode(node);
+		return super.inAspectNode(node);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.geppetto.core.model.state.visitors.DefaultStateVisitor#outCompositeStateNode(org.geppetto.core.model.state.CompositeStateNode)
 	 */
 	@Override
-	public boolean outCompositeStateNode(ACompositeStateNode node)
+	public boolean outAspectNode(AspectNode node)
 	{
 		if(node.getName().startsWith("p["))
 		{
@@ -114,7 +112,7 @@ public class PopulateVisualTreeVisitor extends DefaultStateVisitor
 			_newParticle=null;
 			_newPoint=null;
 		}
-		return super.outCompositeStateNode(node);
+		return super.outAspectNode(node);
 	}
 
 	/* (non-Javadoc)
