@@ -56,7 +56,9 @@ public class SPHConstants {
 	public static final float H = 3.34f;
 	// R0 is the distance between two boundary particle == equilibrium distance between 2 particles / Ihmsen et al., 2010, page 4, line 3
 	public static final float R0 = 0.5f * H;
-
+	//TODO I think using constant like static is potential problem this will 
+	//be changed each time when simulation will be restart or another user load his own config
+	//We need make this non static
 	public static final float MASS = 0.0003f;
 	public static final float HASH_GRID_CELL_SIZE = 2.0f * H;
 	public static final float HASH_GRID_CELL_SIZE_INV = 1.0f / HASH_GRID_CELL_SIZE;
@@ -75,6 +77,9 @@ public class SPHConstants {
 	public static double W_POLY_6_COEFFICIENT;
 	public static double GRAD_W_SPIKY_COEFFICIENT;
 	public static double DEL_2_W_VISCOSITY_COEFFICIENT;
+	public static float MASS_MULT_WPOLY6COEFFICIENT;
+	public static float MASS_MULT_GRADWSPIKYCOEFFICIENT;
+	public static float MASS_MULT_DIVGRADWVISCOSITYCOEFFICIENT;
 
 	public static final float GRAVITY_X = 0.0f;
 	public static final float GRAVITY_Y = -9.8f;
@@ -88,14 +93,23 @@ public class SPHConstants {
 	public static double BETA = 0.0;
 	public static double BETA_INV;
 	public static float DELTA;
+	public static float _hScaled;
+	public static float _hScaled2;
 	public static void setDependingParammeters(float simulationScale, float mass){
 		if(simulationScale == 0.0f || mass == 0.0f)
 			throw new IllegalArgumentException("Simulation parametrs couldn't be zero, check mass and simulationScale parametrs.");
+		//TODO delete this unused constant
 		INTERNAL_PARTICLE_DISTANCE = 0.5f * H * simulationScale;
 		PREMILINARY_WORM_LENGTH = 311 * INTERNAL_PARTICLE_DISTANCE;
+		//
 		W_POLY_6_COEFFICIENT = (315.0 / ( 64.0 * M_PI * Math.pow( (double) (H * simulationScale), 9.0 ) ));
 		GRAD_W_SPIKY_COEFFICIENT= (-45.0 / ( M_PI * Math.pow( (double)(H * simulationScale), 6.0 ) ));
 		DEL_2_W_VISCOSITY_COEFFICIENT = -GRAD_W_SPIKY_COEFFICIENT;
+		MASS_MULT_WPOLY6COEFFICIENT = (float) ( (double)mass * W_POLY_6_COEFFICIENT );
+		MASS_MULT_GRADWSPIKYCOEFFICIENT = (float) ( (double)mass * GRAD_W_SPIKY_COEFFICIENT );
+		MASS_MULT_DIVGRADWVISCOSITYCOEFFICIENT = (float) ( (double)mass * DEL_2_W_VISCOSITY_COEFFICIENT );
+		_hScaled = H * simulationScale;
+		_hScaled2 = _hScaled * _hScaled;
 		DELTA = getDELTA(simulationScale, mass);
 	}
 	public static void setBeta(float timeStep, float mass){
