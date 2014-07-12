@@ -1,7 +1,8 @@
 package org.geppetto.model.sph.services;
 
-import org.geppetto.core.model.state.AspectNode;
-import org.geppetto.core.model.state.StateVariableNode;
+import org.geppetto.core.model.ModelInterpreterException;
+import org.geppetto.core.model.runtime.AspectNode;
+import org.geppetto.core.model.runtime.StateVariableNode;
 import org.geppetto.core.model.state.visitors.DefaultStateVisitor;
 
 public class PopulateModelTreeVisitor extends DefaultStateVisitor{

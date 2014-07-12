@@ -45,12 +45,9 @@ import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.model.IModel;
 import org.geppetto.core.model.IModelInterpreter;
 import org.geppetto.core.model.ModelInterpreterException;
-import org.geppetto.core.model.simulation.Aspect;
-import org.geppetto.core.model.state.ACompositeStateNode;
-import org.geppetto.core.model.state.ANode.SUBTREE;
-import org.geppetto.core.model.state.AspectNode;
-import org.geppetto.core.model.state.AspectTreeNode;
-import org.geppetto.core.model.state.EntityNode;
+import org.geppetto.core.model.runtime.AspectNode;
+import org.geppetto.core.model.runtime.AspectSubTreeNode;
+import org.geppetto.core.model.runtime.AspectSubTreeNode.ASPECTTREE;
 import org.geppetto.model.sph.SPHModel;
 import org.geppetto.model.sph.SPHParticle;
 import org.geppetto.model.sph.x.SPHModelX;
@@ -110,35 +107,18 @@ public class SPHModelInterpreterService implements IModelInterpreter
 	}
 
 	@Override
-	public EntityNode getVisualEntity(IModel model, Aspect aspect, AspectTreeNode stateTree) throws ModelInterpreterException
-	{
-		ACompositeStateNode modelTree = stateTree.getSubTree(SUBTREE.MODEL_TREE);
-		EntityNode visualEntity=new EntityNode();
-//		AspectNode visualAspect=new AspectNode();
-//		visualAspect.setId(aspect.getId());
-//		visualEntity.getAspects().add(visualAspect);
-//		
-//		long starttime = System.currentTimeMillis();
-//		logger.info("SPH Model to scene conversion starting...");
-//		PopulateVisualEntityVisitor createSceneVisitor=new PopulateVisualEntityVisitor(visualEntity,model.getId());
-//		modelTree.apply(createSceneVisitor);
-//		logger.info("Model to scene conversion end, took: " + (System.currentTimeMillis() - starttime) + "ms");
-		return visualEntity;
-	}
-
-	@Override
-	public boolean populateVisualTree(AspectNode aspectNode) {
-		AspectTreeNode visualizationTree = (AspectTreeNode) aspectNode.getSubTree(SUBTREE.VISUALIZATION_TREE);
+	public boolean populateVisualTree(AspectNode aspectNode) throws ModelInterpreterException {
+		AspectSubTreeNode visualizationTree = (AspectSubTreeNode) aspectNode.getSubTree(ASPECTTREE.VISUALIZATION_TREE);
 		
-		PopulateVisualTreeVisitor createSceneVisitor=new PopulateVisualTreeVisitor(aspectNode,aspectNode.getId());
+		PopulateVisualTreeVisitor createSceneVisitor=new PopulateVisualTreeVisitor(visualizationTree,aspectNode.getModel().getId());
 		visualizationTree.apply(createSceneVisitor);
 		
 		return true;
 	}
 
 	@Override
-	public boolean populateModelTree(AspectNode aspectNode) {
-		AspectTreeNode modelTree = (AspectTreeNode) aspectNode.getSubTree(SUBTREE.MODEL_TREE);
+	public boolean populateModelTree(AspectNode aspectNode) throws ModelInterpreterException {
+		AspectSubTreeNode modelTree = (AspectSubTreeNode) aspectNode.getSubTree(ASPECTTREE.MODEL_TREE);
 		
 		PopulateModelTreeVisitor createSceneVisitor=new PopulateModelTreeVisitor(aspectNode,aspectNode.getId());
 		modelTree.apply(createSceneVisitor);
@@ -149,10 +129,11 @@ public class SPHModelInterpreterService implements IModelInterpreter
 
 	@Override
 	public boolean populateRuntimeTree(AspectNode aspectNode) {
-		AspectTreeNode runTimeTree = (AspectTreeNode) aspectNode.getSubTree(SUBTREE.WATCH_TREE);
+		AspectSubTreeNode runTimeTree = new AspectSubTreeNode();
 		
-		PopulateVisualTreeVisitor createSceneVisitor=new PopulateVisualTreeVisitor(aspectNode,aspectNode.getId());
-		runTimeTree.apply(createSceneVisitor);
+		AspectSubTreeNode modelTree = (AspectSubTreeNode) aspectNode.getSubTree(ASPECTTREE.MODEL_TREE);
+		AspectSubTreeNode visualizationTree = (AspectSubTreeNode) aspectNode.getSubTree(ASPECTTREE.VISUALIZATION_TREE);
+		AspectSubTreeNode simulationTree = (AspectSubTreeNode) aspectNode.getSubTree(ASPECTTREE.WATCH_TREE);
 		
 		return true;
 	}

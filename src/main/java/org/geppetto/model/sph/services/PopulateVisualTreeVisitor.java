@@ -32,14 +32,13 @@
  *******************************************************************************/
 package org.geppetto.model.sph.services;
 
-import org.geppetto.core.model.state.AspectNode;
-import org.geppetto.core.model.state.ParticleNode;
-import org.geppetto.core.model.state.StateVariableNode;
-import org.geppetto.core.model.state.VisualModelNode;
+import org.geppetto.core.model.runtime.AspectNode;
+import org.geppetto.core.model.runtime.AspectSubTreeNode;
+import org.geppetto.core.model.runtime.CompositeVariableNode;
+import org.geppetto.core.model.runtime.ParticleNode;
+import org.geppetto.core.model.runtime.StateVariableNode;
 import org.geppetto.core.model.state.visitors.DefaultStateVisitor;
-import org.geppetto.core.model.values.FloatValue;
 import org.geppetto.core.visualisation.model.Point;
-import org.geppetto.model.sph.common.SPHConstants;
 
 /**
  * @author matteocantarelli
@@ -48,9 +47,9 @@ import org.geppetto.model.sph.common.SPHConstants;
 public class PopulateVisualTreeVisitor extends DefaultStateVisitor
 {
 
-	private VisualModelNode _liquidModel = new VisualModelNode();
-	private VisualModelNode _boundaryModel = new VisualModelNode();
-	private VisualModelNode _elasticModel = new VisualModelNode();
+	private CompositeVariableNode _liquidModel = new CompositeVariableNode();
+	private CompositeVariableNode _boundaryModel = new CompositeVariableNode();
+	private CompositeVariableNode _elasticModel = new CompositeVariableNode();
 	private Float _particleKind;
 	private ParticleNode _newParticle;
 	private Point _newPoint;
@@ -60,17 +59,9 @@ public class PopulateVisualTreeVisitor extends DefaultStateVisitor
 	 * @param EntityNode
 	 * @param modelId
 	 */
-	public PopulateVisualTreeVisitor(AspectNode aspectNode, String modelId)
+	public PopulateVisualTreeVisitor(AspectSubTreeNode visualizationTree, String modelId)
 	{
 		super();
-		this._aspectNode = aspectNode;
-		this._aspectNode.getVisualModel().add(_liquidModel);
-		this._aspectNode.getVisualModel().add(_boundaryModel);
-		this._aspectNode.getVisualModel().add(_elasticModel);
-
-		_liquidModel.setId("LIQUID_" + modelId);
-		_boundaryModel.setId("BOUNDARY_" + modelId);
-		_elasticModel.setId("ELASTIC_" + modelId);
 	}
 	
 	/* (non-Javadoc)
@@ -95,23 +86,6 @@ public class PopulateVisualTreeVisitor extends DefaultStateVisitor
 	@Override
 	public boolean outAspectNode(AspectNode node)
 	{
-		if(node.getName().startsWith("p["))
-		{
-			if(_particleKind.equals(SPHConstants.LIQUID_TYPE))
-			{
-				_liquidModel.getObjects().add(_newParticle);
-			}
-			else if(_particleKind.equals(SPHConstants.ELASTIC_TYPE))
-			{
-				_elasticModel.getObjects().add(_newParticle);
-			}
-			else if(_particleKind.equals(SPHConstants.BOUNDARY_TYPE))
-			{
-				_boundaryModel.getObjects().add(_newParticle);
-			}
-			_newParticle=null;
-			_newPoint=null;
-		}
 		return super.outAspectNode(node);
 	}
 
@@ -121,22 +95,6 @@ public class PopulateVisualTreeVisitor extends DefaultStateVisitor
 	@Override
 	public boolean visitStateVariableNode(StateVariableNode node)
 	{
-		if(node.getName()=="x")
-		{
-			_newPoint.setX(((FloatValue)node.consumeFirstValue()).getAsDouble());
-		}
-		else if(node.getName()=="y")
-		{
-			_newPoint.setY(((FloatValue)node.consumeFirstValue()).getAsDouble());
-		}
-		else if(node.getName()=="z")
-		{
-			_newPoint.setZ(((FloatValue)node.consumeFirstValue()).getAsDouble());
-		}
-		else if(node.getName()=="p")
-		{
-			_particleKind=((FloatValue)node.consumeFirstValue()).getAsFloat();
-		}
 		return super.visitStateVariableNode(node);
 	}
 
