@@ -42,16 +42,18 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.geppetto.core.beans.ModelInterpreterConfig;
 import org.geppetto.core.model.IModel;
 import org.geppetto.core.model.IModelInterpreter;
 import org.geppetto.core.model.ModelInterpreterException;
 import org.geppetto.core.model.runtime.AspectNode;
 import org.geppetto.core.model.runtime.AspectSubTreeNode;
-import org.geppetto.core.model.runtime.AspectSubTreeNode.ASPECTTREE;
+import org.geppetto.core.model.runtime.AspectSubTreeNode.AspectTreeType;
 import org.geppetto.model.sph.SPHModel;
 import org.geppetto.model.sph.SPHParticle;
 import org.geppetto.model.sph.x.SPHModelX;
 import org.geppetto.model.sph.x.SPHParticleX;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -63,6 +65,12 @@ public class SPHModelInterpreterService implements IModelInterpreter
 {
 
 	private static Log logger = LogFactory.getLog(SPHModelInterpreterService.class);
+	
+	@Autowired
+	private ModelInterpreterConfig _sphModelInterpreterConfig;
+
+	//Populate model tree helper class
+	PopulateModelTreeVisitor createModelTree=new PopulateModelTreeVisitor();
 
 	/*
 	 * (non-Javadoc)
@@ -106,36 +114,39 @@ public class SPHModelInterpreterService implements IModelInterpreter
 		return "p[" + index + "]";
 	}
 
-	@Override
-	public boolean populateVisualTree(AspectNode aspectNode) throws ModelInterpreterException {
-		AspectSubTreeNode visualizationTree = (AspectSubTreeNode) aspectNode.getSubTree(ASPECTTREE.VISUALIZATION_TREE);
-		
-		PopulateVisualTreeVisitor createSceneVisitor=new PopulateVisualTreeVisitor(visualizationTree,aspectNode.getModel().getId());
-		visualizationTree.apply(createSceneVisitor);
-		
-		return true;
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * @see org.geppetto.core.model.IModelInterpreter#populateModelTree(org.geppetto.core.model.runtime.AspectNode)
+	 */
 	@Override
 	public boolean populateModelTree(AspectNode aspectNode) throws ModelInterpreterException {
-		AspectSubTreeNode modelTree = (AspectSubTreeNode) aspectNode.getSubTree(ASPECTTREE.MODEL_TREE);
+		AspectSubTreeNode modelTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.MODEL_TREE);
 		
-		PopulateModelTreeVisitor createSceneVisitor=new PopulateModelTreeVisitor(aspectNode,aspectNode.getId());
-		modelTree.apply(createSceneVisitor);
+		createModelTree.populateModelTree(modelTree);
 		
 		return true;
 	}
 
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.geppetto.core.model.IModelInterpreter#populateRuntimeTree(org.geppetto.core.model.runtime.AspectNode)
+	 */
 	@Override
-	public boolean populateRuntimeTree(AspectNode aspectNode) {
-		AspectSubTreeNode runTimeTree = new AspectSubTreeNode();
-		
-		AspectSubTreeNode modelTree = (AspectSubTreeNode) aspectNode.getSubTree(ASPECTTREE.MODEL_TREE);
-		AspectSubTreeNode visualizationTree = (AspectSubTreeNode) aspectNode.getSubTree(ASPECTTREE.VISUALIZATION_TREE);
-		AspectSubTreeNode simulationTree = (AspectSubTreeNode) aspectNode.getSubTree(ASPECTTREE.WATCH_TREE);
+	public boolean populateRuntimeTree(AspectNode aspectNode) {		
+		AspectSubTreeNode modelTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.MODEL_TREE);
+		AspectSubTreeNode visualizationTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.VISUALIZATION_TREE);
+		AspectSubTreeNode simulationTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.WATCH_TREE);
 		
 		return true;
+	}
+
+
+
+	@Override
+	public String getName()
+	{
+		return this._sphModelInterpreterConfig.getModelInterpreterName();
 	}
 	
 }
