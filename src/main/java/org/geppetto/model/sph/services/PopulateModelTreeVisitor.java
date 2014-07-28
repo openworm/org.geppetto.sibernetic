@@ -32,6 +32,7 @@
  *******************************************************************************/
 package org.geppetto.model.sph.services;
 
+import org.geppetto.core.model.IModel;
 import org.geppetto.core.model.runtime.AspectSubTreeNode;
 
 /**
@@ -50,7 +51,7 @@ public class PopulateModelTreeVisitor{
 	 * 
 	 * @param modelTree - Model tree that is to be populated
 	 */
-	public void populateModelTree(AspectSubTreeNode modelTree)
+	public void populateModelTree(IModel model, AspectSubTreeNode modelTree)
 	{
 	}
 	

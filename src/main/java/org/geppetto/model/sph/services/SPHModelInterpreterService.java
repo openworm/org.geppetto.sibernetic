@@ -122,7 +122,9 @@ public class SPHModelInterpreterService implements IModelInterpreter
 	public boolean populateModelTree(AspectNode aspectNode) throws ModelInterpreterException {
 		AspectSubTreeNode modelTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.MODEL_TREE);
 		
-		createModelTree.populateModelTree(modelTree);
+		IModel model = aspectNode.getModel();	
+		
+		createModelTree.populateModelTree(model,modelTree);
 		
 		return true;
 	}
