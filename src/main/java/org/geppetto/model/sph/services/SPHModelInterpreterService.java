@@ -139,6 +139,9 @@ public class SPHModelInterpreterService implements IModelInterpreter
 		AspectSubTreeNode modelTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.MODEL_TREE);
 		AspectSubTreeNode visualizationTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.VISUALIZATION_TREE);
 		
+		modelTree.setId(AspectTreeType.MODEL_TREE.toString());
+		visualizationTree.setId(AspectTreeType.VISUALIZATION_TREE.toString());
+		
 		return true;
 	}
 
