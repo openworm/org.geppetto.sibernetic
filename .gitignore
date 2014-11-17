@@ -4,5 +4,4 @@ src/main/java/META-INF/MANIFEST.MF
 src/main/java/META-INF/sun-jaxb.episode
 /.externalToolBuilders/
 /.settings/
-/.project
-/.classpath
+.classpath
