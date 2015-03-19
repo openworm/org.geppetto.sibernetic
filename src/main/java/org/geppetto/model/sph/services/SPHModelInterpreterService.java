@@ -34,6 +34,7 @@
 package org.geppetto.model.sph.services;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -151,6 +152,13 @@ public class SPHModelInterpreterService implements IModelInterpreter
 	public String getName()
 	{
 		return this._sphModelInterpreterConfig.getModelInterpreterName();
+	}
+
+
+
+	@Override
+	public void registerGeppettoService() throws Exception {
+		
 	}
 	
 }
