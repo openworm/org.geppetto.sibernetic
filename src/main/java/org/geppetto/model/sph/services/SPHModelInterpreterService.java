@@ -51,6 +51,7 @@ import org.geppetto.core.model.runtime.AspectSubTreeNode;
 import org.geppetto.core.model.runtime.AspectSubTreeNode.AspectTreeType;
 import org.geppetto.model.sph.SPHModel;
 import org.geppetto.model.sph.SPHParticle;
+import org.geppetto.model.sph.features.SPHVisualTreeFeature;
 import org.geppetto.model.sph.x.SPHModelX;
 import org.geppetto.model.sph.x.SPHParticleX;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +94,7 @@ public class SPHModelInterpreterService extends AModelInterpreter
 			{
 				((SPHParticleX) p).setId(sphModelX.getId() + i++);
 			}
-			//this.addFeature(new SPHVisualTreeFeature(sphModelX));
+			this.addFeature(new SPHVisualTreeFeature(sphModelX));
 		}
 		catch(JAXBException e1)
 		{
