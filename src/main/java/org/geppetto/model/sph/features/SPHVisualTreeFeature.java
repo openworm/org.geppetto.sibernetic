@@ -98,7 +98,7 @@ public class SPHVisualTreeFeature implements IVisualTreeFeature{
 		CompositeNode _elasticModel = new CompositeNode("ELASTIC_"
 				+ model.getId());
 
-		int i = 0;
+		int i = -1;
 		for(SPHParticle p : _sphModelX.getParticles())
 		{
 			((SPHParticleX) p).setId(_sphModelX.getId() + i++);
