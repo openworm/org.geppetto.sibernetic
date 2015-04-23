@@ -143,9 +143,11 @@ public class SPHModelInterpreterService extends AModelInterpreter
 	public boolean populateRuntimeTree(AspectNode aspectNode) {		
 		AspectSubTreeNode modelTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.MODEL_TREE);
 		AspectSubTreeNode visualizationTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.VISUALIZATION_TREE);
-		
+		AspectSubTreeNode simulationTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.SIMULATION_TREE);
+
 		modelTree.setId(AspectTreeType.MODEL_TREE.toString());
 		visualizationTree.setId(AspectTreeType.VISUALIZATION_TREE.toString());
+		simulationTree.setId(AspectTreeType.SIMULATION_TREE.toString());
 		
 		return true;
 	}

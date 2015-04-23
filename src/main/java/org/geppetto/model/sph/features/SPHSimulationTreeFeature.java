@@ -31,12 +31,24 @@
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
 package org.geppetto.model.sph.features;
+import java.util.List;
+import java.util.StringTokenizer;
+
 import org.geppetto.core.features.IWatchableVariableListFeature;
 import org.geppetto.core.model.ModelInterpreterException;
+import org.geppetto.core.model.quantities.PhysicalQuantity;
+import org.geppetto.core.model.runtime.ACompositeNode;
+import org.geppetto.core.model.runtime.ANode;
 import org.geppetto.core.model.runtime.AspectNode;
 import org.geppetto.core.model.runtime.AspectSubTreeNode;
 import org.geppetto.core.model.runtime.AspectSubTreeNode.AspectTreeType;
+import org.geppetto.core.model.runtime.CompositeNode;
+import org.geppetto.core.model.runtime.VariableNode;
+import org.geppetto.core.model.values.FloatValue;
+import org.geppetto.core.model.values.ValuesFactory;
 import org.geppetto.core.services.GeppettoFeature;
+import org.geppetto.model.sph.SPHParticle;
+import org.geppetto.model.sph.x.SPHModelX;
 
 /**
  * Variable watch feature for SPH simulator
@@ -63,127 +75,144 @@ public class SPHSimulationTreeFeature implements IWatchableVariableListFeature{
 		simulationTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.SIMULATION_TREE);
 		simulationTree.setId(AspectTreeType.SIMULATION_TREE.toString());
 		simulationTree.setModified(modified);
-		
-		//@tarelli fill this method!!
-		// I have copy&paste the following code from the sphsolverservice. It may be helpful:
-//		@Override
-//		public void populateSimulationTree(AspectSubTreeNode watchTree) {
-//			// map watchable buffers that are not already mapped
-//			// NOTE: position is mapped for scene generation - improving performance
-//			// by not mapping it again
-//			_velocityPtr = _velocity.map(_queue, CLMem.MapFlags.Read);
-//
-//			// check which watchable variables are being watched
-//			for (AVariable var : getWatchableVariables().getVariables()) {
-//				String varName = var.getName();
-//				// get watchable variables path
-//				varName = varName
-//						.replace(watchTree.getInstancePath() + ".", "");
-//				// remove array bracket arguments from variable paths
-//				String varNameNoBrackets = varName;
-//				String particleID = null;
-//				if (varName.indexOf("[") != -1) {
-//					varNameNoBrackets = varName.substring(0,
-//							varName.indexOf("["))
-//							+ varName.substring(varName.indexOf("]") + 1,
-//									varName.length());
-//					particleID = varName.substring(varName.indexOf("[") + 1,
-//							varName.indexOf("]"));
-//				}
-//
-//				Integer ID = null;
-//				if (particleID != null) {
-//					// check that paticleID is valid
-//					ID = Integer.parseInt(particleID);
-//					if (!(ID < _particleCount)) {
-//						throw new IllegalArgumentException(
-//								"SPHSolverService:updateStateTreeForWatch - particle index is out of boundaries");
-//					}
-//				}
-//
-//				// tokenize variable path in watch list via dot
-//				// separator (handle array brackets)
-//				StringTokenizer tokenizer = new StringTokenizer(varName, ".");
-//				ACompositeNode node = watchTree;
-//				while (tokenizer.hasMoreElements()) {
-//					// loop through tokens and build tree
-//					String current = tokenizer.nextToken();
-//					boolean found = false;
-//					for (ANode child : node.getChildren()) {
-//						if (child.getId().equals(current)) {
-//							if (child instanceof ACompositeNode) {
-//								node = (ACompositeNode) child;
-//							}
-//							found = true;
-//							break;
-//						}
-//					}
-//					if (found) {
-//						continue;
-//					} else {
-//						if (tokenizer.hasMoreElements()) {
-//							// not a leaf, create a composite statenode
-//							String nodeName = current;
-//							if (current.equals("particle")) {
-//								nodeName = current + "[" + particleID
-//										+ "]";
-//							}
-//
-//							CompositeNode newNode = new CompositeNode(
-//									nodeName);
-//							newNode.setId(nodeName);
-//
-//							boolean addNewNode = containsNode(node,
-//									newNode.getId());
-//
-//							if (addNewNode) {
-//								node.addChild(newNode);
-//								node = newNode;
-//							} else {
-//								node = getNode(node, newNode.getId());
-//							}
-//						} else {
-//							// it's a leaf node
-//							VariableNode newNode = new VariableNode(
-//									current);
-//							newNode.setId(current);
-//
-//							FloatValue val = null;
-//
-//							// get value
-//							switch (current) {
-//							case "x":
-//								val = ValuesFactory
-//								.getFloatValue(_positionPtr
-//										.get(ID));
-//								break;
-//							case "y":
-//								val = ValuesFactory
-//								.getFloatValue(_positionPtr
-//										.get(ID + 1));
-//								break;
-//							case "z":
-//								val = ValuesFactory
-//								.getFloatValue(_positionPtr
-//										.get(ID + 2));
-//								break;
-//							}
-//
-//							PhysicalQuantity q = new PhysicalQuantity();
-//							q.setValue(val);
-//							newNode.addPhysicalQuantity(q);
-//
-//							node.addChild(newNode);
-//						}
-//					}
-//				}
-//			}
-//
-//			watchTree.setModified(true);
-//			// unmap watchable buffers
-//			_velocity.unmap(_queue, _positionPtr);
-//		}
-		
+
+		SPHModelX _sphModelX = (SPHModelX) aspectNode.getModel();
+		String name = "particle.position";
+		int index =0;
+		// check which watchable variables are being watched
+		for (SPHParticle p : _sphModelX.getParticles()) {
+			if(index<2){
+				String particleID = String.valueOf(index);
+
+				// tokenize variable path in watch list via dot
+				// separator (handle array brackets)
+				StringTokenizer tokenizer = new StringTokenizer(name, ".");
+				ACompositeNode node = simulationTree;
+				while (tokenizer.hasMoreElements()) {
+					// loop through tokens and build tree
+					String current = tokenizer.nextToken();
+					boolean found = false;
+					for (ANode child : node.getChildren()) {
+						if (child.getId().equals(current)) {
+							if (child instanceof ACompositeNode) {
+								node = (ACompositeNode) child;
+							}
+							found = true;
+							break;
+						}
+					}
+					if (found) {
+						continue;
+					} else {
+						if (tokenizer.hasMoreElements()) {
+							// not a leaf, create a composite statenode
+							String nodeName = current;
+							if (current.equals("particle")) {
+								nodeName = current + "[" + particleID
+										+ "]";
+							}
+
+							CompositeNode newNode = new CompositeNode(
+									nodeName);
+							newNode.setId(nodeName);
+
+							boolean addNewNode = containsNode(node,
+									newNode.getId());
+
+							if (addNewNode) {
+								node.addChild(newNode);
+								node = newNode;
+							} else {
+								node = getNode(node, newNode.getId());
+							}
+						}else{
+							CompositeNode newNode = new CompositeNode(
+									current);
+							newNode.setId(current);
+
+							boolean addNewNode = containsNode(node,
+									newNode.getId());
+
+							if (addNewNode) {
+								node.addChild(newNode);
+								node = newNode;
+								
+								VariableNode newNodeX = new VariableNode("x");
+								newNodeX.setId("x");
+								FloatValue valX = ValuesFactory.getFloatValue(p.getPositionVector().getX());;
+								PhysicalQuantity qX = new PhysicalQuantity();
+								qX.setValue(valX);
+								newNodeX.addPhysicalQuantity(qX);
+
+								VariableNode newNodeY = new VariableNode("y");
+								newNodeY.setId("y");
+								FloatValue valY = ValuesFactory.getFloatValue(p.getPositionVector().getY());;
+								PhysicalQuantity qY = new PhysicalQuantity();
+								qY.setValue(valY);
+								newNodeY.addPhysicalQuantity(qY);
+
+								VariableNode newNodeZ = new VariableNode("z");
+								newNodeZ.setId("z");
+								FloatValue valZ = ValuesFactory.getFloatValue(p.getPositionVector().getZ());;
+								PhysicalQuantity qZ = new PhysicalQuantity();
+								qZ.setValue(valZ);
+								newNodeZ.addPhysicalQuantity(qZ);
+
+								node.addChild(newNodeX);
+								node.addChild(newNodeY);
+								node.addChild(newNodeZ);
+							}
+						}
+					}
+				}
+			}
+			index++;
+		}
+
+		simulationTree.setModified(true);
+
 		return modified;
+	}
+	
+	private boolean containsNode(ACompositeNode node, String name) {
+		List<ANode> children = node.getChildren();
+
+		boolean addNewNode = true;
+		for (ANode child : children) {
+			if (child.getId().equals(name)) {
+				addNewNode = false;
+				return addNewNode;
+			}
+			if (child instanceof ACompositeNode) {
+				if (((ACompositeNode) child).getChildren() != null) {
+					addNewNode = containsNode((ACompositeNode) child, name);
+				}
+			}
+
+		}
+
+		return addNewNode;
+	}
+
+	private ACompositeNode getNode(ACompositeNode node, String name) {
+		ACompositeNode newNode = null;
+
+		List<ANode> children = node.getChildren();
+
+		boolean addNewNode = true;
+		for (ANode child : children) {
+			if (child.getId().equals(name)) {
+				newNode = (ACompositeNode) child;
+				return newNode;
+			}
+			if (child instanceof ACompositeNode) {
+				if (((ACompositeNode) child).getChildren() != null) {
+					newNode = getNode((ACompositeNode) child, name);
+				}
+			}
+
+		}
+
+		return newNode;
 	}
 }
