@@ -51,6 +51,7 @@ import org.geppetto.core.model.runtime.AspectSubTreeNode;
 import org.geppetto.core.model.runtime.AspectSubTreeNode.AspectTreeType;
 import org.geppetto.model.sph.SPHModel;
 import org.geppetto.model.sph.SPHParticle;
+import org.geppetto.model.sph.features.SPHSimulationTreeFeature;
 import org.geppetto.model.sph.features.SPHVisualTreeFeature;
 import org.geppetto.model.sph.x.SPHModelX;
 import org.geppetto.model.sph.x.SPHParticleX;
@@ -95,6 +96,8 @@ public class SPHModelInterpreterService extends AModelInterpreter
 				((SPHParticleX) p).setId(sphModelX.getId() + i++);
 			}
 			this.addFeature(new SPHVisualTreeFeature(sphModelX));
+			
+			this.addFeature(new SPHSimulationTreeFeature());
 		}
 		catch(JAXBException e1)
 		{
@@ -140,9 +143,11 @@ public class SPHModelInterpreterService extends AModelInterpreter
 	public boolean populateRuntimeTree(AspectNode aspectNode) {		
 		AspectSubTreeNode modelTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.MODEL_TREE);
 		AspectSubTreeNode visualizationTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.VISUALIZATION_TREE);
-		
+		AspectSubTreeNode simulationTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.SIMULATION_TREE);
+
 		modelTree.setId(AspectTreeType.MODEL_TREE.toString());
 		visualizationTree.setId(AspectTreeType.VISUALIZATION_TREE.toString());
+		simulationTree.setId(AspectTreeType.SIMULATION_TREE.toString());
 		
 		return true;
 	}
