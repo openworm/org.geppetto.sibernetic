@@ -104,7 +104,7 @@
 							<bindingIncludes>
 								<include>SPHSchema.xjb</include>
 							</bindingIncludes>
-							<forceRegenerate>true</forceRegenerate>
+							<!--<forceRegenerate>true</forceRegenerate>-->
 							<schemaDirectory>src/main/resources/schema</schemaDirectory>
 							<generateDirectory>${project.build.directory}/generated-sources/SPH</generateDirectory>
 							<schemaIncludes>
