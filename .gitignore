@@ -5,3 +5,4 @@ src/main/java/META-INF/sun-jaxb.episode
 /.externalToolBuilders/
 /.settings/
 .classpath
+/bin
