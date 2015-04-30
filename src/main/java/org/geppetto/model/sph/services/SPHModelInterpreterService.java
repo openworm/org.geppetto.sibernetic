@@ -1,7 +1,7 @@
 /*******************************************************************************
  * The MIT License (MIT)
  *
- * Copyright (c) 2011, 2013 OpenWorm.
+ * Copyright (c) 2011 - 2015 OpenWorm.
  * http://openworm.org
  *
  * All rights reserved. This program and the accompanying materials
@@ -43,14 +43,16 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.geppetto.core.beans.ModelInterpreterConfig;
+import org.geppetto.core.model.AModelInterpreter;
 import org.geppetto.core.model.IModel;
-import org.geppetto.core.model.IModelInterpreter;
 import org.geppetto.core.model.ModelInterpreterException;
 import org.geppetto.core.model.runtime.AspectNode;
 import org.geppetto.core.model.runtime.AspectSubTreeNode;
 import org.geppetto.core.model.runtime.AspectSubTreeNode.AspectTreeType;
 import org.geppetto.model.sph.SPHModel;
 import org.geppetto.model.sph.SPHParticle;
+import org.geppetto.model.sph.features.SPHSimulationTreeFeature;
+import org.geppetto.model.sph.features.SPHVisualTreeFeature;
 import org.geppetto.model.sph.x.SPHModelX;
 import org.geppetto.model.sph.x.SPHParticleX;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +63,7 @@ import org.springframework.stereotype.Service;
  * 
  */
 @Service
-public class SPHModelInterpreterService implements IModelInterpreter
+public class SPHModelInterpreterService extends AModelInterpreter
 {
 
 	private static Log logger = LogFactory.getLog(SPHModelInterpreterService.class);
@@ -93,6 +95,9 @@ public class SPHModelInterpreterService implements IModelInterpreter
 			{
 				((SPHParticleX) p).setId(sphModelX.getId() + i++);
 			}
+			this.addFeature(new SPHVisualTreeFeature(sphModelX));
+			
+			this.addFeature(new SPHSimulationTreeFeature());
 		}
 		catch(JAXBException e1)
 		{
@@ -138,9 +143,11 @@ public class SPHModelInterpreterService implements IModelInterpreter
 	public boolean populateRuntimeTree(AspectNode aspectNode) {		
 		AspectSubTreeNode modelTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.MODEL_TREE);
 		AspectSubTreeNode visualizationTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.VISUALIZATION_TREE);
-		
+		AspectSubTreeNode simulationTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.SIMULATION_TREE);
+
 		modelTree.setId(AspectTreeType.MODEL_TREE.toString());
 		visualizationTree.setId(AspectTreeType.VISUALIZATION_TREE.toString());
+		simulationTree.setId(AspectTreeType.SIMULATION_TREE.toString());
 		
 		return true;
 	}
@@ -151,6 +158,13 @@ public class SPHModelInterpreterService implements IModelInterpreter
 	public String getName()
 	{
 		return this._sphModelInterpreterConfig.getModelInterpreterName();
+	}
+
+
+
+	@Override
+	public void registerGeppettoService() throws Exception {
+		
 	}
 	
 }

@@ -7,10 +7,10 @@
 	<name>Geppetto SPH Model Bundle</name>
 	<packaging>bundle</packaging>
 	<properties>
-		<spring.version>3.0.0.RELEASE</spring.version>
+		<spring.version>3.1.0.RELEASE</spring.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	<version>0.1.9</version>
+	<version>0.2.3</version>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -104,7 +104,7 @@
 							<bindingIncludes>
 								<include>SPHSchema.xjb</include>
 							</bindingIncludes>
-							<forceRegenerate>true</forceRegenerate>
+							<!--<forceRegenerate>true</forceRegenerate>-->
 							<schemaDirectory>src/main/resources/schema</schemaDirectory>
 							<generateDirectory>${project.build.directory}/generated-sources/SPH</generateDirectory>
 							<schemaIncludes>
@@ -142,7 +142,7 @@
 							{maven-resources},META-INF/spring=src/main/java/META-INF/spring
 						</Include-Resource>
 						<Import-Package>
-							org.geppetto.core.scope,org.aopalliance.aop,org.springframework.aop,,org.springframework.aop.scope,org.springframework.aop.framework,*
+							org.geppetto.core.scope,org.aopalliance.aop,org.springframework.aop,org.springframework.aop.scope,org.springframework.aop.framework,*
 						</Import-Package>
 					</instructions>
 				</configuration>
