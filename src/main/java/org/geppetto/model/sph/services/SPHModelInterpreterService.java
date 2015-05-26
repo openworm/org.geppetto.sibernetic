@@ -33,6 +33,7 @@
 
 package org.geppetto.model.sph.services;
 
+import java.io.File;
 import java.net.URL;
 import java.util.List;
 
@@ -49,6 +50,7 @@ import org.geppetto.core.model.ModelInterpreterException;
 import org.geppetto.core.model.runtime.AspectNode;
 import org.geppetto.core.model.runtime.AspectSubTreeNode;
 import org.geppetto.core.model.runtime.AspectSubTreeNode.AspectTreeType;
+import org.geppetto.core.services.IModelFormat;
 import org.geppetto.model.sph.SPHModel;
 import org.geppetto.model.sph.SPHParticle;
 import org.geppetto.model.sph.features.SPHSimulationTreeFeature;
@@ -165,6 +167,15 @@ public class SPHModelInterpreterService extends AModelInterpreter
 	@Override
 	public void registerGeppettoService() throws Exception {
 		
+	}
+
+
+
+	@Override
+	public File downloadModel(AspectNode aspectNode, IModelFormat format) throws ModelInterpreterException
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
