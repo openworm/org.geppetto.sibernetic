@@ -69,12 +69,12 @@ public class SPHModelInterpreterService extends AModelInterpreter
 {
 
 	private static Log logger = LogFactory.getLog(SPHModelInterpreterService.class);
-	
+
 	@Autowired
 	private ModelInterpreterConfig _sphModelInterpreterConfig;
 
-	//Populate model tree helper class
-	PopulateModelTreeVisitor createModelTree=new PopulateModelTreeVisitor();
+	// Populate model tree helper class
+	PopulateModelTreeVisitor createModelTree = new PopulateModelTreeVisitor();
 
 	/*
 	 * (non-Javadoc)
@@ -98,7 +98,7 @@ public class SPHModelInterpreterService extends AModelInterpreter
 				((SPHParticleX) p).setId(sphModelX.getId() + i++);
 			}
 			this.addFeature(new SPHVisualTreeFeature(sphModelX));
-			
+
 			this.addFeature(new SPHSimulationTreeFeature());
 		}
 		catch(JAXBException e1)
@@ -109,13 +109,11 @@ public class SPHModelInterpreterService extends AModelInterpreter
 		return sphModelX;
 	}
 
-
-
 	public static String getPropertyPath(int index, String vector, String property)
 	{
-		return getParticleId(index)+"." + vector + "." + property;
+		return getParticleId(index) + "." + vector + "." + property;
 	}
-	
+
 	public static String getParticleId(int index)
 	{
 		return "p[" + index + "]";
@@ -123,26 +121,29 @@ public class SPHModelInterpreterService extends AModelInterpreter
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.geppetto.core.model.IModelInterpreter#populateModelTree(org.geppetto.core.model.runtime.AspectNode)
 	 */
 	@Override
-	public boolean populateModelTree(AspectNode aspectNode) throws ModelInterpreterException {
+	public boolean populateModelTree(AspectNode aspectNode) throws ModelInterpreterException
+	{
 		AspectSubTreeNode modelTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.MODEL_TREE);
-		
-		IModel model = aspectNode.getModel();	
-		
-		createModelTree.populateModelTree(model,modelTree);
-		
+
+		IModel model = aspectNode.getModel();
+
+		createModelTree.populateModelTree(model, modelTree);
+
 		return true;
 	}
 
-
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.geppetto.core.model.IModelInterpreter#populateRuntimeTree(org.geppetto.core.model.runtime.AspectNode)
 	 */
 	@Override
-	public boolean populateRuntimeTree(AspectNode aspectNode) {		
+	public boolean populateRuntimeTree(AspectNode aspectNode)
+	{
 		AspectSubTreeNode modelTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.MODEL_TREE);
 		AspectSubTreeNode visualizationTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.VISUALIZATION_TREE);
 		AspectSubTreeNode simulationTree = (AspectSubTreeNode) aspectNode.getSubTree(AspectTreeType.SIMULATION_TREE);
@@ -150,11 +151,9 @@ public class SPHModelInterpreterService extends AModelInterpreter
 		modelTree.setId(AspectTreeType.MODEL_TREE.toString());
 		visualizationTree.setId(AspectTreeType.VISUALIZATION_TREE.toString());
 		simulationTree.setId(AspectTreeType.SIMULATION_TREE.toString());
-		
+
 		return true;
 	}
-
-
 
 	@Override
 	public String getName()
@@ -162,20 +161,24 @@ public class SPHModelInterpreterService extends AModelInterpreter
 		return this._sphModelInterpreterConfig.getModelInterpreterName();
 	}
 
-
-
 	@Override
-	public void registerGeppettoService() throws Exception {
-		
+	public void registerGeppettoService() throws Exception
+	{
+
 	}
 
-
-
 	@Override
-	public File downloadModel(AspectNode aspectNode, IModelFormat format)
-			throws ModelInterpreterException {
+	public File downloadModel(AspectNode aspectNode, IModelFormat format) throws ModelInterpreterException
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
+	@Override
+	public List<IModelFormat> getSupportedOutputs(AspectNode aspectNode) throws ModelInterpreterException
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
