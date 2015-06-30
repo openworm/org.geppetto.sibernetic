@@ -173,7 +173,7 @@ public class SPHModelInterpreterService extends AModelInterpreter
 	}
 
 	@Override
-	public File downloadModel(AspectNode aspectNode, ModelFormat format, List<? extends IAspectConfiguration> aspectConfigurations) throws ModelInterpreterException
+	public File downloadModel(AspectNode aspectNode, ModelFormat format, IAspectConfiguration aspectConfigurations) throws ModelInterpreterException
 	{
 		// TODO Auto-generated method stub
 		return null;

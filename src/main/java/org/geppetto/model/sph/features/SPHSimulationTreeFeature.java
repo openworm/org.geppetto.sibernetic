@@ -34,6 +34,7 @@ package org.geppetto.model.sph.features;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.geppetto.core.data.model.IAspectConfiguration;
 import org.geppetto.core.features.IWatchableVariableListFeature;
 import org.geppetto.core.model.ModelInterpreterException;
 import org.geppetto.core.model.quantities.Quantity;
@@ -68,7 +69,7 @@ public class SPHSimulationTreeFeature implements IWatchableVariableListFeature{
 	}
 
 	@Override
-	public boolean listWatchableVariables(AspectNode aspectNode) throws ModelInterpreterException
+	public boolean listWatchableVariables(AspectNode aspectNode, IAspectConfiguration configuration) throws ModelInterpreterException
 	{
 		boolean modified = true;
 		
