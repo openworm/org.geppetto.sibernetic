@@ -34,9 +34,10 @@ package org.geppetto.model.sph.features;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.geppetto.core.data.model.IAspectConfiguration;
 import org.geppetto.core.features.IWatchableVariableListFeature;
 import org.geppetto.core.model.ModelInterpreterException;
-import org.geppetto.core.model.quantities.PhysicalQuantity;
+import org.geppetto.core.model.quantities.Quantity;
 import org.geppetto.core.model.runtime.ACompositeNode;
 import org.geppetto.core.model.runtime.ANode;
 import org.geppetto.core.model.runtime.AspectNode;
@@ -68,7 +69,7 @@ public class SPHSimulationTreeFeature implements IWatchableVariableListFeature{
 	}
 
 	@Override
-	public boolean listWatchableVariables(AspectNode aspectNode) throws ModelInterpreterException
+	public boolean listWatchableVariables(AspectNode aspectNode, IAspectConfiguration configuration) throws ModelInterpreterException
 	{
 		boolean modified = true;
 		
@@ -140,23 +141,23 @@ public class SPHSimulationTreeFeature implements IWatchableVariableListFeature{
 								VariableNode newNodeX = new VariableNode("x");
 								newNodeX.setId("x");
 								FloatValue valX = ValuesFactory.getFloatValue(p.getPositionVector().getX());;
-								PhysicalQuantity qX = new PhysicalQuantity();
+								Quantity qX = new Quantity();
 								qX.setValue(valX);
-								newNodeX.addPhysicalQuantity(qX);
+								newNodeX.addQuantity(qX);
 
 								VariableNode newNodeY = new VariableNode("y");
 								newNodeY.setId("y");
 								FloatValue valY = ValuesFactory.getFloatValue(p.getPositionVector().getY());;
-								PhysicalQuantity qY = new PhysicalQuantity();
+								Quantity qY = new Quantity();
 								qY.setValue(valY);
-								newNodeY.addPhysicalQuantity(qY);
+								newNodeY.addQuantity(qY);
 
 								VariableNode newNodeZ = new VariableNode("z");
 								newNodeZ.setId("z");
 								FloatValue valZ = ValuesFactory.getFloatValue(p.getPositionVector().getZ());;
-								PhysicalQuantity qZ = new PhysicalQuantity();
+								Quantity qZ = new Quantity();
 								qZ.setValue(valZ);
-								newNodeZ.addPhysicalQuantity(qZ);
+								newNodeZ.addQuantity(qZ);
 
 								node.addChild(newNodeX);
 								node.addChild(newNodeY);
