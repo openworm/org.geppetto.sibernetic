@@ -11,12 +11,9 @@
        						http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
 
 
-	<osgi:service id="SPHModelExporter" ref="SPHModelInterpreterService" interface="org.geppetto.core.model.IModelInterpreter">
-		<osgi:service-properties>
-			<entry key="discoverableID" value="sphModelInterpreter" />
-		</osgi:service-properties>
+	<osgi:service id="SPHModelExporter" ref="sphModelInterpreter" interface="org.geppetto.core.model.IModelInterpreter">
 	</osgi:service>
-	<bean id="SPHModelInterpreterService" scope="thread" class="org.geppetto.model.sph.services.SPHModelInterpreterService">
+	<bean id="sphModelInterpreter" scope="prototype" class="org.geppetto.model.sph.services.SPHModelInterpreterService">
 	<aop:scoped-proxy proxy-target-class="false"/>
 	</bean>
 </beans>
