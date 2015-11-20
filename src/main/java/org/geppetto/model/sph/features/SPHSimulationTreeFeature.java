@@ -37,16 +37,16 @@ import java.util.StringTokenizer;
 import org.geppetto.core.data.model.IAspectConfiguration;
 import org.geppetto.core.features.IWatchableVariableListFeature;
 import org.geppetto.core.model.ModelInterpreterException;
-import org.geppetto.core.model.quantities.Quantity;
-import org.geppetto.core.model.runtime.ACompositeNode;
 import org.geppetto.core.model.runtime.ANode;
-import org.geppetto.core.model.runtime.AspectNode;
 import org.geppetto.core.model.runtime.AspectSubTreeNode;
 import org.geppetto.core.model.runtime.AspectSubTreeNode.AspectTreeType;
-import org.geppetto.core.model.runtime.CompositeNode;
-import org.geppetto.core.model.runtime.VariableNode;
-import org.geppetto.core.model.values.FloatValue;
-import org.geppetto.core.model.values.ValuesFactory;
+import org.geppetto.core.model.typesystem.AspectNode;
+import org.geppetto.core.model.typesystem.values.ACompositeValue;
+import org.geppetto.core.model.typesystem.values.CompositeValue;
+import org.geppetto.core.model.typesystem.values.FloatValue;
+import org.geppetto.core.model.typesystem.values.QuantityValue;
+import org.geppetto.core.model.typesystem.values.ValuesFactory;
+import org.geppetto.core.model.typesystem.values.VariableValue;
 import org.geppetto.core.services.GeppettoFeature;
 import org.geppetto.model.sph.SPHParticle;
 import org.geppetto.model.sph.x.SPHModelX;
@@ -88,15 +88,15 @@ public class SPHSimulationTreeFeature implements IWatchableVariableListFeature{
 				// tokenize variable path in watch list via dot
 				// separator (handle array brackets)
 				StringTokenizer tokenizer = new StringTokenizer(name, ".");
-				ACompositeNode node = simulationTree;
+				ACompositeValue node = simulationTree;
 				while (tokenizer.hasMoreElements()) {
 					// loop through tokens and build tree
 					String current = tokenizer.nextToken();
 					boolean found = false;
 					for (ANode child : node.getChildren()) {
 						if (child.getId().equals(current)) {
-							if (child instanceof ACompositeNode) {
-								node = (ACompositeNode) child;
+							if (child instanceof ACompositeValue) {
+								node = (ACompositeValue) child;
 							}
 							found = true;
 							break;
@@ -113,7 +113,7 @@ public class SPHSimulationTreeFeature implements IWatchableVariableListFeature{
 										+ "]";
 							}
 
-							CompositeNode newNode = new CompositeNode(
+							CompositeValue newNode = new CompositeValue(
 									nodeName);
 							newNode.setId(nodeName);
 
@@ -127,7 +127,7 @@ public class SPHSimulationTreeFeature implements IWatchableVariableListFeature{
 								node = getNode(node, newNode.getId());
 							}
 						}else{
-							CompositeNode newNode = new CompositeNode(
+							CompositeValue newNode = new CompositeValue(
 									current);
 							newNode.setId(current);
 
@@ -138,24 +138,24 @@ public class SPHSimulationTreeFeature implements IWatchableVariableListFeature{
 								node.addChild(newNode);
 								node = newNode;
 								
-								VariableNode newNodeX = new VariableNode("x");
+								VariableValue newNodeX = new VariableValue("x");
 								newNodeX.setId("x");
 								FloatValue valX = ValuesFactory.getFloatValue(p.getPositionVector().getX());;
-								Quantity qX = new Quantity();
+								QuantityValue qX = new QuantityValue();
 								qX.setValue(valX);
 								newNodeX.addQuantity(qX);
 
-								VariableNode newNodeY = new VariableNode("y");
+								VariableValue newNodeY = new VariableValue("y");
 								newNodeY.setId("y");
 								FloatValue valY = ValuesFactory.getFloatValue(p.getPositionVector().getY());;
-								Quantity qY = new Quantity();
+								QuantityValue qY = new QuantityValue();
 								qY.setValue(valY);
 								newNodeY.addQuantity(qY);
 
-								VariableNode newNodeZ = new VariableNode("z");
+								VariableValue newNodeZ = new VariableValue("z");
 								newNodeZ.setId("z");
 								FloatValue valZ = ValuesFactory.getFloatValue(p.getPositionVector().getZ());;
-								Quantity qZ = new Quantity();
+								QuantityValue qZ = new QuantityValue();
 								qZ.setValue(valZ);
 								newNodeZ.addQuantity(qZ);
 
@@ -175,7 +175,7 @@ public class SPHSimulationTreeFeature implements IWatchableVariableListFeature{
 		return modified;
 	}
 	
-	private boolean containsNode(ACompositeNode node, String name) {
+	private boolean containsNode(ACompositeValue node, String name) {
 		List<ANode> children = node.getChildren();
 
 		boolean addNewNode = true;
@@ -184,9 +184,9 @@ public class SPHSimulationTreeFeature implements IWatchableVariableListFeature{
 				addNewNode = false;
 				return addNewNode;
 			}
-			if (child instanceof ACompositeNode) {
-				if (((ACompositeNode) child).getChildren() != null) {
-					addNewNode = containsNode((ACompositeNode) child, name);
+			if (child instanceof ACompositeValue) {
+				if (((ACompositeValue) child).getChildren() != null) {
+					addNewNode = containsNode((ACompositeValue) child, name);
 				}
 			}
 
@@ -195,20 +195,20 @@ public class SPHSimulationTreeFeature implements IWatchableVariableListFeature{
 		return addNewNode;
 	}
 
-	private ACompositeNode getNode(ACompositeNode node, String name) {
-		ACompositeNode newNode = null;
+	private ACompositeValue getNode(ACompositeValue node, String name) {
+		ACompositeValue newNode = null;
 
 		List<ANode> children = node.getChildren();
 
 		boolean addNewNode = true;
 		for (ANode child : children) {
 			if (child.getId().equals(name)) {
-				newNode = (ACompositeNode) child;
+				newNode = (ACompositeValue) child;
 				return newNode;
 			}
-			if (child instanceof ACompositeNode) {
-				if (((ACompositeNode) child).getChildren() != null) {
-					newNode = getNode((ACompositeNode) child, name);
+			if (child instanceof ACompositeValue) {
+				if (((ACompositeValue) child).getChildren() != null) {
+					newNode = getNode((ACompositeValue) child, name);
 				}
 			}
 

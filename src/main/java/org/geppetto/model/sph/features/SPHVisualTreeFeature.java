@@ -35,14 +35,14 @@ package org.geppetto.model.sph.features;
 import org.geppetto.core.features.IVisualTreeFeature;
 import org.geppetto.core.model.IModel;
 import org.geppetto.core.model.ModelInterpreterException;
-import org.geppetto.core.model.runtime.AspectNode;
 import org.geppetto.core.model.runtime.AspectSubTreeNode;
-import org.geppetto.core.model.runtime.CompositeNode;
 import org.geppetto.core.model.runtime.EntityNode;
-import org.geppetto.core.model.runtime.ParticleNode;
 import org.geppetto.core.model.runtime.AspectSubTreeNode.AspectTreeType;
-import org.geppetto.core.model.values.FloatValue;
-import org.geppetto.core.model.values.ValuesFactory;
+import org.geppetto.core.model.typesystem.AspectNode;
+import org.geppetto.core.model.typesystem.values.CompositeValue;
+import org.geppetto.core.model.typesystem.values.FloatValue;
+import org.geppetto.core.model.typesystem.values.ParticleValue;
+import org.geppetto.core.model.typesystem.values.ValuesFactory;
 import org.geppetto.core.services.GeppettoFeature;
 import org.geppetto.core.visualisation.model.Point;
 import org.geppetto.model.sph.SPHParticle;
@@ -91,11 +91,11 @@ public class SPHVisualTreeFeature implements IVisualTreeFeature{
 	 * @param visualTree
 	 */
 	public void populateVisualTree(IModel model, AspectSubTreeNode visualTree){
-		CompositeNode _liquidModel = new CompositeNode("LIQUID_"
+		CompositeValue _liquidModel = new CompositeValue("LIQUID_"
 				+ model.getId());
-		CompositeNode _boundaryModel = new CompositeNode("BOUNDARY_"
+		CompositeValue _boundaryModel = new CompositeValue("BOUNDARY_"
 				+ model.getId());
-		CompositeNode _elasticModel = new CompositeNode("ELASTIC_"
+		CompositeValue _elasticModel = new CompositeValue("ELASTIC_"
 				+ model.getId());
 
 		int i = -1;
@@ -113,7 +113,7 @@ public class SPHVisualTreeFeature implements IVisualTreeFeature{
 			if (pV.getAsFloat() != SPHConstants.BOUNDARY_TYPE) {
 				// don't need to create a state for the boundary particles,
 				// they don't move.
-				ParticleNode particle = new ParticleNode(particleId);
+				ParticleValue particle = new ParticleValue(particleId);
 				Point pos = new Point();
 				pos.setX(xV.getAsDouble());
 				pos.setY(yV.getAsDouble());
