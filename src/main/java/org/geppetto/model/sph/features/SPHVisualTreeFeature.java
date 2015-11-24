@@ -32,24 +32,15 @@
  *******************************************************************************/
 package org.geppetto.model.sph.features;
 
-import org.geppetto.core.features.IVisualTreeFeature;
 import org.geppetto.core.model.IModel;
 import org.geppetto.core.model.ModelInterpreterException;
-import org.geppetto.core.model.runtime.AspectSubTreeNode;
-import org.geppetto.core.model.runtime.EntityNode;
-import org.geppetto.core.model.runtime.AspectSubTreeNode.AspectTreeType;
-import org.geppetto.core.model.typesystem.AspectNode;
-import org.geppetto.core.model.typesystem.values.CompositeValue;
-import org.geppetto.core.model.typesystem.values.FloatValue;
-import org.geppetto.core.model.typesystem.values.ParticleValue;
-import org.geppetto.core.model.typesystem.values.ValuesFactory;
 import org.geppetto.core.services.GeppettoFeature;
-import org.geppetto.core.visualisation.model.Point;
 import org.geppetto.model.sph.SPHParticle;
 import org.geppetto.model.sph.common.SPHConstants;
 import org.geppetto.model.sph.services.SPHModelInterpreterService;
 import org.geppetto.model.sph.x.SPHModelX;
 import org.geppetto.model.sph.x.SPHParticleX;
+import org.geppetto.model.values.ValuesFactory;
 
 /**
  * Visual tree feature for populating visualization tree

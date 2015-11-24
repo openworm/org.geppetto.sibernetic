@@ -33,7 +33,6 @@
 package org.geppetto.model.sph.services;
 
 import org.geppetto.core.model.IModel;
-import org.geppetto.core.model.runtime.AspectSubTreeNode;
 
 /**
  * Populate Model tree for SPH models

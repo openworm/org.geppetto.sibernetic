@@ -35,21 +35,11 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.geppetto.core.data.model.IAspectConfiguration;
-import org.geppetto.core.features.IWatchableVariableListFeature;
 import org.geppetto.core.model.ModelInterpreterException;
-import org.geppetto.core.model.runtime.ANode;
-import org.geppetto.core.model.runtime.AspectSubTreeNode;
-import org.geppetto.core.model.runtime.AspectSubTreeNode.AspectTreeType;
-import org.geppetto.core.model.typesystem.AspectNode;
-import org.geppetto.core.model.typesystem.values.ACompositeValue;
-import org.geppetto.core.model.typesystem.values.CompositeValue;
-import org.geppetto.core.model.typesystem.values.FloatValue;
-import org.geppetto.core.model.typesystem.values.QuantityValue;
-import org.geppetto.core.model.typesystem.values.ValuesFactory;
-import org.geppetto.core.model.typesystem.values.VariableValue;
 import org.geppetto.core.services.GeppettoFeature;
 import org.geppetto.model.sph.SPHParticle;
 import org.geppetto.model.sph.x.SPHModelX;
+import org.geppetto.model.values.ValuesFactory;
 
 /**
  * Variable watch feature for SPH simulator
