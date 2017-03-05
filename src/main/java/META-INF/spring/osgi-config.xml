@@ -11,9 +11,9 @@
        						http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
 
 
-	<osgi:service id="SPHModelExporter" ref="sphModelInterpreter" interface="org.geppetto.core.model.IModelInterpreter">
+	<osgi:service id="SiberneticModelExporter" ref="siberneticModelInterpreter" interface="org.geppetto.core.model.IModelInterpreter">
 	</osgi:service>
-	<bean id="sphModelInterpreter" scope="prototype" class="org.geppetto.model.sph.services.SPHModelInterpreterService">
+	<bean id="siberneticModelInterpreter" scope="prototype" class="org.geppetto.model.sibernetic.SiberneticModelInterpreterService">
 	<aop:scoped-proxy proxy-target-class="false"/>
 	</bean>
 </beans>

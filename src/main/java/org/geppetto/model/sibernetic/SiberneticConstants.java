@@ -31,9 +31,9 @@
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  *******************************************************************************/
 
-package org.geppetto.model.sph.common;
+package org.geppetto.model.sibernetic;
 
-public class SPHConstants {
+public class SiberneticConstants {
 	public static final int NEIGHBOR_COUNT = 32;
 	
 	public static final float LIQUID_TYPE = 1.1f;

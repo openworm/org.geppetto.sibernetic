@@ -12,7 +12,7 @@
 	<context:component-scan base-package="org.geppetto.model.sph" />
 		
 	<!-- Add flag for Simulation Run Mode --> 
-	<bean id="sphModelInterpreterConfig" class="org.geppetto.core.beans.ModelInterpreterConfig"> 
-		<property name="modelInterpreterName" value="SPH Model Interpreter" />
+	<bean id="siberneticModelInterpreterConfig" class="org.geppetto.core.beans.ModelInterpreterConfig"> 
+		<property name="modelInterpreterName" value="Sibernetic Model Interpreter" />
 	</bean>
 </beans>
