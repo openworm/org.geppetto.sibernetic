@@ -92,14 +92,14 @@ public class SiberneticModelConverter
 					membraneParticles = ValuesFactory.eINSTANCE.createParticles();
 					Variable membrane = VariablesFactory.eINSTANCE.createVariable();
 					membrane.setId("membrane");
-					Type liquidType = siberneticLibrary.getTypeById("membrane");
-					membrane.getTypes().add(liquidType);
+					Type membraneType = siberneticLibrary.getTypeById("membrane");
+					membrane.getTypes().add(membraneType);
 					Composite value = ValuesFactory.eINSTANCE.createComposite();
 					value.getValue().put("particles", membraneParticles);
-					membrane.getInitialValues().put(liquidType, value);
+					membrane.getInitialValues().put(membraneType, value);
 					model.getVariables().add(membrane);
 				}
-				return liquidParticles;
+				return membraneParticles;
 			case "3.1":
 				if(liquidParticles == null)
 				{

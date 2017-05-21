@@ -20,14 +20,16 @@
       name="Liquid">
     <variables
         id="particles"
-        name="Particles"/>
+        name="Particles"
+        types="//@types.3"/>
   </types>
   <types xsi:type="gep_1:CompositeType"
       id="membrane"
       name="Membrane">
     <variables
         id="particles"
-        name="Particles"/>
+        name="Particles"
+        types="//@types.3"/>
   </types>
   <types xsi:type="gep_1:ArrayType"
       id="particles"
