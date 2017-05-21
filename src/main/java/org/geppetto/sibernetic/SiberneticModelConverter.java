@@ -50,6 +50,8 @@ public class SiberneticModelConverter
 		this.siberneticLibrary = siberneticLibrary;
 		this.library = library;
 		this.modelAccess = modelAccess;
+		this.model.setId("worm");
+		this.model.setName("Worm");
 	}
 
 	/**
@@ -77,7 +79,7 @@ public class SiberneticModelConverter
 			}
 		}
 		//System.out.println(liquidParticles.getParticles());
-		return null;
+		return this.model;
 	}
 
 	private Particles getContainer(String type)

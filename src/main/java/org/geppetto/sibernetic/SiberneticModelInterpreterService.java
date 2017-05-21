@@ -86,7 +86,7 @@ public class SiberneticModelInterpreterService extends AModelInterpreter
 
 			modelAccess.addLibrary(siberneticLibrary);
 			// url in this case is just an id that points to a file that has to exist inside Sibernetic
-			String modelToLoad = getSiberneticPath() + File.pathSeparator + "configuration" + File.pathSeparator + url;
+			String modelToLoad = "file://" + getSiberneticPath() + "configuration" + File.separator + url.toString().substring(7);
 
 			String modelConfiguration = URLReader.readStringFromURL(new URL(modelToLoad));
 			SiberneticModelConverter converter = new SiberneticModelConverter(siberneticLibrary, library, modelAccess);

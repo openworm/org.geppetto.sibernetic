@@ -17,7 +17,7 @@
 	</bean>
 	
 	<bean id="siberneticExternalSimulatorConfig" class="org.geppetto.core.simulator.ExternalSimulatorConfig"> 
-		<property name="simulatorPath" value="/Users/matteocantarelli/Development/sibernetic/" />
+		<property name="simulatorPath" value="/Users/matteocantarelli/Documents/Development/sibernetic/" />
 	</bean>
 	
 	<bean id="siberneticSimulatorConfig" class="org.geppetto.core.beans.SimulatorConfig"> 
