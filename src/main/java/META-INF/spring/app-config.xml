@@ -9,7 +9,7 @@
 	<!--  <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>--> 
 	<!-- Instructs Spring to scan for internal service components to instantiate and configure -->
 	<context:annotation-config/>	
-	<context:component-scan base-package="org.geppetto.model.sph" />
+	<context:component-scan base-package="org.geppetto.sibernetic" />
 		
 	<!-- Add flag for Simulation Run Mode --> 
 	<bean id="siberneticModelInterpreterConfig" class="org.geppetto.core.beans.ModelInterpreterConfig"> 

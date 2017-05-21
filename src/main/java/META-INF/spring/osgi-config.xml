@@ -11,6 +11,7 @@
        						http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
 
 
+
 	<osgi:service id="SiberneticModelExporter" ref="siberneticModelInterpreter" interface="org.geppetto.core.model.IModelInterpreter">
 	</osgi:service>
 	<bean id="siberneticModelInterpreter" scope="prototype" class="org.geppetto.sibernetic.SiberneticModelInterpreterService">
@@ -22,4 +23,6 @@
 	<bean id="sibernetic" scope="prototype" class="org.geppetto.sibernetic.SiberneticWrapperService">
 	<aop:scoped-proxy proxy-target-class="false"/>
 	</bean>
+	
+	<bean id="eventListenerBean" class="org.geppetto.core.services.registry.ApplicationListenerBean" />
 </beans>
