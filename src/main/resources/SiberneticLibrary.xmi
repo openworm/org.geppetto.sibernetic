@@ -8,32 +8,32 @@
     id="sibernetic"
     name="Sibernetic Library">
   <types xsi:type="gep_1:CompositeType"
-      id="bundle"
-      name="Bundle"/>
-  <types xsi:type="gep_1:CompositeType"
       id="contractile"
-      name="Contractile"/>
+      name="Contractile">
+    <variables
+        id="particles"
+        name="Particles"
+        types="//@types.3"/>
+  </types>
   <types xsi:type="gep_1:CompositeType"
       id="liquid"
-      name="Liquid"/>
+      name="Liquid">
+    <variables
+        id="particles"
+        name="Particles"/>
+  </types>
   <types xsi:type="gep_1:CompositeType"
       id="membrane"
-      name="Membrane"/>
-  <types xsi:type="gep_1:CompositeType"
-      id="body"
-      name="Body">
+      name="Membrane">
     <variables
-        id="centerOfMass"
-        name="Center Of Mass"/>
-    <variables
-        id="liquid"
-        name="Liquid"
-        types="//@types.2"/>
-    <variables
-        id="membrane"
-        name="Membrane"/>
-    <variables
-        id="contractile"
-        name="Contractile"/>
+        id="particles"
+        name="Particles"/>
   </types>
+  <types xsi:type="gep_1:ArrayType"
+      id="particles"
+      name="Particles"
+      arrayType="//@types.4"/>
+  <types xsi:type="gep_1:PointType"
+      id="particle"
+      name="Particle"/>
 </gep:GeppettoLibrary>

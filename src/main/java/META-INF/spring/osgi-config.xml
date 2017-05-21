@@ -13,7 +13,13 @@
 
 	<osgi:service id="SiberneticModelExporter" ref="siberneticModelInterpreter" interface="org.geppetto.core.model.IModelInterpreter">
 	</osgi:service>
-	<bean id="siberneticModelInterpreter" scope="prototype" class="org.geppetto.model.sibernetic.SiberneticModelInterpreterService">
+	<bean id="siberneticModelInterpreter" scope="prototype" class="org.geppetto.sibernetic.SiberneticModelInterpreterService">
+	<aop:scoped-proxy proxy-target-class="false"/>
+	</bean>
+	
+	<osgi:service id="SiberneticSimulatorExporter" ref="sibernetic" interface="org.geppetto.core.simulator.ISimulator">
+	</osgi:service>
+	<bean id="sibernetic" scope="prototype" class="org.geppetto.sibernetic.SiberneticWrapperService">
 	<aop:scoped-proxy proxy-target-class="false"/>
 	</bean>
 </beans>

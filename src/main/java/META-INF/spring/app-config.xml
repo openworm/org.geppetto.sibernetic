@@ -15,4 +15,13 @@
 	<bean id="siberneticModelInterpreterConfig" class="org.geppetto.core.beans.ModelInterpreterConfig"> 
 		<property name="modelInterpreterName" value="Sibernetic Model Interpreter" />
 	</bean>
+	
+	<bean id="siberneticExternalSimulatorConfig" class="org.geppetto.core.simulator.ExternalSimulatorConfig"> 
+		<property name="simulatorPath" value="/Users/matteocantarelli/Development/sibernetic/" />
+	</bean>
+	
+	<bean id="siberneticSimulatorConfig" class="org.geppetto.core.beans.SimulatorConfig"> 
+		<property name="simulatorName" value="Sibernetic Simulator" />
+		<property name="simulatorID" value="sibernetic" />
+	</bean>
 </beans>
