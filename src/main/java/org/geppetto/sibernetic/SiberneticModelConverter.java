@@ -3,15 +3,16 @@
  */
 package org.geppetto.sibernetic;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.geppetto.core.model.GeppettoModelAccess;
 import org.geppetto.model.GeppettoLibrary;
 import org.geppetto.model.types.CompositeType;
+import org.geppetto.model.types.CompositeVisualType;
 import org.geppetto.model.types.Type;
 import org.geppetto.model.types.TypesFactory;
-import org.geppetto.model.values.ArrayValue;
-import org.geppetto.model.values.Composite;
 import org.geppetto.model.values.Particles;
 import org.geppetto.model.values.Point;
 import org.geppetto.model.values.ValuesFactory;
@@ -36,9 +37,7 @@ public class SiberneticModelConverter
 	private GeppettoLibrary library;
 	private GeppettoModelAccess modelAccess;
 
-	private Particles liquidParticles = null;
-	private Particles membraneParticles = null;
-	private Particles contractileParticles = null;
+	private Map<String, Particles> particlesMap = null;
 
 	/**
 	 * @param siberneticLibrary
@@ -48,6 +47,7 @@ public class SiberneticModelConverter
 	public SiberneticModelConverter(GeppettoLibrary siberneticLibrary, GeppettoLibrary library, GeppettoModelAccess modelAccess)
 	{
 		this.siberneticLibrary = siberneticLibrary;
+		this.particlesMap = new HashMap<String, Particles>();
 		this.library = library;
 		this.modelAccess = modelAccess;
 		this.model.setId("worm");
@@ -78,46 +78,35 @@ public class SiberneticModelConverter
 				getContainer(type).getParticles().add(particle);
 			}
 		}
-		//System.out.println(liquidParticles.getParticles());
+		// System.out.println(liquidParticles.getParticles());
 		return this.model;
 	}
 
 	private Particles getContainer(String type)
 	{
-		switch(type)
+		String typeNoDots = type.replace(".", "_");
+		switch(typeNoDots)
 		{
-			case "2.3":
-				if(membraneParticles == null)
-				{
-					membraneParticles = ValuesFactory.eINSTANCE.createParticles();
-					Variable membrane = VariablesFactory.eINSTANCE.createVariable();
-					membrane.setId("membrane");
-					Type membraneType = siberneticLibrary.getTypeById("membrane");
-					membrane.getTypes().add(membraneType);
-					Composite value = ValuesFactory.eINSTANCE.createComposite();
-					value.getValue().put("particles", membraneParticles);
-					membrane.getInitialValues().put(membraneType, value);
-					model.getVariables().add(membrane);
-				}
-				return membraneParticles;
-			case "3.1":
-				if(liquidParticles == null)
-				{
-					liquidParticles = ValuesFactory.eINSTANCE.createParticles();
-					Variable liquid = VariablesFactory.eINSTANCE.createVariable();
-					liquid.setId("liquid");
-					Type liquidType = siberneticLibrary.getTypeById("liquid");
-					liquid.getTypes().add(liquidType);
-					Composite value = ValuesFactory.eINSTANCE.createComposite();
-					value.getValue().put("particles", liquidParticles);
-					liquid.getInitialValues().put(liquidType, value);
-					model.getVariables().add(liquid);
-				}
-				return liquidParticles;
+			case "0":
+				return null;
 			default:
-				break;
+				if(!particlesMap.containsKey(typeNoDots))
+				{
+					particlesMap.put(typeNoDots, ValuesFactory.eINSTANCE.createParticles());
+					Variable matter = VariablesFactory.eINSTANCE.createVariable();
+					matter.setId("matter_" + typeNoDots);
+					CompositeVisualType matterType = TypesFactory.eINSTANCE.createCompositeVisualType();
+					siberneticLibrary.getTypes().add(matterType);
+					matterType.setId("matter_" + typeNoDots + "_Type");
+					Variable particles = VariablesFactory.eINSTANCE.createVariable();
+					particles.setId("particles");
+					matterType.getVariables().add(particles);
+					matter.getTypes().add(matterType);
+					particles.getInitialValues().put(matterType, particlesMap.get(typeNoDots));
+					model.getVariables().add(matter);
+				}
+				return particlesMap.get(typeNoDots);
 		}
-		return null;
 	}
 
 }

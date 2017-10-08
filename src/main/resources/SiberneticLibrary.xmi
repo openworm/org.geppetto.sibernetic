@@ -13,29 +13,28 @@
     <variables
         id="particles"
         name="Particles"
-        types="//@types.3"/>
+        types="//@types.1"/>
   </types>
-  <types xsi:type="gep_1:CompositeType"
-      id="liquid"
-      name="Liquid">
-    <variables
-        id="particles"
-        name="Particles"
-        types="//@types.3"/>
-  </types>
-  <types xsi:type="gep_1:CompositeType"
+  <types xsi:type="gep_1:ArrayType"
+      id="particles"
+      name="Particles"
+      arrayType="//@types.2"/>
+  <types xsi:type="gep_1:PointType"
+      id="particle"
+      name="Particle"/>
+  <types xsi:type="gep_1:CompositeVisualType"
       id="membrane"
       name="Membrane">
     <variables
         id="particles"
         name="Particles"
-        types="//@types.3"/>
+        types="//@types.1"/>
   </types>
-  <types xsi:type="gep_1:ArrayType"
-      id="particles"
-      name="Particles"
-      arrayType="//@types.4"/>
-  <types xsi:type="gep_1:PointType"
-      id="particle"
-      name="Particle"/>
+  <types xsi:type="gep_1:CompositeVisualType"
+      id="liquid"
+      name="Liquid">
+    <variables
+        id="particles"
+        name="Particles"/>
+  </types>
 </gep:GeppettoLibrary>
