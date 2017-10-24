@@ -30,6 +30,8 @@ public class SiberneticModelConverter
 
 	private String POSITION_TAG = "[position]";
 	private String VELOCITY_TAG = "[velocity]";
+	private String CONNECTION_TAG = "[connection]";
+	private String MEMBRANES_TAG = "[membranes]";
 
 	private CompositeType model = TypesFactory.eINSTANCE.createCompositeType();
 
@@ -61,24 +63,63 @@ public class SiberneticModelConverter
 	public Type toGeppettoType(String modelConfiguration)
 	{
 
+
+		String connections = modelConfiguration.substring(modelConfiguration.indexOf(CONNECTION_TAG) + CONNECTION_TAG.length(), modelConfiguration.indexOf(MEMBRANES_TAG));
 		String positions = modelConfiguration.substring(modelConfiguration.indexOf(POSITION_TAG) + POSITION_TAG.length(), modelConfiguration.indexOf(VELOCITY_TAG));
+
+
+		Map<String,String> particlesToMuscleBundles = new HashMap<String,String>();
+		//let's first iterate on all the connections to find all the particles that will belong to the same muscle cell
+		StringTokenizer cTokenizer = new StringTokenizer(connections, "\r\n");
+		while(cTokenizer.hasMoreTokens())
+		{
+			String connection = cTokenizer.nextToken();
+			StringTokenizer connectionTokenizer = new StringTokenizer(connection);
+			float particleFloat=Float.parseFloat(connectionTokenizer.nextToken());
+			String particleId = ((Integer)((int)particleFloat)).toString();
+			connectionTokenizer.nextToken(); //we don't care about the second parameter, the eleastic spring
+			float muscleBundleFloat=Float.parseFloat(connectionTokenizer.nextToken());
+			String muscleBundle = ((Integer)((int)muscleBundleFloat)).toString();
+			if(!muscleBundle.equals("0")){
+				particlesToMuscleBundles.put(particleId,muscleBundle);
+			}
+		}
+		
+		Integer currentParticle=-1;
 		// everything else which is not position we don't care
 		StringTokenizer tokenizer = new StringTokenizer(positions, "\r\n");
 		while(tokenizer.hasMoreTokens())
 		{
 			String position = tokenizer.nextToken();
+			currentParticle++;
 			Point particle = ValuesFactory.eINSTANCE.createPoint();
 			StringTokenizer positionTokenizer = new StringTokenizer(position);
 			particle.setX(Double.parseDouble(positionTokenizer.nextToken()));
 			particle.setY(Double.parseDouble(positionTokenizer.nextToken()));
 			particle.setZ(Double.parseDouble(positionTokenizer.nextToken()));
-			String type = positionTokenizer.nextToken();
-			if(getContainer(type) != null)
-			{
-				getContainer(type).getParticles().add(particle);
+			//we are grouping by the type of particle
+
+			float typeFloat=Float.parseFloat(positionTokenizer.nextToken());
+			String type = ((Integer)((int)typeFloat)).toString();
+			
+			String p=currentParticle.toString();
+			if(particlesToMuscleBundles.containsKey(p)){
+				String muscle=particlesToMuscleBundles.get(p);
+				Particles container=getContainer(muscle);
+				if(container!=null)
+				{
+					container.getParticles().add(particle);
+				}				
+			}
+			else{
+				Particles container=getContainer(type);
+				if(container != null)
+				{
+					container.getParticles().add(particle);
+				}
+	
 			}
 		}
-		// System.out.println(liquidParticles.getParticles());
 		return this.model;
 	}
 
