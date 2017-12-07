@@ -88,7 +88,13 @@ public class ConvertSiberneticToRecordingTest
 		double[] value94 = (double[]) dataset94.read();
 		Assert.assertEquals(0.0d, value94[0]);
 		Assert.assertEquals(0.0d, value94[161]);
-
+		
+		Dataset dataset95 = (Dataset) file.findObject(file, "/worm(worm)/muscle_activation_95(StateVariable)");
+		double[] value95 = (double[]) dataset95.read();
+		Assert.assertEquals(0.0d, value94[0]);
+		Assert.assertEquals(0.0d, value94[161]);
+		Dataset dataset96 = (Dataset) file.findObject(file, "/worm(worm)/muscle_activation_96(StateVariable)");
+		Assert.assertNull(dataset96);
 		file.close();
 		
 	}
