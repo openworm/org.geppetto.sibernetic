@@ -1,6 +1,7 @@
 package org.geppetto.sibernetic;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -92,7 +93,7 @@ public class ConvertSiberneticToRecording
 		
 		// Let's write to the Geppetto recording
 		for(Integer muscle:activationValues.keySet()){
-			String instancePath="worm.muscle_activation["+muscle+"]";
+			String instancePath="worm.muscle_activation_"+muscle+"";
 			Pointer pointer = geppettoModelAccess.getPointer(instancePath);
 			recordingCreator.addValues(pointer.getInstancePath(), activationValues.get(muscle).toArray(new Double[] {}), "", TypesPackage.Literals.STATE_VARIABLE_TYPE.getName(), false);
 		}
@@ -102,7 +103,7 @@ public class ConvertSiberneticToRecording
 
 	private BufferedReader getBufferedReader(String file) throws FileNotFoundException
 	{
-		return new BufferedReader(new FileReader(this.siberneticRecordingFolder + System.getProperty("path.separator") + file));
+		return new BufferedReader(new FileReader(this.siberneticRecordingFolder + File.separator + file));
 	}
 
 	private void convertParticlesPosition()

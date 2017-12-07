@@ -17,6 +17,7 @@ import org.geppetto.core.common.GeppettoInitializationException;
 import org.geppetto.model.GeppettoLibrary;
 import org.geppetto.model.GeppettoPackage;
 import org.geppetto.model.types.Type;
+import org.geppetto.model.util.GeppettoVisitingException;
 import org.junit.Test;
 
 /**
@@ -27,7 +28,7 @@ public class SiberneticModelConverterTest
 {
 
 	@Test
-	public void test() throws IOException, GeppettoInitializationException
+	public void test() throws IOException, GeppettoInitializationException, GeppettoVisitingException
 	{
 		GeppettoLibrary siberneticLibrary = SiberneticLibraryLoader.getSiberneticLibrary();
 		String modelConfiguration = IOUtils.toString(SiberneticModelConverterTest.class.getClassLoader().getResourceAsStream("sampleConfiguration")); 

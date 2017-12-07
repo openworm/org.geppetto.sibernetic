@@ -21,6 +21,7 @@ import org.geppetto.core.utilities.URLReader;
 import org.geppetto.model.GeppettoLibrary;
 import org.geppetto.model.ModelFormat;
 import org.geppetto.model.types.Type;
+import org.geppetto.model.util.GeppettoVisitingException;
 import org.geppetto.model.values.Pointer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -102,6 +103,10 @@ public class SiberneticModelInterpreterService extends AModelInterpreter
 			throw new ModelInterpreterException(e);
 		}
 		catch(IOException e)
+		{
+			throw new ModelInterpreterException(e);
+		}
+		catch(GeppettoVisitingException e)
 		{
 			throw new ModelInterpreterException(e);
 		}

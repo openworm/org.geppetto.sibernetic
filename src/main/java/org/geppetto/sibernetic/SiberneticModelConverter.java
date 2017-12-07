@@ -13,6 +13,8 @@ import org.geppetto.model.types.CompositeType;
 import org.geppetto.model.types.CompositeVisualType;
 import org.geppetto.model.types.Type;
 import org.geppetto.model.types.TypesFactory;
+import org.geppetto.model.types.TypesPackage;
+import org.geppetto.model.util.GeppettoVisitingException;
 import org.geppetto.model.values.Particles;
 import org.geppetto.model.values.Point;
 import org.geppetto.model.values.ValuesFactory;
@@ -59,15 +61,16 @@ public class SiberneticModelConverter
 	/**
 	 * @param modelConfiguration
 	 * @return
+	 * @throws GeppettoVisitingException 
 	 */
-	public Type toGeppettoType(String modelConfiguration)
+	public Type toGeppettoType(String modelConfiguration) throws GeppettoVisitingException
 	{
 
 
 		String connections = modelConfiguration.substring(modelConfiguration.indexOf(CONNECTION_TAG) + CONNECTION_TAG.length(), modelConfiguration.indexOf(MEMBRANES_TAG));
 		String positions = modelConfiguration.substring(modelConfiguration.indexOf(POSITION_TAG) + POSITION_TAG.length(), modelConfiguration.indexOf(VELOCITY_TAG));
 
-
+		int numberOfMuscles = 0;
 		Map<String,String> particlesToMuscleBundles = new HashMap<String,String>();
 		//let's first iterate on all the connections to find all the particles that will belong to the same muscle cell
 		StringTokenizer cTokenizer = new StringTokenizer(connections, "\r\n");
@@ -79,7 +82,9 @@ public class SiberneticModelConverter
 			String particleId = ((Integer)((int)particleFloat)).toString();
 			connectionTokenizer.nextToken(); //we don't care about the second parameter, the eleastic spring
 			float muscleBundleFloat=Float.parseFloat(connectionTokenizer.nextToken());
-			String muscleBundle = ((Integer)((int)muscleBundleFloat)).toString();
+			int muscleBundleInt = (int) muscleBundleFloat;
+			numberOfMuscles = Math.max(numberOfMuscles, muscleBundleInt);
+			String muscleBundle = ((Integer)(muscleBundleInt)).toString();
 			if(!muscleBundle.equals("0")){
 				particlesToMuscleBundles.put(particleId,muscleBundle);
 			}
@@ -119,6 +124,14 @@ public class SiberneticModelConverter
 				}
 	
 			}
+		}
+		
+		//Let's add the muscle activation signals
+		for (int i=0;i<=numberOfMuscles;i++){
+			Variable muscle_activation = VariablesFactory.eINSTANCE.createVariable();
+			muscle_activation.setId("muscle_activation_" + i);
+			muscle_activation.getTypes().add(modelAccess.getType(TypesPackage.Literals.STATE_VARIABLE_TYPE));
+			this.model.getVariables().add(muscle_activation);
 		}
 		return this.model;
 	}

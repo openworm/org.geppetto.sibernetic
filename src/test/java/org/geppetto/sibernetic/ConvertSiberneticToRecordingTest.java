@@ -5,6 +5,7 @@ package org.geppetto.sibernetic;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.emf.ecore.EClass;
 import org.geppetto.core.common.GeppettoInitializationException;
 import org.geppetto.core.manager.SharedLibraryManager;
@@ -43,35 +44,47 @@ public class ConvertSiberneticToRecordingTest
 	@Test
 	public void testConvert() throws Exception
 	{
-		ExperimentState experimentState = GeppettoFactory.eINSTANCE.createExperimentState();
 		GeppettoModel gm = GeppettoFactory.eINSTANCE.createGeppettoModel();
+		gm.getLibraries().add(SharedLibraryManager.getSharedCommonLibrary());
+		GeppettoLibrary siberneticLibrary = SiberneticLibraryLoader.getSiberneticLibrary();
+		gm.getLibraries().add(siberneticLibrary);
+		GeppettoModelAccess geppettoModelAccess = new GeppettoModelAccess(gm);
+
+		String modelConfiguration = IOUtils.toString(SiberneticModelConverterTest.class.getClassLoader().getResourceAsStream("siberneticRecording/worm_alone_half_resolution")); 
+		SiberneticModelConverter converter = new SiberneticModelConverter(siberneticLibrary, SharedLibraryManager.getSharedCommonLibrary(), geppettoModelAccess);
+		Type model = converter.toGeppettoType(modelConfiguration);
+		Variable worm = VariablesFactory.eINSTANCE.createVariable();
+		worm.setId("worm");
+		worm.getTypes().add(model);
 		
+		gm.getVariables().add(worm);
+		
+		ExperimentState experimentState = GeppettoFactory.eINSTANCE.createExperimentState();
 		addVariableValue(gm,experimentState, "time");
 		for(int i=0;i<=94;i++){
-			addVariableValue(gm,experimentState, "worm.muscle_activation["+i+"]");	
+			addVariableValue(gm,experimentState, "worm.muscle_activation_"+i+"");	
 		}
 		
-		gm.getLibraries().add(SharedLibraryManager.getSharedCommonLibrary());
-		GeppettoModelAccess geppettoModelAccess = new GeppettoModelAccess(gm);
-		ConvertSiberneticToRecording converter=new ConvertSiberneticToRecording("siberneticRecording", "siberneticGeppettoRecording", geppettoModelAccess);
-		converter.convert();
-		
-		assertNotNull(converter.getRecordingsFile());
 
-		H5File file = converter.getRecordingsFile();
+		ConvertSiberneticToRecording recordingConverter=new ConvertSiberneticToRecording("src/test/resources/siberneticRecording", "siberneticGeppettoRecording", geppettoModelAccess);
+		recordingConverter.convert();
+		
+		assertNotNull(recordingConverter.getRecordingsFile());
+
+		H5File file = recordingConverter.getRecordingsFile();
 		file.open();
-		Dataset dataset0 = (Dataset) file.findObject(file, "/worm.muscle_activation[0](StateVariable)");
+		Dataset dataset0 = (Dataset) file.findObject(file, "/worm(worm)/muscle_activation_0(StateVariable)");
 		double[] value = (double[]) dataset0.read();
 		Assert.assertEquals(0.0d, value[0]);
-		Assert.assertEquals(0.3297d, value[161]);
+		Assert.assertEquals(0.3297203d, value[161]);
 		Assert.assertEquals(0.05759016d, value[439]);
 
-		Dataset dataset2 = (Dataset) file.findObject(file, "/worm.muscle_activation[2](StateVariable)");
+		Dataset dataset2 = (Dataset) file.findObject(file, "/worm(worm)/muscle_activation_2(StateVariable)");
 		double[] value2 = (double[]) dataset2.read();
 		Assert.assertEquals(0.0d, value2[0]);
 		Assert.assertEquals(0.0d, value2[161]);
 
-		Dataset dataset94 = (Dataset) file.findObject(file, "/worm.muscle_activation[94](StateVariable)");
+		Dataset dataset94 = (Dataset) file.findObject(file, "/worm(worm)/muscle_activation_94(StateVariable)");
 		double[] value94 = (double[]) dataset94.read();
 		Assert.assertEquals(0.0d, value94[0]);
 		Assert.assertEquals(0.0d, value94[161]);
