@@ -66,7 +66,7 @@ public class ConvertSiberneticToRecordingTest
 		}
 		
 
-		ConvertSiberneticToRecording recordingConverter=new ConvertSiberneticToRecording("src/test/resources/siberneticRecording", "siberneticGeppettoRecording", geppettoModelAccess);
+		ConvertSiberneticToRecording recordingConverter=new ConvertSiberneticToRecording("src/test/resources/siberneticRecording", "siberneticGeppettoRecording.h5", geppettoModelAccess);
 		recordingConverter.convert();
 		
 		assertNotNull(recordingConverter.getRecordingsFile());
