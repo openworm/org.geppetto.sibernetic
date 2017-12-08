@@ -54,6 +54,14 @@ public class ConvertSiberneticToRecording
 		convertParticlesPosition();
 		convertMusclesActivationSignal();
 		convertWormMidline();
+		
+		List<Double> time=new ArrayList<Double>();
+		for(double i=0;i<=4.4;i=i+0.01d){
+
+			time.add((double)Math.round(i * 100d) / 100d);
+		}
+		Pointer pointer = geppettoModelAccess.getPointer("time");
+		recordingCreator.addValues(pointer.getInstancePath(), time.toArray(new Double[] {}), "", TypesPackage.Literals.STATE_VARIABLE_TYPE.getName(), false);
 		recordingCreator.create();
 	}
 

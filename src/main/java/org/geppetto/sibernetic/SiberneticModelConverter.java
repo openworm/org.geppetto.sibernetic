@@ -17,6 +17,7 @@ import org.geppetto.model.types.TypesPackage;
 import org.geppetto.model.util.GeppettoVisitingException;
 import org.geppetto.model.values.Particles;
 import org.geppetto.model.values.Point;
+import org.geppetto.model.values.Quantity;
 import org.geppetto.model.values.ValuesFactory;
 import org.geppetto.model.variables.Variable;
 import org.geppetto.model.variables.VariablesFactory;
@@ -130,6 +131,9 @@ public class SiberneticModelConverter
 		for (int i=0;i<=numberOfMuscles;i++){
 			Variable muscle_activation = VariablesFactory.eINSTANCE.createVariable();
 			muscle_activation.setId("muscle_activation_" + i);
+			Quantity initial = ValuesFactory.eINSTANCE.createQuantity();
+			initial.setValue(0d);
+			muscle_activation.getInitialValues().put(modelAccess.getType(TypesPackage.Literals.STATE_VARIABLE_TYPE), initial);
 			muscle_activation.getTypes().add(modelAccess.getType(TypesPackage.Literals.STATE_VARIABLE_TYPE));
 			this.model.getVariables().add(muscle_activation);
 		}
