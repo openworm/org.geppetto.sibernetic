@@ -14,7 +14,11 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.emfjson.jackson.resource.JsonResourceFactory;
 import org.geppetto.core.common.GeppettoInitializationException;
+import org.geppetto.core.manager.SharedLibraryManager;
+import org.geppetto.core.model.GeppettoModelAccess;
+import org.geppetto.model.GeppettoFactory;
 import org.geppetto.model.GeppettoLibrary;
+import org.geppetto.model.GeppettoModel;
 import org.geppetto.model.GeppettoPackage;
 import org.geppetto.model.types.Type;
 import org.geppetto.model.util.GeppettoVisitingException;
@@ -30,9 +34,13 @@ public class SiberneticModelConverterTest
 	@Test
 	public void test() throws IOException, GeppettoInitializationException, GeppettoVisitingException
 	{
+		GeppettoModel gm = GeppettoFactory.eINSTANCE.createGeppettoModel();
+		gm.getLibraries().add(SharedLibraryManager.getSharedCommonLibrary());
 		GeppettoLibrary siberneticLibrary = SiberneticLibraryLoader.getSiberneticLibrary();
+		gm.getLibraries().add(siberneticLibrary);
+		GeppettoModelAccess geppettoModelAccess = new GeppettoModelAccess(gm);
 		String modelConfiguration = IOUtils.toString(SiberneticModelConverterTest.class.getClassLoader().getResourceAsStream("sampleConfiguration")); 
-		SiberneticModelConverter converter = new SiberneticModelConverter(siberneticLibrary, null, null);
+		SiberneticModelConverter converter = new SiberneticModelConverter(siberneticLibrary, SharedLibraryManager.getSharedCommonLibrary(), geppettoModelAccess);
 		Type model = converter.toGeppettoType(modelConfiguration);
 		// // Initialize the factory and the resource set
 		GeppettoPackage.eINSTANCE.eClass();
