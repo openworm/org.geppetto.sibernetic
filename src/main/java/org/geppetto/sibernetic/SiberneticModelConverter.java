@@ -62,36 +62,36 @@ public class SiberneticModelConverter
 	/**
 	 * @param modelConfiguration
 	 * @return
-	 * @throws GeppettoVisitingException 
+	 * @throws GeppettoVisitingException
 	 */
 	public Type toGeppettoType(String modelConfiguration) throws GeppettoVisitingException
 	{
-
 
 		String connections = modelConfiguration.substring(modelConfiguration.indexOf(CONNECTION_TAG) + CONNECTION_TAG.length(), modelConfiguration.indexOf(MEMBRANES_TAG));
 		String positions = modelConfiguration.substring(modelConfiguration.indexOf(POSITION_TAG) + POSITION_TAG.length(), modelConfiguration.indexOf(VELOCITY_TAG));
 
 		int numberOfMuscles = 0;
-		Map<String,String> particlesToMuscleBundles = new HashMap<String,String>();
-		//let's first iterate on all the connections to find all the particles that will belong to the same muscle cell
+		Map<String, String> particlesToMuscleBundles = new HashMap<String, String>();
+		// let's first iterate on all the connections to find all the particles that will belong to the same muscle cell
 		StringTokenizer cTokenizer = new StringTokenizer(connections, "\r\n");
 		while(cTokenizer.hasMoreTokens())
 		{
 			String connection = cTokenizer.nextToken();
 			StringTokenizer connectionTokenizer = new StringTokenizer(connection);
-			float particleFloat=Float.parseFloat(connectionTokenizer.nextToken());
-			String particleId = ((Integer)((int)particleFloat)).toString();
-			connectionTokenizer.nextToken(); //we don't care about the second parameter, the eleastic spring
-			float muscleBundleFloat=Float.parseFloat(connectionTokenizer.nextToken());
+			float particleFloat = Float.parseFloat(connectionTokenizer.nextToken());
+			String particleId = ((Integer) ((int) particleFloat)).toString();
+			connectionTokenizer.nextToken(); // we don't care about the second parameter, the eleastic spring
+			float muscleBundleFloat = Float.parseFloat(connectionTokenizer.nextToken());
 			int muscleBundleInt = (int) muscleBundleFloat;
 			numberOfMuscles = Math.max(numberOfMuscles, muscleBundleInt);
-			String muscleBundle = ((Integer)(muscleBundleInt)).toString();
-			if(!muscleBundle.equals("0")){
-				particlesToMuscleBundles.put(particleId,muscleBundle);
+			String muscleBundle = ((Integer) (muscleBundleInt)).toString();
+			if(!muscleBundle.equals("0"))
+			{
+				particlesToMuscleBundles.put(particleId, muscleBundle);
 			}
 		}
-		
-		Integer currentParticle=-1;
+
+		Integer currentParticle = -1;
 		// everything else which is not position we don't care
 		StringTokenizer tokenizer = new StringTokenizer(positions, "\r\n");
 		while(tokenizer.hasMoreTokens())
@@ -103,32 +103,35 @@ public class SiberneticModelConverter
 			particle.setX(Double.parseDouble(positionTokenizer.nextToken()));
 			particle.setY(Double.parseDouble(positionTokenizer.nextToken()));
 			particle.setZ(Double.parseDouble(positionTokenizer.nextToken()));
-			//we are grouping by the type of particle
+			// we are grouping by the type of particle
 
-			float typeFloat=Float.parseFloat(positionTokenizer.nextToken());
-			String type = ((Integer)((int)typeFloat)).toString();
-			
-			String p=currentParticle.toString();
-			if(particlesToMuscleBundles.containsKey(p)){
-				String muscle=particlesToMuscleBundles.get(p);
-				Particles container=getContainer(muscle);
-				if(container!=null)
-				{
-					container.getParticles().add(particle);
-				}				
-			}
-			else{
-				Particles container=getContainer(type);
+			float typeFloat = Float.parseFloat(positionTokenizer.nextToken());
+			String type = ((Integer) ((int) typeFloat)).toString();
+
+			String p = currentParticle.toString();
+			if(particlesToMuscleBundles.containsKey(p))
+			{
+				String muscle = particlesToMuscleBundles.get(p);
+				Particles container = getContainer(muscle);
 				if(container != null)
 				{
 					container.getParticles().add(particle);
 				}
-	
+			}
+			else
+			{
+				Particles container = getContainer(type);
+				if(container != null)
+				{
+					container.getParticles().add(particle);
+				}
+
 			}
 		}
-		
-		//Let's add the muscle activation signals
-		for (int i=0;i<=numberOfMuscles;i++){
+
+		// Let's add the muscle activation signals
+		for(int i = 0; i <= numberOfMuscles; i++)
+		{
 			Variable muscle_activation = VariablesFactory.eINSTANCE.createVariable();
 			muscle_activation.setId("muscle_activation_" + i);
 			Quantity initial = ValuesFactory.eINSTANCE.createQuantity();
@@ -137,6 +140,36 @@ public class SiberneticModelConverter
 			muscle_activation.getTypes().add(modelAccess.getType(TypesPackage.Literals.STATE_VARIABLE_TYPE));
 			this.model.getVariables().add(muscle_activation);
 		}
+
+		// Let's add the midline
+		CompositeType midlineType = TypesFactory.eINSTANCE.createCompositeType();
+		midlineType.setId("midline");
+		midlineType.setName("midline");
+		Variable x = VariablesFactory.eINSTANCE.createVariable();
+		x.setId("x");
+		x.setName("x");
+		x.getTypes().add(modelAccess.getType(TypesPackage.Literals.STATE_VARIABLE_TYPE));
+		Variable y = VariablesFactory.eINSTANCE.createVariable();
+		y.setId("y");
+		y.setName("y");
+		y.getTypes().add(modelAccess.getType(TypesPackage.Literals.STATE_VARIABLE_TYPE));
+		Variable z = VariablesFactory.eINSTANCE.createVariable();
+		z.setId("z");
+		z.setName("z");
+		z.getTypes().add(modelAccess.getType(TypesPackage.Literals.STATE_VARIABLE_TYPE));
+		midlineType.getVariables().add(x);
+		midlineType.getVariables().add(y);
+		midlineType.getVariables().add(z);
+		siberneticLibrary.getTypes().add(midlineType);
+
+		Variable midline = VariablesFactory.eINSTANCE.createVariable();
+		midline.setId("midline");
+		Quantity initial = ValuesFactory.eINSTANCE.createQuantity();
+		initial.setValue(0d);
+		midline.getInitialValues().put(midlineType, initial);
+		midline.getTypes().add(midlineType);
+		this.model.getVariables().add(midline);
+
 		return this.model;
 	}
 

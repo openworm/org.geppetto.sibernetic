@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +28,7 @@ public class ConvertSiberneticToRecording
 	private static final String CONNECTIONS_FILE = "connection_buffer.txt";
 	private static final String MUSCLES_ACTIVATION_FILE = "muscles_activity_buffer.txt";
 	private static final String PARTICLES_POSITION_FILE = "position_buffer.txt";
-	private static final String WORM_MIDLINE_FILE = "worm_motion_log_buffer.txt";
+	private static final String WORM_MIDLINE_FILE = "worm_motion_log.txt";
 
 	private GeppettoRecordingCreator recordingCreator;
 	private GeppettoModelAccess geppettoModelAccess;
@@ -54,36 +53,98 @@ public class ConvertSiberneticToRecording
 		convertParticlesPosition();
 		convertMusclesActivationSignal();
 		convertWormMidline();
-		
-		List<Double> time=new ArrayList<Double>();
-		for(double i=0;i<=4.4;i=i+0.01d){
 
-			time.add((double)Math.round(i * 100d) / 100d);
+		List<Double> time = new ArrayList<Double>();
+		for(double i = 0; i <= 4.4; i = i + 0.01d)
+		{
+
+			time.add((double) Math.round(i * 100d) / 100d);
 		}
 		Pointer pointer = geppettoModelAccess.getPointer("time");
 		recordingCreator.addValues(pointer.getInstancePath(), time.toArray(new Double[] {}), "", TypesPackage.Literals.STATE_VARIABLE_TYPE.getName(), false);
 		recordingCreator.create();
 	}
 
-	private void convertWormMidline()
+	private void convertWormMidline() throws NumberFormatException, IOException, GeppettoModelException
 	{
-		// TODO Auto-generated method stub
+		BufferedReader midlineFile = getBufferedReader(WORM_MIDLINE_FILE);
+		List<List<Double>> x = new ArrayList<List<Double>>();
+		List<List<Double>> y = new ArrayList<List<Double>>();
+		List<List<Double>> z = new ArrayList<List<Double>>();
+		int timestep = 0;
+		// In the muscles activation file every line is a timestep
+		for(String line; (line = midlineFile.readLine()) != null;)
+		{
 
+			{
+				// every column is a different muscle
+				String[] columns = line.split("\\s+");
+				List<Double> variable = null;
+				for(int i = 0; i < columns.length; i++)
+				{
+					if(i == 0)
+					{
+						// column timestep
+						x.add(new ArrayList<Double>());
+						y.add(new ArrayList<Double>());
+						z.add(new ArrayList<Double>());
+					}
+					else if(columns[i].equalsIgnoreCase("X:"))
+					{
+						variable = x.get(timestep);
+					}
+					else if(columns[i].equalsIgnoreCase("Y:"))
+					{
+						variable = y.get(timestep);
+					}
+					else if(columns[i].equalsIgnoreCase("Z:"))
+					{
+						variable = z.get(timestep);
+					}
+					else
+					{
+						variable.add(Double.valueOf(columns[i]));
+					}
+				}
+			}
+			timestep++;
+		}
+
+		process(x, "x");
+		process(y, "y");
+		process(z, "z");
+
+		midlineFile.close();
+	}
+
+	private void process(List<List<Double>> coordinate, String name) throws GeppettoModelException
+	{
+		String instancePath = "worm.midline." + name;
+		Pointer pointer = geppettoModelAccess.getPointer(instancePath);
+
+		Double[][] array = new Double[coordinate.size()][];
+		for(int i = 0; i < coordinate.size(); i++)
+		{
+			List<Double> row = coordinate.get(i);
+			array[i] = row.toArray(new Double[row.size()]);
+		}
+
+		recordingCreator.addValues(pointer.getInstancePath(), array, "", TypesPackage.Literals.STATE_VARIABLE_TYPE.getName(), false);
 	}
 
 	private void convertMusclesActivationSignal() throws GeppettoModelException, NumberFormatException, IOException
 	{
 		BufferedReader musclesFile = getBufferedReader(MUSCLES_ACTIVATION_FILE);
-		Map<Integer,List<Double>> activationValues=new HashMap<Integer,List<Double>>();
-		//In the muscles activation file every line is a timestep
+		Map<Integer, List<Double>> activationValues = new HashMap<Integer, List<Double>>();
+		// In the muscles activation file every line is a timestep
 		for(String line; (line = musclesFile.readLine()) != null;)
 		{
 			{
-				//every column is a different muscle
+				// every column is a different muscle
 				String[] columns = line.split("\\s+");
 				for(int i = 0; i < columns.length; i++)
 				{
-					if(activationValues.get(i)==null)
+					if(activationValues.get(i) == null)
 					{
 						activationValues.put(i, new ArrayList<Double>());
 					}
@@ -98,14 +159,16 @@ public class ConvertSiberneticToRecording
 				}
 			}
 		}
-		
+
 		// Let's write to the Geppetto recording
-		for(Integer muscle:activationValues.keySet()){
-			String instancePath="worm.muscle_activation_"+muscle+"";
+		for(Integer muscle : activationValues.keySet())
+		{
+			String instancePath = "worm.muscle_activation_" + muscle + "";
 			Pointer pointer = geppettoModelAccess.getPointer(instancePath);
+
 			recordingCreator.addValues(pointer.getInstancePath(), activationValues.get(muscle).toArray(new Double[] {}), "", TypesPackage.Literals.STATE_VARIABLE_TYPE.getName(), false);
 		}
-		
+
 		musclesFile.close();
 	}
 
@@ -119,8 +182,6 @@ public class ConvertSiberneticToRecording
 		// TODO Auto-generated method stub
 
 	}
-
-
 
 	public H5File getRecordingsFile()
 	{
