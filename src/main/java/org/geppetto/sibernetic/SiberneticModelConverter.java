@@ -112,7 +112,7 @@ public class SiberneticModelConverter
 			if(particlesToMuscleBundles.containsKey(p))
 			{
 				String muscle = particlesToMuscleBundles.get(p);
-				Particles container = getContainer(muscle);
+				Particles container = getContainer(muscle, "muscle");
 				if(container != null)
 				{
 					container.getParticles().add(particle);
@@ -120,7 +120,7 @@ public class SiberneticModelConverter
 			}
 			else
 			{
-				Particles container = getContainer(type);
+				Particles container = getContainer(type, "matter");
 				if(container != null)
 				{
 					container.getParticles().add(particle);
@@ -133,7 +133,7 @@ public class SiberneticModelConverter
 		for(int i = 0; i <= numberOfMuscles; i++)
 		{
 			Variable muscle_activation = VariablesFactory.eINSTANCE.createVariable();
-			muscle_activation.setId("muscle_activation_" + i);
+			muscle_activation.setId("muscle_activation_" + (i+1));
 			Quantity initial = ValuesFactory.eINSTANCE.createQuantity();
 			initial.setValue(0d);
 			muscle_activation.getInitialValues().put(modelAccess.getType(TypesPackage.Literals.STATE_VARIABLE_TYPE), initial);
@@ -173,7 +173,7 @@ public class SiberneticModelConverter
 		return this.model;
 	}
 
-	private Particles getContainer(String type)
+	private Particles getContainer(String type, String name) throws GeppettoVisitingException
 	{
 		String typeNoDots = type.replace(".", "_");
 		switch(typeNoDots)
@@ -181,22 +181,17 @@ public class SiberneticModelConverter
 			case "0":
 				return null;
 			default:
-				if(!particlesMap.containsKey(typeNoDots))
+				if(!particlesMap.containsKey(name+"_" + typeNoDots))
 				{
-					particlesMap.put(typeNoDots, ValuesFactory.eINSTANCE.createParticles());
+					Type particlesType = this.modelAccess.getType(TypesPackage.Literals.VISUAL_TYPE, "particles");
+					particlesMap.put(name+"_" + typeNoDots, ValuesFactory.eINSTANCE.createParticles());
 					Variable matter = VariablesFactory.eINSTANCE.createVariable();
-					matter.setId("matter_" + typeNoDots);
-					CompositeVisualType matterType = TypesFactory.eINSTANCE.createCompositeVisualType();
-					siberneticLibrary.getTypes().add(matterType);
-					matterType.setId("matter_" + typeNoDots + "_Type");
-					Variable particles = VariablesFactory.eINSTANCE.createVariable();
-					particles.setId("particles");
-					matterType.getVariables().add(particles);
-					matter.getTypes().add(matterType);
-					particles.getInitialValues().put(matterType, particlesMap.get(typeNoDots));
+					matter.setId(name+"_" + typeNoDots);
+					matter.getTypes().add(particlesType);
+					matter.getInitialValues().put(particlesType, particlesMap.get(name+"_" + typeNoDots));
 					model.getVariables().add(matter);
 				}
-				return particlesMap.get(typeNoDots);
+				return particlesMap.get(name+"_" + typeNoDots);
 		}
 	}
 

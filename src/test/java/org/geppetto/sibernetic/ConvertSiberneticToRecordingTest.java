@@ -61,7 +61,7 @@ public class ConvertSiberneticToRecordingTest
 		
 		ExperimentState experimentState = GeppettoFactory.eINSTANCE.createExperimentState();
 		addVariableValue(gm,experimentState, "time");
-		for(int i=0;i<=94;i++){
+		for(int i=1;i<=96;i++){
 			addVariableValue(gm,experimentState, "worm.muscle_activation_"+i+"");	
 		}
 		
@@ -73,35 +73,35 @@ public class ConvertSiberneticToRecordingTest
 
 		H5File file = recordingConverter.getRecordingsFile();
 		file.open();
-		Dataset dataset0 = (Dataset) file.findObject(file, "/worm(worm)/muscle_activation_0(StateVariable)");
+		Dataset dataset0 = (Dataset) file.findObject(file, "/worm(worm)/muscle_activation_2(StateVariable)");
 		double[] value = (double[]) dataset0.read();
 		Assert.assertEquals(0.0d, value[0]);
-		Assert.assertEquals(0.3297203d, value[161]);
-		Assert.assertEquals(0.05759016d, value[439]);
+		Assert.assertEquals(0.3092529d, value[16]);
+		Assert.assertEquals(0.0, value[43]);
 
-		Dataset dataset2 = (Dataset) file.findObject(file, "/worm(worm)/muscle_activation_2(StateVariable)");
+		Dataset dataset2 = (Dataset) file.findObject(file, "/worm(worm)/muscle_activation_3(StateVariable)");
 		double[] value2 = (double[]) dataset2.read();
 		Assert.assertEquals(0.0d, value2[0]);
-		Assert.assertEquals(0.0d, value2[161]);
+		Assert.assertEquals(0.0d, value2[16]);
 
-		Dataset dataset94 = (Dataset) file.findObject(file, "/worm(worm)/muscle_activation_94(StateVariable)");
+		Dataset dataset94 = (Dataset) file.findObject(file, "/worm(worm)/muscle_activation_95(StateVariable)");
 		double[] value94 = (double[]) dataset94.read();
 		Assert.assertEquals(0.0d, value94[0]);
-		Assert.assertEquals(0.0d, value94[161]);
+		Assert.assertEquals(0.0d, value94[16]);
 		
-		Dataset dataset95 = (Dataset) file.findObject(file, "/worm(worm)/muscle_activation_95(StateVariable)");
+		Dataset dataset95 = (Dataset) file.findObject(file, "/worm(worm)/muscle_activation_96(StateVariable)");
 		double[] value95 = (double[]) dataset95.read();
 		Assert.assertEquals(0.0d, value94[0]);
-		Assert.assertEquals(0.0d, value94[161]);
-		Dataset dataset96 = (Dataset) file.findObject(file, "/worm(worm)/muscle_activation_96(StateVariable)");
+		Assert.assertEquals(0.0d, value94[16]);
+		Dataset dataset96 = (Dataset) file.findObject(file, "/worm(worm)/muscle_activation_97(StateVariable)");
 		Assert.assertNull(dataset96);
 		
 		
 		Dataset midline = (Dataset) file.findObject(file, "/worm(worm)/midline(midline)/x(StateVariable)");
 		double[] midlineValues = (double[]) midline.read();
 		Assert.assertEquals(0.1046513d, midlineValues[0]);
-		Assert.assertEquals(0.1033163d, midlineValues[99]);
-		Assert.assertEquals(0.1422468d, midlineValues[102]);
+		Assert.assertEquals(0.2276419d, midlineValues[10]);
+		Assert.assertEquals(0.2394234d, midlineValues[11]);
 		file.close();
 		
 	}

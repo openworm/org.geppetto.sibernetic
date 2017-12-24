@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,6 +35,8 @@ public class ConvertSiberneticToRecording
 	private GeppettoModelAccess geppettoModelAccess;
 	private String siberneticRecordingFolder;
 
+	private final int SAMPLING = 10;
+
 	/**
 	 * @param geppettoRecordingFile
 	 */
@@ -55,7 +58,7 @@ public class ConvertSiberneticToRecording
 		convertWormMidline();
 
 		List<Double> time = new ArrayList<Double>();
-		for(double i = 0; i <= 4.4; i = i + 0.01d)
+		for(double i = 0; i <= 4.4; i = i + 0.1d)
 		{
 
 			time.add((double) Math.round(i * 100d) / 100d);
@@ -72,12 +75,15 @@ public class ConvertSiberneticToRecording
 		List<List<Double>> y = new ArrayList<List<Double>>();
 		List<List<Double>> z = new ArrayList<List<Double>>();
 		int timestep = 0;
-		// In the muscles activation file every line is a timestep
+		int start = -1;
 		for(String line; (line = midlineFile.readLine()) != null;)
 		{
-
+			start++;
+			if(start % SAMPLING != 0)
 			{
-				// every column is a different muscle
+				continue;
+			}
+			{
 				String[] columns = line.split("\\s+");
 				List<Double> variable = null;
 				for(int i = 0; i < columns.length; i++)
@@ -110,17 +116,17 @@ public class ConvertSiberneticToRecording
 			timestep++;
 		}
 
-		process(x, "x");
-		process(y, "y");
-		process(z, "z");
+		processMDArray(x, "worm(worm).midline(midline).x(StateVariable)");
+		processMDArray(y, "worm(worm).midline(midline).y(StateVariable)");
+		processMDArray(z, "worm(worm).midline(midline).z(StateVariable)");
 
 		midlineFile.close();
 	}
 
-	private void process(List<List<Double>> coordinate, String name) throws GeppettoModelException
+	private void processMDArray(List<List<Double>> coordinate, String instancePath) throws GeppettoModelException
 	{
-		String instancePath = "worm.midline." + name;
-		Pointer pointer = geppettoModelAccess.getPointer(instancePath);
+
+		// Pointer pointer = geppettoModelAccess.getPointer(instancePath);
 
 		Double[][] array = new Double[coordinate.size()][];
 		for(int i = 0; i < coordinate.size(); i++)
@@ -129,7 +135,7 @@ public class ConvertSiberneticToRecording
 			array[i] = row.toArray(new Double[row.size()]);
 		}
 
-		recordingCreator.addValues(pointer.getInstancePath(), array, "", TypesPackage.Literals.STATE_VARIABLE_TYPE.getName(), false);
+		recordingCreator.addValues(instancePath, array, "", TypesPackage.Literals.STATE_VARIABLE_TYPE.getName(), false);
 	}
 
 	private void convertMusclesActivationSignal() throws GeppettoModelException, NumberFormatException, IOException
@@ -137,8 +143,15 @@ public class ConvertSiberneticToRecording
 		BufferedReader musclesFile = getBufferedReader(MUSCLES_ACTIVATION_FILE);
 		Map<Integer, List<Double>> activationValues = new HashMap<Integer, List<Double>>();
 		// In the muscles activation file every line is a timestep
+		int start = -1;
+
 		for(String line; (line = musclesFile.readLine()) != null;)
 		{
+			start++;
+			if(start % SAMPLING != 0)
+			{
+				continue;
+			}
 			{
 				// every column is a different muscle
 				String[] columns = line.split("\\s+");
@@ -163,7 +176,7 @@ public class ConvertSiberneticToRecording
 		// Let's write to the Geppetto recording
 		for(Integer muscle : activationValues.keySet())
 		{
-			String instancePath = "worm.muscle_activation_" + muscle + "";
+			String instancePath = "worm.muscle_activation_" + (muscle+1) + "";
 			Pointer pointer = geppettoModelAccess.getPointer(instancePath);
 
 			recordingCreator.addValues(pointer.getInstancePath(), activationValues.get(muscle).toArray(new Double[] {}), "", TypesPackage.Literals.STATE_VARIABLE_TYPE.getName(), false);
@@ -177,9 +190,154 @@ public class ConvertSiberneticToRecording
 		return new BufferedReader(new FileReader(this.siberneticRecordingFolder + File.separator + file));
 	}
 
-	private void convertParticlesPosition()
+	private void convertParticlesPosition() throws NumberFormatException, IOException, GeppettoModelException
 	{
-		// TODO Auto-generated method stub
+		BufferedReader particlesFile = getBufferedReader(PARTICLES_POSITION_FILE);
+		BufferedReader connectionsFile = getBufferedReader(CONNECTIONS_FILE);
+
+		// Let's first read the connections to know what particles belong to what muscles
+		Map<String, String> particlesToMuscleBundles = new HashMap<String, String>();
+		int numberOfMuscles = 0;
+		for(String connection; (connection = connectionsFile.readLine()) != null;)
+		{
+			StringTokenizer connectionTokenizer = new StringTokenizer(connection);
+			float particleFloat = Float.parseFloat(connectionTokenizer.nextToken());
+			String particleId = ((Integer) ((int) particleFloat)).toString();
+			connectionTokenizer.nextToken(); // we don't care about the second parameter, the eleastic spring
+			float muscleBundleFloat = Float.parseFloat(connectionTokenizer.nextToken());
+			int muscleBundleInt = (int) muscleBundleFloat;
+			numberOfMuscles = Math.max(numberOfMuscles, muscleBundleInt);
+			String muscleBundle = ((Integer) (muscleBundleInt)).toString();
+			if(!muscleBundle.equals("0"))
+			{
+				particlesToMuscleBundles.put(particleId, muscleBundle);
+			}
+		}
+
+		Map<String, List<List<Double>>> x = new HashMap<String, List<List<Double>>>();
+		Map<String, List<List<Double>>> y = new HashMap<String, List<List<Double>>>();
+		Map<String, List<List<Double>>> z = new HashMap<String, List<List<Double>>>();
+
+		Integer currentLine = -1;
+		Integer currentParticle = -1;
+		Integer currentTimestep = 0;
+		Integer elasticParticles = -1;
+		Integer liquidParticles = -1;
+		Integer boundaryParticles = -1;
+		Float timestep = -1f;
+		Integer sampling = -1;
+		int start = 0;
+		for(String position; (position = particlesFile.readLine()) != null;)
+		{
+			currentLine++;
+			// the particles file has a bunch of parameters in the first ten lines...
+			if(currentLine == 0 || currentLine == 1 || currentLine == 2 || currentLine == 3 || currentLine == 4 || currentLine == 5)
+			{
+				// boundary box, we don't need it
+				continue;
+			}
+			else if(currentLine == 6)
+			{
+				elasticParticles = Integer.parseInt(position);
+			}
+			else if(currentLine == 7)
+			{
+				liquidParticles = Integer.parseInt(position);
+			}
+			else if(currentLine == 8)
+			{
+				boundaryParticles = Integer.parseInt(position);
+			}
+			else if(currentLine == 9)
+			{
+				timestep = Float.parseFloat(position);
+			}
+			else if(currentLine == 10)
+			{
+				sampling = Integer.parseInt(position);
+			}
+			else
+			{
+				currentParticle++;
+				StringTokenizer positionTokenizer = new StringTokenizer(position);
+
+				if(currentTimestep == 0 && currentParticle > (elasticParticles + liquidParticles + boundaryParticles - 1))
+				{
+					currentTimestep++;
+					currentParticle = 0;
+				}
+				else if(currentTimestep > 0 && currentParticle > (elasticParticles + liquidParticles - 1))
+				{
+					currentTimestep++;
+					currentParticle = 0;
+				}
+				if(currentTimestep % SAMPLING != 0)
+				{
+					continue;
+				}
+				String p = currentParticle.toString();
+				Double singleX = Double.parseDouble(positionTokenizer.nextToken());
+				Double singleY = Double.parseDouble(positionTokenizer.nextToken());
+				Double singleZ = Double.parseDouble(positionTokenizer.nextToken());
+				float typeFloat = Float.parseFloat(positionTokenizer.nextToken());
+				String singleType = ((Integer) ((int) typeFloat)).toString();
+				if(singleType.equals("3"))
+				{
+					continue;
+				}
+
+				String variableId = "";
+
+				if(particlesToMuscleBundles.containsKey(p))
+				{
+					variableId = "muscle_" + particlesToMuscleBundles.get(p).replace(".", "_");
+				}
+				else
+				{
+					variableId = "matter_" + singleType.toString().replace(".", "_");
+				}
+
+				if(currentTimestep == 0 && !x.containsKey(variableId))
+				{
+					x.put(variableId, new ArrayList<List<Double>>());
+					y.put(variableId, new ArrayList<List<Double>>());
+					z.put(variableId, new ArrayList<List<Double>>());
+				}
+				else if(!x.containsKey(variableId))
+				{
+					throw new GeppettoModelException("We should not discover new variable IDs after the first timestep!");
+				}
+
+				List<List<Double>> particlesX = x.get(variableId);
+				List<List<Double>> particlesY = y.get(variableId);
+				List<List<Double>> particlesZ = z.get(variableId);
+
+				if(particlesX.size() <= currentTimestep / SAMPLING)
+				{
+					particlesX.add(new ArrayList<Double>());
+					particlesY.add(new ArrayList<Double>());
+					particlesZ.add(new ArrayList<Double>());
+				}
+
+				particlesX.get(currentTimestep / SAMPLING).add(singleX);
+				particlesY.get(currentTimestep / SAMPLING).add(singleY);
+				particlesZ.get(currentTimestep / SAMPLING).add(singleZ);
+			}
+
+		}
+
+		for(String variableId : x.keySet())
+		{
+			processMDArray(x.get(variableId), "worm(worm)." + variableId + "(particles).x");
+		}
+		for(String variableId : y.keySet())
+		{
+			processMDArray(y.get(variableId), "worm(worm)." + variableId + "(particles).y");
+		}
+		for(String variableId : z.keySet())
+		{
+			processMDArray(z.get(variableId), "worm(worm)." + variableId + "(particles).z");
+		}
 
 	}
 
