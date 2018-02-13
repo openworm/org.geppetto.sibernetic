@@ -7,8 +7,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
@@ -28,6 +30,7 @@ public class ConvertSiberneticToRecording
 
 	private static final String CONNECTIONS_FILE = "connection_buffer.txt";
 	private static final String MUSCLES_ACTIVATION_FILE = "muscles_activity_buffer.txt";
+	private static final String MEMBRANES_BUFFER_FILE = "membranes_buffer.txt";
 	private static final String PARTICLES_POSITION_FILE = "position_buffer.txt";
 	private static final String WORM_MIDLINE_FILE = "worm_motion_log.txt";
 
@@ -35,7 +38,7 @@ public class ConvertSiberneticToRecording
 	private GeppettoModelAccess geppettoModelAccess;
 	private String siberneticRecordingFolder;
 
-	private final int SAMPLING = 10;
+	private final int SAMPLING = 200;
 
 	/**
 	 * @param geppettoRecordingFile
@@ -58,10 +61,10 @@ public class ConvertSiberneticToRecording
 		convertWormMidline();
 
 		List<Double> time = new ArrayList<Double>();
-		for(double i = 0; i <= 4.4; i = i + 0.1d)
+		for(double i = 0; i <= 5; i = i + 0.1d)
 		{
 
-			time.add((double) Math.round(i * 100d) / 100d);
+			time.add((double) Math.round(i * 1000d) / 1000d);
 		}
 		Pointer pointer = geppettoModelAccess.getPointer("time");
 		recordingCreator.addValues(pointer.getInstancePath(), time.toArray(new Double[] {}), "", TypesPackage.Literals.STATE_VARIABLE_TYPE.getName(), false);
@@ -176,7 +179,7 @@ public class ConvertSiberneticToRecording
 		// Let's write to the Geppetto recording
 		for(Integer muscle : activationValues.keySet())
 		{
-			String instancePath = "worm.muscle_activation_" + (muscle+1) + "";
+			String instancePath = "worm.muscle_activation_" + (muscle + 1) + "";
 			Pointer pointer = geppettoModelAccess.getPointer(instancePath);
 
 			recordingCreator.addValues(pointer.getInstancePath(), activationValues.get(muscle).toArray(new Double[] {}), "", TypesPackage.Literals.STATE_VARIABLE_TYPE.getName(), false);
@@ -194,6 +197,21 @@ public class ConvertSiberneticToRecording
 	{
 		BufferedReader particlesFile = getBufferedReader(PARTICLES_POSITION_FILE);
 		BufferedReader connectionsFile = getBufferedReader(CONNECTIONS_FILE);
+		BufferedReader membranesFile = getBufferedReader(MEMBRANES_BUFFER_FILE);
+
+		Set<Integer> cuticleParticles = new HashSet<Integer>();
+		membranesFile.readLine(); //the first line is not a triangle
+		for(String membrane; (membrane = membranesFile.readLine()) != null;)
+		{
+			StringTokenizer membraneTokenizer = new StringTokenizer(membrane);
+			cuticleParticles.add(Integer.parseInt(membraneTokenizer.nextToken()));
+			if(membraneTokenizer.hasMoreTokens()){
+				cuticleParticles.add(Integer.parseInt(membraneTokenizer.nextToken()));
+			}
+			if(membraneTokenizer.hasMoreTokens()){
+				cuticleParticles.add(Integer.parseInt(membraneTokenizer.nextToken()));
+			}
+		}
 
 		// Let's first read the connections to know what particles belong to what muscles
 		Map<String, String> particlesToMuscleBundles = new HashMap<String, String>();
@@ -286,42 +304,51 @@ public class ConvertSiberneticToRecording
 					continue;
 				}
 
-				String variableId = "";
-
+				List<String> variableIds = new ArrayList<String>();
+				boolean accountedFor = false;
+				if(cuticleParticles.contains(currentParticle))
+				{
+					variableIds.add("cuticle");
+					accountedFor = true;
+				}
 				if(particlesToMuscleBundles.containsKey(p))
 				{
-					variableId = "muscle_" + particlesToMuscleBundles.get(p).replace(".", "_");
+					variableIds.add("muscle_" + particlesToMuscleBundles.get(p).replace(".", "_"));
+					accountedFor = true;
 				}
-				else
+				if(!accountedFor)
 				{
-					variableId = "matter_" + singleType.toString().replace(".", "_");
+					variableIds.add("matter_" + singleType.toString().replace(".", "_"));
 				}
 
-				if(currentTimestep == 0 && !x.containsKey(variableId))
+				for(String variableId : variableIds)
 				{
-					x.put(variableId, new ArrayList<List<Double>>());
-					y.put(variableId, new ArrayList<List<Double>>());
-					z.put(variableId, new ArrayList<List<Double>>());
-				}
-				else if(!x.containsKey(variableId))
-				{
-					throw new GeppettoModelException("We should not discover new variable IDs after the first timestep!");
-				}
+					if(currentTimestep == 0 && !x.containsKey(variableId))
+					{
+						x.put(variableId, new ArrayList<List<Double>>());
+						y.put(variableId, new ArrayList<List<Double>>());
+						z.put(variableId, new ArrayList<List<Double>>());
+					}
+					else if(!x.containsKey(variableId))
+					{
+						throw new GeppettoModelException("We should not discover new variable IDs after the first timestep!");
+					}
 
-				List<List<Double>> particlesX = x.get(variableId);
-				List<List<Double>> particlesY = y.get(variableId);
-				List<List<Double>> particlesZ = z.get(variableId);
+					List<List<Double>> particlesX = x.get(variableId);
+					List<List<Double>> particlesY = y.get(variableId);
+					List<List<Double>> particlesZ = z.get(variableId);
 
-				if(particlesX.size() <= currentTimestep / SAMPLING)
-				{
-					particlesX.add(new ArrayList<Double>());
-					particlesY.add(new ArrayList<Double>());
-					particlesZ.add(new ArrayList<Double>());
+					if(particlesX.size() <= currentTimestep / SAMPLING)
+					{
+						particlesX.add(new ArrayList<Double>());
+						particlesY.add(new ArrayList<Double>());
+						particlesZ.add(new ArrayList<Double>());
+					}
+
+					particlesX.get(currentTimestep / SAMPLING).add(singleX);
+					particlesY.get(currentTimestep / SAMPLING).add(singleY);
+					particlesZ.get(currentTimestep / SAMPLING).add(singleZ);
 				}
-
-				particlesX.get(currentTimestep / SAMPLING).add(singleX);
-				particlesY.get(currentTimestep / SAMPLING).add(singleY);
-				particlesZ.get(currentTimestep / SAMPLING).add(singleZ);
 			}
 
 		}

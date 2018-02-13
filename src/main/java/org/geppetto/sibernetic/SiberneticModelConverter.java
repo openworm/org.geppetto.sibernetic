@@ -4,13 +4,15 @@
 package org.geppetto.sibernetic;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.geppetto.core.model.GeppettoModelAccess;
 import org.geppetto.model.GeppettoLibrary;
 import org.geppetto.model.types.CompositeType;
-import org.geppetto.model.types.CompositeVisualType;
 import org.geppetto.model.types.Type;
 import org.geppetto.model.types.TypesFactory;
 import org.geppetto.model.types.TypesPackage;
@@ -35,6 +37,8 @@ public class SiberneticModelConverter
 	private String VELOCITY_TAG = "[velocity]";
 	private String CONNECTION_TAG = "[connection]";
 	private String MEMBRANES_TAG = "[membranes]";
+	private String PARTICLE_MEMBINDEX_TAG = "[particleMemIndex]";
+
 
 	private CompositeType model = TypesFactory.eINSTANCE.createCompositeType();
 
@@ -69,8 +73,12 @@ public class SiberneticModelConverter
 
 		String connections = modelConfiguration.substring(modelConfiguration.indexOf(CONNECTION_TAG) + CONNECTION_TAG.length(), modelConfiguration.indexOf(MEMBRANES_TAG));
 		String positions = modelConfiguration.substring(modelConfiguration.indexOf(POSITION_TAG) + POSITION_TAG.length(), modelConfiguration.indexOf(VELOCITY_TAG));
+		String membranes = modelConfiguration.substring(modelConfiguration.indexOf(MEMBRANES_TAG) + MEMBRANES_TAG.length(), modelConfiguration.indexOf(PARTICLE_MEMBINDEX_TAG));
 
 		int numberOfMuscles = 0;
+		StringTokenizer mTokenizer = new StringTokenizer(membranes, "\r\n");
+		
+
 		Map<String, String> particlesToMuscleBundles = new HashMap<String, String>();
 		// let's first iterate on all the connections to find all the particles that will belong to the same muscle cell
 		StringTokenizer cTokenizer = new StringTokenizer(connections, "\r\n");
@@ -90,7 +98,16 @@ public class SiberneticModelConverter
 				particlesToMuscleBundles.put(particleId, muscleBundle);
 			}
 		}
-
+		Set<Integer> cuticleParticles=new HashSet<Integer>();
+		
+		while(mTokenizer.hasMoreTokens()){
+			String membrane = mTokenizer.nextToken();
+			StringTokenizer membraneTokenizer = new StringTokenizer(membrane);
+			cuticleParticles.add(Integer.parseInt(membraneTokenizer.nextToken()));
+			cuticleParticles.add(Integer.parseInt(membraneTokenizer.nextToken()));
+			cuticleParticles.add(Integer.parseInt(membraneTokenizer.nextToken()));
+		}
+		
 		Integer currentParticle = -1;
 		// everything else which is not position we don't care
 		StringTokenizer tokenizer = new StringTokenizer(positions, "\r\n");
@@ -107,18 +124,33 @@ public class SiberneticModelConverter
 
 			float typeFloat = Float.parseFloat(positionTokenizer.nextToken());
 			String type = ((Integer) ((int) typeFloat)).toString();
-
+			boolean accountedFor=false;
 			String p = currentParticle.toString();
-			if(particlesToMuscleBundles.containsKey(p))
-			{
-				String muscle = particlesToMuscleBundles.get(p);
-				Particles container = getContainer(muscle, "muscle");
+			if(cuticleParticles.contains(currentParticle)){
+				accountedFor=true;
+				Particles container = getContainer("", "cuticle");
 				if(container != null)
 				{
 					container.getParticles().add(particle);
 				}
 			}
-			else
+			if(particlesToMuscleBundles.containsKey(p))
+			{
+				accountedFor=true;
+				String muscle = particlesToMuscleBundles.get(p);
+				Particles container = getContainer(muscle, "muscle");
+				if(container != null)
+				{
+					if(particle.eContainer()!=null){
+						Point cParticle= EcoreUtil.copy(particle);
+						container.getParticles().add(cParticle);
+					}
+					else{
+						container.getParticles().add(particle);
+					}
+				}
+			}
+			if(!accountedFor)
 			{
 				Particles container = getContainer(type, "matter");
 				if(container != null)
@@ -181,18 +213,26 @@ public class SiberneticModelConverter
 			case "0":
 				return null;
 			default:
-				if(!particlesMap.containsKey(name+"_" + typeNoDots))
+				if(!particlesMap.containsKey(getName(name, typeNoDots)))
 				{
 					Type particlesType = this.modelAccess.getType(TypesPackage.Literals.VISUAL_TYPE, "particles");
-					particlesMap.put(name+"_" + typeNoDots, ValuesFactory.eINSTANCE.createParticles());
+					particlesMap.put(getName(name, typeNoDots), ValuesFactory.eINSTANCE.createParticles());
 					Variable matter = VariablesFactory.eINSTANCE.createVariable();
-					matter.setId(name+"_" + typeNoDots);
+					matter.setId(getName(name, typeNoDots));
 					matter.getTypes().add(particlesType);
-					matter.getInitialValues().put(particlesType, particlesMap.get(name+"_" + typeNoDots));
+					matter.getInitialValues().put(particlesType, particlesMap.get(getName(name, typeNoDots)));
 					model.getVariables().add(matter);
 				}
-				return particlesMap.get(name+"_" + typeNoDots);
+				return particlesMap.get(getName(name, typeNoDots));
 		}
+	}
+
+	private String getName(String name, String typeNoDots)
+	{
+		if(name.equals("cuticle")){
+			return "cuticle";
+		}
+		return name+"_" + typeNoDots;
 	}
 
 }
