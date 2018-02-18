@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ASCII"?>
+<gep:GeppettoLibrary
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:gep="https://raw.githubusercontent.com/openworm/org.geppetto.model/development/src/main/resources/geppettoModel.ecore"
+    xmlns:gep_1="https://raw.githubusercontent.com/openworm/org.geppetto.model/development/src/main/resources/geppettoModel.ecore#//types"
+    id="sibernetic"
+    name="Sibernetic Library">
+  <types xsi:type="gep_1:CompositeType"
+      id="contractile"
+      name="Contractile">
+    <variables
+        id="particles"
+        name="Particles"
+        types="//@types.1"/>
+  </types>
+  <types xsi:type="gep_1:ArrayType"
+      id="particles"
+      name="Particles"
+      arrayType="//@types.2"/>
+  <types xsi:type="gep_1:PointType"
+      id="particle"
+      name="Particle"/>
+  <types xsi:type="gep_1:CompositeVisualType"
+      id="membrane"
+      name="Membrane">
+    <variables
+        id="particles"
+        name="Particles"
+        types="//@types.1"/>
+  </types>
+  <types xsi:type="gep_1:CompositeVisualType"
+      id="liquid"
+      name="Liquid">
+    <variables
+        id="particles"
+        name="Particles"/>
+  </types>
+</gep:GeppettoLibrary>
